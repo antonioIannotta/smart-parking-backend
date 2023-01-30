@@ -1,8 +1,14 @@
 package com.example.plugins
 
+import com.example.parkingSlot.database.Database
+import com.example.parkingSlot.models.IncrementOccupation
+import com.example.parkingSlot.models.SlotOccupation
+import io.ktor.client.*
+import io.ktor.client.request.*
 import io.ktor.server.routing.*
 import io.ktor.server.response.*
 import io.ktor.server.application.*
+import io.ktor.server.request.*
 
 fun Application.configureRouting() {
     routing {
@@ -14,11 +20,14 @@ fun Application.configureRouting() {
         get("/user/{userId?}/parking-slot") {  }
         get("/user/{userId?}/logout") {  }
         get("/user/{userId?}/delete") {  }
-        get("/parking-slot/occupy") {  } //put --> passare un oggetto che contiene ID e tempo di fine
-        //tempo di fine: LocalDateTime convertito a String --> Questo oggetto si chiama "SlotOccupation"
-        get("/parking-slot/increment-occupation") {  } //put -> passare un oggetto che contiene ID e nuovo tempo di
-        //fine sosta. L'oggetto passato deve essere IncrementOccupation e avere come parametri lo slotId e il nuovo
-        //tempo in LocalDateTime convertito a String
+        put("/parking-slot/occupy") {
+            val slotOccupation = call.receive<SlotOccupation>()
+            Database.occupySlot(slotOccupation)
+        }
+        put("/parking-slot/increment-occupation") {
+            val incrementOccupation = call.receive<IncrementOccupation>()
+            Database.incrementOccupation(incrementOccupation)
+        }
         get("/parking-slot/{parkingSlotId?}/free") {  } //put --> passare un oggetto Slot che contiene l'ID dello
         //slot da liberare
         get("/parking-slot/") {  }
