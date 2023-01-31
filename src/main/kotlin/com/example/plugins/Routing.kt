@@ -2,6 +2,7 @@ package com.example.plugins
 
 import com.example.parkingSlot.database.Database
 import com.example.parkingSlot.models.IncrementOccupation
+import com.example.parkingSlot.models.SlotId
 import com.example.parkingSlot.models.SlotOccupation
 import io.ktor.client.*
 import io.ktor.client.request.*
@@ -28,9 +29,17 @@ fun Application.configureRouting() {
             val incrementOccupation = call.receive<IncrementOccupation>()
             Database.incrementOccupation(incrementOccupation)
         }
-        get("/parking-slot/{parkingSlotId?}/free") {  } //put --> passare un oggetto Slot che contiene l'ID dello
-        //slot da liberare
-        get("/parking-slot/") {  }
-        get("/parking-slot/{id?}") {  }
+        put("/parking-slot/free") {
+            val slotId = call.receive<SlotId>()
+            Database.freeSlot(slotId)
+        }
+        get("/parking-slot/") {
+            val parkingSlotList = Database.getAllParkingSlots()
+            call.respond(parkingSlotList)
+        }
+        get("/parking-slot/{id?}") {
+            val parkingSlot = Database.getParkingSlot(call.parameters["id"]!!)
+            call.respond(parkingSlot)
+        }
     }
 }
