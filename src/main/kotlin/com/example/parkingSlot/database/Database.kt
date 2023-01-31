@@ -19,7 +19,7 @@ import java.time.LocalDateTime
 object Database {
 
     private val mongoAddress = "mongodb+srv://antonioIannotta:AntonioIannotta-26@cluster0.a3rz8ro.mongodb.net/?retryWrites=true"
-    private val parkingSlotCollection = "Parking slot"
+    private val parkingSlotCollection = "parking-slot"
     private val databaseName = "ParkingSystem"
 
     /**

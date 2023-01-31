@@ -8,7 +8,7 @@ import java.time.LocalDateTime
 fun main() {
 
     val mongoAddress = "mongodb+srv://antonioIannotta:AntonioIannotta-26@cluster0.a3rz8ro.mongodb.net/?retryWrites=true"
-    val parkingSlotCollection = "Parking slot"
+    val parkingSlotCollection = "parking-slot"
     val databaseName = "ParkingSystem"
     val literals = listOf<String>("A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K", "L", "M", "N", "O",
         "P", "Q", "R", "S", "T", "U", "V", "W", "X", "Y", "Z")
