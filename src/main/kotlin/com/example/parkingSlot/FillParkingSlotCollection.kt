@@ -33,4 +33,4 @@ private fun createDocument(literal: String, number: String): Document =
     Document()
         .append("id", literal + number)
         .append("occupied", false)
-        .append("endStop", null)
+        .append("endStop", "")
