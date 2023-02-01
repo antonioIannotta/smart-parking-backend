@@ -23,7 +23,9 @@ fun Application.configureRouting() {
         get("/user/{userId?}/delete") {  }
         put("/parking-slot/occupy") {
             val slotOccupation = call.receive<SlotOccupation>()
-            Database.occupySlot(slotOccupation)
+            val parkingSlotList = Database.getAllParkingSlots()
+            val returnValue = Database.occupySlot(slotOccupation, parkingSlotList)
+            call.respond(returnValue)
         }
         put("/parking-slot/increment-occupation") {
             val incrementOccupation = call.receive<IncrementOccupation>()
