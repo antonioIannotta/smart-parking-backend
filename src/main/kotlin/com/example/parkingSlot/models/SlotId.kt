@@ -7,4 +7,4 @@ import kotlinx.serialization.Serializable
  * the client
  */
 @Serializable
-data class SlotId(val slotId: String)
+class SlotId(var slotId: String)

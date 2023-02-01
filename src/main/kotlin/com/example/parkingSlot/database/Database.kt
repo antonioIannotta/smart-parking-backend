@@ -25,8 +25,12 @@ object Database {
     /**
      * Function that occupy a certain slot based on the slotOccupation object received as argument
      */
-    fun occupySlot(slotOccupation: SlotOccupation) {
-        val mongoClient = MongoClient(MongoClientURI(mongoAddress))
+    fun occupySlot(slotOccupation: SlotOccupation, parkingSlotList: MutableList<ParkingSlot>): Boolean {
+
+        var returnFalue = false
+
+
+        /*val mongoClient = MongoClient(MongoClientURI(mongoAddress))
 
         val filter = Filters.eq("id", slotOccupation.slotId)
         val updates = emptyList<Bson>().toMutableList()
@@ -38,7 +42,9 @@ object Database {
         mongoClient.getDatabase(databaseName).getCollection(parkingSlotCollection)
             .updateOne(filter, updates, options)
 
-        mongoClient.close()
+        mongoClient.close()*/
+
+        return false
     }
 
     /**
@@ -78,7 +84,7 @@ object Database {
     /**
      * Function that returns all the parking slots that are stored into the database
      */
-    fun getAllParkingSlots() {
+    fun getAllParkingSlots(): MutableList<ParkingSlot> {
         val mongoClient = MongoClient(MongoClientURI(mongoAddress))
 
         val parkingSlotList = emptyList<ParkingSlot>().toMutableList()
@@ -86,6 +92,8 @@ object Database {
         mongoClient.getDatabase(databaseName).getCollection(parkingSlotCollection).find().forEach {
             document -> parkingSlotList.add(createParkingSlotFromDocument(document))
         }
+
+        return parkingSlotList
     }
 
     /**
@@ -106,9 +114,28 @@ object Database {
     /**
      * Function that returns a parking slot given a certain Bson Document
      */
-    private fun createParkingSlotFromDocument(document: Document): ParkingSlot =
+    fun createParkingSlotFromDocument(document: Document): ParkingSlot =
         ParkingSlot(document["id"].toString(),
             document["occupied"].toString().toBoolean(),
             document["endStop"].toString())
+
+    fun replaceSlot(parkingSlot: ParkingSlot, parkingSlotList: MutableList<ParkingSlot>): MutableList<ParkingSlot> {
+
+        if (!isParkingSlotValid(parkingSlot, parkingSlotList)) {
+            return parkingSlotList
+        }
+
+        parkingSlotList.remove(parkingSlotList.first {
+            ps -> ps.id == parkingSlot.id
+        })
+        parkingSlotList.add(parkingSlot)
+
+        return parkingSlotList
+    }
+
+    fun isParkingSlotValid(parkingSlot: ParkingSlot, parkingSlotList: MutableList<ParkingSlot>) =
+        parkingSlotList.count {
+            ps -> ps.id == parkingSlot.id
+        } == 1
 
 }
