@@ -18,27 +18,6 @@ class DatabaseTest {
             ParkingSlot("C3", true, LocalDateTime.now().toString()))
 
     @Test
-    fun isValidParkingSlotTest() {
-        val newParkingSlot = ParkingSlot("A1", true, LocalDateTime.MIN.toString())
-        assertEquals(true, Database.isParkingSlotValid(newParkingSlot, parkingSlotList))
-
-        val newParkingSlot2 = ParkingSlot("Z5", true, LocalDateTime.MIN.toString())
-        assertEquals(false, Database.isParkingSlotValid(newParkingSlot2, parkingSlotList))
-    }
-
-
-    @Test
-    fun replaceSlotTest() {
-        val newParkingSlot = ParkingSlot("A1", true, LocalDateTime.MIN.toString())
-        parkingSlotList = Database.replaceSlot(newParkingSlot, parkingSlotList)
-        assertContains(Database.replaceSlot(newParkingSlot, parkingSlotList), newParkingSlot)
-
-        val newParkingSlot2 = ParkingSlot("Z5", true, LocalDateTime.MIN.toString())
-        assertNotEquals(true, Database.replaceSlot(newParkingSlot2, parkingSlotList).contains(newParkingSlot2))
-
-    }
-
-    @Test
     fun createParkingSlotFromDocumentTest() {
         val parkingSlotDocument = Document().append("id", "A9").append("occupied", "false").append("endStop", "")
         val parkingSlot = ParkingSlot("A9", false, "")
@@ -49,7 +28,17 @@ class DatabaseTest {
         assertEquals(parkingSlot.endStop, parkingSlotFromDocument.endStop)
     }
 
+    @Test
+    fun isOccupiedSlotTest() {
+        val slotId1 = "B2"
+        assertEquals(false, Database.isSlotOccupied(slotId1, parkingSlotList))
 
+        val slotId2 = "C3"
+        assertEquals(true, Database.isSlotOccupied(slotId2, parkingSlotList))
+    }
 
+    @Test
+    fun incrementOccupationTest() {
 
+    }
 }

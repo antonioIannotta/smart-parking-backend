@@ -27,58 +27,102 @@ object Database {
      */
     fun occupySlot(slotOccupation: SlotOccupation, parkingSlotList: MutableList<ParkingSlot>): Boolean {
 
-        var returnFalue = false
+        var returnValue = false
 
+        returnValue = if (!isSlotOccupied(slotOccupation.slotId, parkingSlotList)) {
+            val mongoClient = MongoClient(MongoClientURI(mongoAddress))
 
-        /*val mongoClient = MongoClient(MongoClientURI(mongoAddress))
+            val filter = Filters.eq("id", slotOccupation.slotId)
+            val updates = mutableListOf<Bson>()
+            updates.add(Updates.set("occupied", true))
+            updates.add(Updates.set("endStop", slotOccupation.endStop))
+            val options = UpdateOptions().upsert(true)
 
-        val filter = Filters.eq("id", slotOccupation.slotId)
-        val updates = emptyList<Bson>().toMutableList()
-        updates.add(Updates.set("occupied", true))
-        updates.add(Updates.set("endStop", LocalDateTime.parse(slotOccupation.endStop)))
+            mongoClient.getDatabase(databaseName).getCollection(parkingSlotCollection)
+                .updateOne(filter, updates, options)
 
-        val options = UpdateOptions().upsert(true)
+            true
+        } else {
+            false
+        }
 
-        mongoClient.getDatabase(databaseName).getCollection(parkingSlotCollection)
-            .updateOne(filter, updates, options)
-
-        mongoClient.close()*/
-
-        return false
+        return returnValue
     }
+
+    /**
+     * Function used to check the state of a certain parking slot
+     */
+    fun isSlotOccupied(slotId: String, parkingSlotList: MutableList<ParkingSlot>): Boolean =
+        parkingSlotList.first { ps -> ps.id == slotId
+        }.occupied
 
     /**
      * Function that increment a certain slot based on the incrementOccupation object received as argument
      */
-    fun incrementOccupation(incrementOccupation: IncrementOccupation) {
-        val mongoClient = MongoClient(MongoClientURI(mongoAddress))
+    fun incrementOccupation(incrementOccupation: IncrementOccupation, parkingSlotList: MutableList<ParkingSlot>): Boolean {
 
-        val filter = Filters.eq("id", incrementOccupation.slotId)
-        val update = Updates.set("endStop", LocalDateTime.parse(incrementOccupation.endStop))
+        var returnValue = false
 
-        mongoClient.getDatabase(databaseName).getCollection(parkingSlotCollection)
-            .updateOne(filter, update)
+        if (isSlotOccupied(incrementOccupation.slotId, parkingSlotList)) {
+            val parkingSlot = getParkingSlot(incrementOccupation.slotId)
+            if (isTimeValid(incrementOccupation.endStop, parkingSlot.endStop)) {
+                val mongoClient = MongoClient(MongoClientURI(mongoAddress))
 
-        mongoClient.close()
+                val filter = Filters.eq("id", incrementOccupation.slotId)
+                val update = Updates.set("endStop", LocalDateTime.parse(incrementOccupation.endStop))
+
+                mongoClient.getDatabase(databaseName).getCollection(parkingSlotCollection)
+                    .updateOne(filter, update)
+
+                mongoClient.close()
+
+                returnValue = true
+            } else {
+                returnValue = false
+            }
+        } else {
+            returnValue = false
+        }
+
+        return returnValue
     }
+
+    /**
+     * Function used to check if the time inserted during the increment stop phase is greater than the actual one
+     */
+    fun isTimeValid(actualTime: String, previousTime: String) =
+        LocalDateTime.parse(actualTime).isAfter(LocalDateTime.parse(previousTime))
+
 
     /**
      * Function that free a certain slot based on the slotId object received as argument
      */
-    fun freeSlot(slotId: SlotId) {
-        val mongoClient = MongoClient(MongoClientURI(mongoAddress))
+    fun freeSlot(slotId: SlotId, parkingSlotList: MutableList<ParkingSlot>): Boolean {
 
-        val filter = Filters.eq("id", slotId.slotId)
-        val updates = emptyList<Bson>().toMutableList()
-        updates.add(Updates.set("occupied", false))
-        updates.add(Updates.set("endStop", ""))
+        var returnValue = false
 
-        val options = UpdateOptions().upsert(true)
+        if (isSlotOccupied(slotId.slotId, parkingSlotList)) {
+            val mongoClient = MongoClient(MongoClientURI(mongoAddress))
 
-        mongoClient.getDatabase(databaseName).getCollection(parkingSlotCollection)
-            .updateOne(filter, updates, options)
+            val filter = Filters.eq("id", slotId.slotId)
+            val updates = emptyList<Bson>().toMutableList()
+            updates.add(Updates.set("occupied", false))
+            updates.add(Updates.set("endStop", ""))
 
-        mongoClient.close()
+            val options = UpdateOptions().upsert(true)
+
+            mongoClient.getDatabase(databaseName).getCollection(parkingSlotCollection)
+                .updateOne(filter, updates, options)
+
+            mongoClient.close()
+
+            returnValue = true
+
+        } else {
+            returnValue = false
+        }
+
+        return returnValue
     }
 
     /**
@@ -119,23 +163,5 @@ object Database {
             document["occupied"].toString().toBoolean(),
             document["endStop"].toString())
 
-    fun replaceSlot(parkingSlot: ParkingSlot, parkingSlotList: MutableList<ParkingSlot>): MutableList<ParkingSlot> {
-
-        if (!isParkingSlotValid(parkingSlot, parkingSlotList)) {
-            return parkingSlotList
-        }
-
-        parkingSlotList.remove(parkingSlotList.first {
-            ps -> ps.id == parkingSlot.id
-        })
-        parkingSlotList.add(parkingSlot)
-
-        return parkingSlotList
-    }
-
-    fun isParkingSlotValid(parkingSlot: ParkingSlot, parkingSlotList: MutableList<ParkingSlot>) =
-        parkingSlotList.count {
-            ps -> ps.id == parkingSlot.id
-        } == 1
 
 }

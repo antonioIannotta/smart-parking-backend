@@ -29,11 +29,15 @@ fun Application.configureRouting() {
         }
         put("/parking-slot/increment-occupation") {
             val incrementOccupation = call.receive<IncrementOccupation>()
-            Database.incrementOccupation(incrementOccupation)
+            val parkingSlotList = Database.getAllParkingSlots()
+            val returnValue = Database.incrementOccupation(incrementOccupation, parkingSlotList)
+            call.respond(returnValue)
         }
         put("/parking-slot/free") {
             val slotId = call.receive<SlotId>()
-            Database.freeSlot(slotId)
+            val parkingSlotList = Database.getAllParkingSlots()
+            val returnValue = Database.freeSlot(slotId, parkingSlotList)
+            call.respond(returnValue)
         }
         get("/parking-slot/") {
             val parkingSlotList = Database.getAllParkingSlots()
