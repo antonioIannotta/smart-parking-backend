@@ -4,15 +4,7 @@ import io.ktor.server.application.*
 import io.ktor.server.response.*
 import io.ktor.server.routing.*
 
-fun Route.userRouting() {
-
-    get("/user/sign-up") {
-        call.respondText("You called /user/sign-up")
-    }
-
-    get("/user/sign-in") {
-        call.respondText("You called /user/sign-in")
-    }
+fun Route.protectedUserRoutes() {
 
     get("/user/{userId?}/info") {
         call.respondText("You called /user/{userId?}/info")
