@@ -49,7 +49,8 @@ class APIsTest {
             contentType(ContentType.Application.Json)
             setBody(signInRequestBody)
         }.apply {
-            assertEquals(HttpStatusCode.OK, status)
+            assertEquals(HttpStatusCode.OK.value, 200)
+            assertEquals(HttpStatusCode.OK.description, "User successfully registered")
             //TODO: test that request contains the jwt token
         }
 

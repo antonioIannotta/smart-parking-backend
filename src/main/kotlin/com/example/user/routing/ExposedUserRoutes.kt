@@ -2,6 +2,7 @@ package com.example.user.routing
 
 import com.example.user.controller.UserController
 import com.example.user.model.UserInfo
+import com.example.user.model.request.SignUpRequestBody
 import io.ktor.http.*
 import io.ktor.server.application.*
 import io.ktor.server.request.*
@@ -15,15 +16,16 @@ fun Route.exposedUserRoutes() {
     post("/user/sign-up") {
 
         //get parameter from request and create new user to register
-        val userInfo = call.receive<UserInfo>()
+        val signUpRequestBody = call.receive<SignUpRequestBody>()
         //register new user to db
-        userController.signUp(userInfo)
+        val response = userController.signUp(signUpRequestBody)
         //sending response to client
-        call.response.status(HttpStatusCode(200, "user registered"))
+        call.response.status(HttpStatusCode(response.code, response.message))
+
 
     }
 
-    get("/user/sign-in") {
+    post("/user/sign-in") {
         call.respondText("You called /user/sign-in")
     }
 
