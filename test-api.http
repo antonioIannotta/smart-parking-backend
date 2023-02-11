@@ -1,0 +1,27 @@
+### USER REGISTRATION API ###
+POST http://localhost:8080/user/sign-up
+Content-Type: application/json
+
+{
+    "email": "luca.bracchi@test.it",
+    "password": "test123",
+    "name": "luca",
+    "surname": "bracchi"
+}
+
+### USER LOGIN API ###
+POST http://localhost:8080/user/sign-in
+Content-Type: application/json
+
+{
+    "email": "luca.bracchi@test.it",
+    "password": "test123"
+}
+
+### DELETE ACCOUNT API ###
+GET http://localhost:8080/user/delete
+Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJhdWQiOiJQYXJraW5nIENsaWVudCIsImlzcyI6Imx1Y2EgYnJhY2NoaSIsImV4cCI6MTY3NjEzNDUwMSwiZW1haWwiOiJsdWNhLmJyYWNjaGlAdGVzdC5pdCJ9.a-zCFL_EEoChkCMfbgePsdQZc1ZSe1d6uVIuRQ6pptk
+
+### API AUTHENTICATION TEST ###
+get http://localhost:8080/auth-test
+Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJhdWQiOiJQYXJraW5nIENsaWVudCIsImlzcyI6Imx1Y2EgYnJhY2NoaSIsImV4cCI6MTY3NjEzNDUwMSwiZW1haWwiOiJsdWNhLmJyYWNjaGlAdGVzdC5pdCJ9.a-zCFL_EEoChkCMfbgePsdQZc1ZSe1d6uVIuRQ6pptk
