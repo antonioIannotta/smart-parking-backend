@@ -33,9 +33,10 @@ fun Route.exposedUserRoutes() {
         //get jwt token and user info
         val responseBody = userController.signIn(signInRequestBody)
         //sending response to client
-        if(responseBody.logged) //TODO: send user info and jwt
+        if(responseBody.logged) { //TODO: send user info
             call.response.status(HttpStatusCode.OK)
-        else
+            call.respond(responseBody)
+        } else
             call.response.status(HttpStatusCode(400, responseBody.message))
 
     }
