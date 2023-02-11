@@ -3,12 +3,15 @@ package com.example.user.controller
 import com.auth0.jwt.JWT
 import com.auth0.jwt.algorithms.Algorithm
 import com.example.user.model.DBOperationResult
+import com.example.user.model.UserInfo
 import com.example.user.model.request.SignInRequestBody
 import com.example.user.model.request.SignUpRequestBody
 import com.example.user.model.response.SignInResponseBody
+import com.example.user.model.response.UserInfoResponseBody
 import com.mongodb.MongoClient
 import com.mongodb.MongoClientURI
 import com.mongodb.client.model.Filters
+import com.mongodb.client.model.Projections
 import com.mongodb.client.model.Updates
 import io.ktor.server.application.*
 import io.ktor.server.config.*
@@ -71,7 +74,22 @@ class UserController {
         return signInResponseBody
     }
 
-    fun info() {}
+    fun userInfo(email: String) : UserInfoResponseBody {
+
+        val mongoClient = MongoClient(mongoClientURI)
+        val mongoCollection = mongoClient.getDatabase(databaseName).getCollection(userCollectionName)
+
+        val filter = Filters.eq("email", email)
+        val project = Projections.exclude("password")
+        val userInfoDocument = mongoCollection.find(filter).projection(project).first()
+        val userInfo = this.createUserInfoFromDocument(userInfoDocument)
+
+        return if(Objects.isNull(userInfo))
+            UserInfoResponseBody(false, "User not found")
+        else
+            UserInfoResponseBody(true, "User info retrieved", userInfo)
+
+    }
 
     /**
      * user deletion made deactivating the user on the db instead of delete the document
@@ -92,6 +110,9 @@ class UserController {
 
     }
 
+    /**
+     * generates a jwt encrypted with HMAC256, valid for 2 hours
+     */
     private fun generateJWT(email: String, tokenSecret: String): String {
         val expirationDate = Date(System.currentTimeMillis() + 7_200_000) //valid for 2 hours
         return JWT.create()
@@ -101,5 +122,16 @@ class UserController {
             .withExpiresAt(expirationDate)
             .sign(Algorithm.HMAC256(tokenSecret))
     }
+
+    /**
+     * cast a document retrieved from mongodb to an instance of UserInfo class
+     */
+    private fun createUserInfoFromDocument(document: Document) : UserInfo =
+        UserInfo(
+            document["email"].toString(),
+            document["name"].toString(),
+            document["surname"].toString(),
+            document["active"].toString().toBoolean(),
+        )
 
 }

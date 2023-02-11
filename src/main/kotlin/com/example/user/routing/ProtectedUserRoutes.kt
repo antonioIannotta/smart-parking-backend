@@ -14,8 +14,17 @@ fun Route.protectedUserRoutes() {
 
     val userController = UserController()
 
-    get("/user/{userId?}/info") {
-        call.respondText("You called /user/{userId?}/info")
+    get("/user/info") {
+        val principal = call.principal<JWTPrincipal>()
+        val userMail = principal!!.payload.getClaim("email").asString()
+
+        val responseBody = userController.userInfo(userMail)
+
+        if(responseBody.foundInfo) {
+            call.response.status(HttpStatusCode.OK)
+            call.respond(responseBody)
+        } else
+            call.response.status(HttpStatusCode(400, responseBody.message))
     }
 
     get("/user/{userId?}/parking-slot") {
