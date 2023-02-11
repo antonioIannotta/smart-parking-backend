@@ -13,8 +13,6 @@ import com.mongodb.MongoClientURI
 import com.mongodb.client.model.Filters
 import com.mongodb.client.model.Projections
 import com.mongodb.client.model.Updates
-import io.ktor.server.application.*
-import io.ktor.server.config.*
 import org.bson.Document
 import java.util.*
 
@@ -43,6 +41,8 @@ class UserController {
             .append("active", true)
         mongoCollection.insertOne(userDocument)
 
+        mongoClient.close()
+
         return DBOperationResult(200, "User successfully registered")
 
     }
@@ -56,6 +56,8 @@ class UserController {
         //check if user exists and if it exists checks if passwords match
         val filter = Filters.eq("email", signInRequestBody.email)
         val userToSignIn = mongoCollection.find(filter).first()
+
+        mongoClient.close()
 
         signInResponseBody =
             //check if a user was found
@@ -84,6 +86,8 @@ class UserController {
         val userInfoDocument = mongoCollection.find(filter).projection(project).first()
         val userInfo = this.createUserInfoFromDocument(userInfoDocument)
 
+        mongoClient.close()
+
         return if(Objects.isNull(userInfo))
             UserInfoResponseBody(false, "User not found")
         else
@@ -101,9 +105,11 @@ class UserController {
 
         val filter = Filters.eq("email", email)
         val update = Updates.set("active", false)
-        val tmp = mongoCollection.findOneAndUpdate(filter, update)
+        val deletedUserDocument = mongoCollection.findOneAndUpdate(filter, update)
 
-        return if(Objects.isNull(tmp))
+        mongoClient.close()
+
+        return if(Objects.isNull(deletedUserDocument))
             DBOperationResult(400, "User not found")
         else
             DBOperationResult(200, "User deleted successfully")
