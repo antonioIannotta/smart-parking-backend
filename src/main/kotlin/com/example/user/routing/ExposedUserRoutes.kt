@@ -2,6 +2,7 @@ package com.example.user.routing
 
 import com.example.user.controller.UserController
 import com.example.user.model.UserInfo
+import com.example.user.model.request.SignInRequestBody
 import com.example.user.model.request.SignUpRequestBody
 import io.ktor.http.*
 import io.ktor.server.application.*
@@ -26,7 +27,17 @@ fun Route.exposedUserRoutes() {
     }
 
     post("/user/sign-in") {
-        call.respondText("You called /user/sign-in")
+
+        //get parameter from request and create user to login
+        val signInRequestBody = call.receive<SignInRequestBody>()
+        //get jwt token and user info
+        val responseBody = userController.signIn(signInRequestBody)
+        //sending response to client
+        if(responseBody.logged) //TODO: send user info and jwt
+            call.response.status(HttpStatusCode.OK)
+        else
+            call.response.status(HttpStatusCode(400, responseBody.message))
+
     }
 
 }
