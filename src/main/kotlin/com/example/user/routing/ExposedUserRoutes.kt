@@ -10,7 +10,7 @@ import io.ktor.server.request.*
 import io.ktor.server.response.*
 import io.ktor.server.routing.*
 
-fun Route.exposedUserRoutes() {
+fun Route.exposedUserRoutes(tokenSecret: String) {
 
     val userController = UserController()
 
@@ -23,7 +23,6 @@ fun Route.exposedUserRoutes() {
         //sending response to client
         call.response.status(HttpStatusCode(response.code, response.message))
 
-
     }
 
     post("/user/sign-in") {
@@ -31,7 +30,7 @@ fun Route.exposedUserRoutes() {
         //get parameter from request and create user to login
         val signInRequestBody = call.receive<SignInRequestBody>()
         //get jwt token and user info
-        val responseBody = userController.signIn(signInRequestBody)
+        val responseBody = userController.signIn(signInRequestBody, tokenSecret)
         //sending response to client
         if(responseBody.logged) { //TODO: send user info
             call.response.status(HttpStatusCode.OK)

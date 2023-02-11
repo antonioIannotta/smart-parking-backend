@@ -37,19 +37,10 @@ fun Application.configureAuthentication() {
     }
 
     routing {
-
         authenticate("auth-jwt") {
-
-            get("/auth-test") {
-                call.respondText("Hello, ${call.principal<UserIdPrincipal>()?.name}!")
-            }
-
             protectedUserRoutes()
-
         }
-
-        exposedUserRoutes()
-
+        exposedUserRoutes(tokenSecret)
     }
 
 }
