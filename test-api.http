@@ -33,3 +33,14 @@ Content-Type: application/json
 {
     "email": "luca.bracchi3@studio.unibo.it"
 }
+
+### CHANGE PASSWORD API ###
+# called without oldPassword, required for password recovery flow 
+POST http://localhost:8080/user/change-password
+Content-Type: application/json
+Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJhdWQiOiJQYXJraW5nIENsaWVudCIsImlzcyI6Imx1Y2EgYnJhY2NoaSIsImV4cCI6MTY3NjIwNTEwMiwiZW1haWwiOiJsdWNhLmJyYWNjaGlAdGVzdC5pdCJ9.CmSr6GLEPV6empeIDTS_Ku2JFAzCXyN9eadktMqoaeE
+
+{
+    "oldPassword": "test123",
+    "newPassword": "123test"
+}
