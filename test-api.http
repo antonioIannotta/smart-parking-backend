@@ -3,7 +3,7 @@ POST http://localhost:8080/user/sign-up
 Content-Type: application/json
 
 {
-    "email": "luca.bracchi@test.it",
+    "email": "luca.bracchi3@studio.unibo.it",
     "password": "test123",
     "name": "luca",
     "surname": "bracchi"
@@ -26,6 +26,10 @@ Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJhdWQiOiJQYXJraW5nI
 GET http://localhost:8080/user/delete
 Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJhdWQiOiJQYXJraW5nIENsaWVudCIsImlzcyI6Imx1Y2EgYnJhY2NoaSIsImV4cCI6MTY3NjEzNDUwMSwiZW1haWwiOiJsdWNhLmJyYWNjaGlAdGVzdC5pdCJ9.a-zCFL_EEoChkCMfbgePsdQZc1ZSe1d6uVIuRQ6pptk
 
-### API AUTHENTICATION TEST ###
-get http://localhost:8080/auth-test
-Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJhdWQiOiJQYXJraW5nIENsaWVudCIsImlzcyI6Imx1Y2EgYnJhY2NoaSIsImV4cCI6MTY3NjEzNDUwMSwiZW1haWwiOiJsdWNhLmJyYWNjaGlAdGVzdC5pdCJ9.a-zCFL_EEoChkCMfbgePsdQZc1ZSe1d6uVIuRQ6pptk
+### USER MAIL RECOVERY API ###
+POST http://localhost:8080/user/recover-password
+Content-Type: application/json
+
+{
+    "email": "luca.bracchi3@studio.unibo.it"
+}
