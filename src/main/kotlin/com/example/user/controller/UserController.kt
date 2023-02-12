@@ -1,20 +1,18 @@
 package com.example.user.controller
 
-import com.auth0.jwt.JWT
-import com.auth0.jwt.algorithms.Algorithm
 import com.example.user.model.UserInfo
 import com.example.user.model.request.SignInRequestBody
 import com.example.user.model.request.SignUpRequestBody
 import com.example.user.model.response.ServerResponseBody
 import com.example.user.model.response.SigningResponseBody
 import com.example.user.model.response.UserInfoResponseBody
+import com.example.user.utils.generateJWT
+import com.example.user.utils.sendRecoverMail
 import com.mongodb.MongoClient
 import com.mongodb.MongoClientURI
 import com.mongodb.client.model.Filters
 import com.mongodb.client.model.Projections
 import com.mongodb.client.model.Updates
-import org.apache.commons.mail.DefaultAuthenticator
-import org.apache.commons.mail.SimpleEmail
 import org.bson.Document
 import java.util.*
 
@@ -49,7 +47,7 @@ class UserController {
             mongoCollection.insertOne(userDocument)
             mongoClient.close()
 
-            val jwt = this.generateJWT(signUpRequestBody.email, tokenSecret)
+            val jwt = generateJWT(signUpRequestBody.email, tokenSecret)
 
             SigningResponseBody("success", "User successfully registered", jwt)
 
@@ -80,7 +78,7 @@ class UserController {
             else if (userToSignIn["password"] != signInRequestBody.password)
                 SigningResponseBody("passwordError", "Wrong password")
             else {
-                val token = this.generateJWT(signInRequestBody.email, tokenSecret)
+                val token = generateJWT(signInRequestBody.email, tokenSecret)
                 SigningResponseBody("success", "User logged", token)
             }
 
@@ -145,8 +143,8 @@ class UserController {
         else if (!userInfo.active)
             ServerResponseBody("userDeleted", "Can't recover password for a deleted user")
         else {
-            val jwt = this.generateJWT(userInfo.email, tokenSecret)
-            this.sendRecoverMail(userInfo.email, jwt)
+            val jwt = generateJWT(userInfo.email, tokenSecret)
+            sendRecoverMail(userInfo.email, jwt)
             ServerResponseBody("success", "Recovery mail sent to the user")
         }
 
@@ -185,19 +183,6 @@ class UserController {
     }
 
     /**
-     * generates a jwt encrypted with HMAC256, valid for 2 hours
-     */
-    private fun generateJWT(email: String, tokenSecret: String): String {
-        val expirationDate = Date(System.currentTimeMillis())//+ 7_200_000) //valid for 2 hours
-        return JWT.create()
-            .withAudience("Parking Client")
-            .withIssuer("luca bracchi")
-            .withClaim("email", email)
-            .withExpiresAt(expirationDate)
-            .sign(Algorithm.HMAC256(tokenSecret))
-    }
-
-    /**
      * cast a document retrieved from mongodb to an instance of UserInfo class
      */
     private fun createUserInfoFromDocument(document: Document): UserInfo =
@@ -207,26 +192,5 @@ class UserController {
             document["surname"].toString(),
             document["active"].toString().toBoolean(),
         )
-
-    private fun sendRecoverMail(to: String, jwt: String) {
-
-        val email = SimpleEmail()
-        email.hostName = "smtp.googlemail.com" //live: smtp.live.com
-        email.setSmtpPort(465)
-        email.setAuthenticator(DefaultAuthenticator("team.parkingslot@gmail.com", "bvyjssfgkymtecue"))
-        email.isSSLOnConnect = true
-        email.setFrom("support.parkingslot@gmail.com")
-        email.subject = "Richiesta di cambio password"
-
-        val mailContent = """
-        cambia password
-        vail al link: LINK
-    """.trimIndent()
-
-        email.setMsg(mailContent)
-        email.addTo(to)
-        email.send()
-
-    }
 
 }

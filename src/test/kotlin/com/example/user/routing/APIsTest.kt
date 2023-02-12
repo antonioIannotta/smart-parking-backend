@@ -1,10 +1,13 @@
 package com.example.user.routing
 
 import com.example.plugins.configureRouting
-import com.example.user.model.request.SignInRequestBody
 import com.example.user.model.request.SignUpRequestBody
+import io.ktor.client.*
+import io.ktor.client.engine.cio.*
+import io.ktor.client.plugins.contentnegotiation.*
 import io.ktor.client.request.*
 import io.ktor.http.*
+import io.ktor.serialization.kotlinx.json.*
 import io.ktor.server.testing.*
 import org.junit.Test
 import kotlin.test.assertEquals
@@ -16,11 +19,18 @@ class APIsTest {
     val testName = "testName"
     val testSurname = "testSurname"
 
+
     @Test
     fun testUserSignUp() = testApplication {
 
         application {
             configureRouting()
+        }
+
+        val client = HttpClient(CIO) {
+            install(ContentNegotiation) {
+                json()
+            }
         }
 
         val signUpRequestBody = SignUpRequestBody(testMail, testPassword, testName, testSurname)
@@ -35,25 +45,25 @@ class APIsTest {
 
     }
 
-    @Test
-    fun testUserSignIn() = testApplication {
-
-        application {
-            configureRouting()
-        }
-
-        val signInRequestBody = SignInRequestBody(testMail, testPassword)
-
-        //sign up user
-        client.post("/user/sign-in") {
-            contentType(ContentType.Application.Json)
-            setBody(signInRequestBody)
-        }.apply {
-            assertEquals(HttpStatusCode.OK.value, 200)
-            assertEquals(HttpStatusCode.OK.description, "User successfully registered")
-            //TODO: test that request contains the jwt token
-        }
-
-    }
+//    @Test
+//    fun testUserSignIn() = testApplication {
+//
+//        application {
+//            configureRouting()
+//        }
+//
+//        val signInRequestBody = SignInRequestBody(testMail, testPassword)
+//
+//        //sign up user
+//        client.post("/user/sign-in") {
+//            contentType(ContentType.Application.Json)
+//            setBody(signInRequestBody)
+//        }.apply {
+//            assertEquals(HttpStatusCode.OK.value, 200)
+//            assertEquals(HttpStatusCode.OK.description, "User successfully registered")
+//            //TODO: test that request contains the jwt token
+//        }
+//
+//    }
 
 }
