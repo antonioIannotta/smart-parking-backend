@@ -2,6 +2,7 @@ package com.example.user.routing
 
 import com.example.user.controller.UserController
 import com.example.user.model.UserInfo
+import com.example.user.model.request.RecoverMailRequestBody
 import com.example.user.model.request.SignInRequestBody
 import com.example.user.model.request.SignUpRequestBody
 import io.ktor.http.*
@@ -37,6 +38,14 @@ fun Route.exposedUserRoutes(tokenSecret: String) {
             call.respond(responseBody)
         } else
             call.response.status(HttpStatusCode(400, responseBody.message))
+
+    }
+
+    post("/user/recover-password") {
+
+        val userMail = call.receive<RecoverMailRequestBody>().email
+        val responseStatusCode = userController.recoverPassword(userMail, tokenSecret)
+        call.response.status(responseStatusCode)
 
     }
 

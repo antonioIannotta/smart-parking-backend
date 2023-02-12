@@ -13,6 +13,9 @@ import com.mongodb.MongoClientURI
 import com.mongodb.client.model.Filters
 import com.mongodb.client.model.Projections
 import com.mongodb.client.model.Updates
+import io.ktor.http.*
+import org.apache.commons.mail.DefaultAuthenticator
+import org.apache.commons.mail.SimpleEmail
 import org.bson.Document
 import java.util.*
 
@@ -116,6 +119,27 @@ class UserController {
 
     }
 
+    fun recoverPassword(email: String, tokenSecret: String): HttpStatusCode {
+
+        val mongoClient = MongoClient(mongoClientURI)
+        val mongoCollection = mongoClient.getDatabase(databaseName).getCollection(userCollectionName)
+
+        //check the user exist and is active
+        val filter = Filters.eq("email", email)
+        val project = Projections.exclude("password")
+        val userInfoDocument = mongoCollection.find(filter).projection(project).first()
+        val userInfo = this.createUserInfoFromDocument(userInfoDocument)
+
+        return if(Objects.isNull(userInfo) or !userInfo.active)
+            HttpStatusCode(400, "Can't recover password for thi user")
+        else {
+            val jwt = this.generateJWT(userInfo.email, tokenSecret)
+            this.sendRecoverMail(userInfo.email, jwt)
+            HttpStatusCode(200, "Recovery mail sent to the user")
+        }
+
+    }
+
     /**
      * generates a jwt encrypted with HMAC256, valid for 2 hours
      */
@@ -139,5 +163,26 @@ class UserController {
             document["surname"].toString(),
             document["active"].toString().toBoolean(),
         )
+
+    private fun sendRecoverMail(to: String, jwt: String) {
+
+        val email = SimpleEmail()
+        email.hostName = "smtp.googlemail.com" //live: smtp.live.com
+        email.setSmtpPort(465)
+        email.setAuthenticator(DefaultAuthenticator("team.parkingslot@gmail.com", "bvyjssfgkymtecue"))
+        email.isSSLOnConnect = true
+        email.setFrom("support.parkingslot@gmail.com")
+        email.subject = "Richiesta di cambio password"
+
+        val mailContent = """
+        cambia password
+        vail al link: LINK
+    """.trimIndent()
+
+        email.setMsg(mailContent)
+        email.addTo(to)
+        email.send()
+
+    }
 
 }
