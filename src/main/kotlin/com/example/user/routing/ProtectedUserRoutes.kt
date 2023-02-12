@@ -13,6 +13,7 @@ import io.ktor.server.http.content.*
 import io.ktor.server.request.*
 import io.ktor.server.response.*
 import io.ktor.server.routing.*
+import java.util.*
 
 fun Route.protectedUserRoutes() {
 
@@ -24,11 +25,11 @@ fun Route.protectedUserRoutes() {
 
         val responseBody = userController.userInfo(userMail)
 
-        if(responseBody.foundInfo) {
+        if(Objects.isNull(responseBody.userInfo))
+            call.response.status(HttpStatusCode.BadRequest)
+        else
             call.response.status(HttpStatusCode.OK)
-            call.respond(responseBody)
-        } else
-            call.response.status(HttpStatusCode(400, responseBody.message))
+        call.respond(responseBody)
     }
 
     get("/user/{userId?}/parking-slot") {
@@ -39,9 +40,13 @@ fun Route.protectedUserRoutes() {
         val principal = call.principal<JWTPrincipal>()
         val userMail = principal!!.payload.getClaim("email").asString()
 
-        val operationsResult = userController.deleteUser(userMail)
+        val responseBody = userController.deleteUser(userMail)
 
-        call.response.status(HttpStatusCode(operationsResult.code, operationsResult.message))
+        if(responseBody.code != "success")
+            call.response.status(HttpStatusCode.BadRequest)
+        else
+            call.response.status(HttpStatusCode.OK)
+        call.respond(responseBody)
     }
 
     post("/user/change-password") {
@@ -49,9 +54,13 @@ fun Route.protectedUserRoutes() {
         val userMail = principal!!.payload.getClaim("email").asString()
         val requestBody = call.receive<ChangePasswordRequestBody>()
 
-        val httpStatusCode = userController.changePassword(userMail, requestBody.newPassword, requestBody.oldPassword)
+        val responseBody = userController.changePassword(userMail, requestBody.newPassword, requestBody.oldPassword)
 
-        call.response.status(httpStatusCode)
+        if(responseBody.code != "success")
+            call.response.status(HttpStatusCode.BadRequest)
+        else
+            call.response.status(HttpStatusCode.OK)
+        call.respond(responseBody)
     }
 
 }

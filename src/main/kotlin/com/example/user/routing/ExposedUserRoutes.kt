@@ -10,6 +10,7 @@ import io.ktor.server.application.*
 import io.ktor.server.request.*
 import io.ktor.server.response.*
 import io.ktor.server.routing.*
+import java.util.*
 
 fun Route.exposedUserRoutes(tokenSecret: String) {
 
@@ -20,10 +21,13 @@ fun Route.exposedUserRoutes(tokenSecret: String) {
         //get parameter from request and create new user to register
         val signUpRequestBody = call.receive<SignUpRequestBody>()
         //register new user to db
-        val response = userController.signUp(signUpRequestBody)
+        val responseBody = userController.signUp(signUpRequestBody, tokenSecret)
         //sending response to client
-        call.response.status(HttpStatusCode(response.code, response.message))
-
+        if(Objects.isNull(responseBody.token))
+            call.response.status(HttpStatusCode.BadRequest)
+        else
+            call.response.status(HttpStatusCode.OK)
+        call.respond(responseBody)
     }
 
     post("/user/sign-in") {
@@ -33,20 +37,23 @@ fun Route.exposedUserRoutes(tokenSecret: String) {
         //get jwt token and user info
         val responseBody = userController.signIn(signInRequestBody, tokenSecret)
         //sending response to client
-        if(responseBody.logged) { //TODO: send user info
+        if(Objects.isNull(responseBody.token))
+            call.response.status(HttpStatusCode.BadRequest)
+        else
             call.response.status(HttpStatusCode.OK)
-            call.respond(responseBody)
-        } else
-            call.response.status(HttpStatusCode(400, responseBody.message))
-
+        call.respond(responseBody)
     }
 
     post("/user/recover-password") {
 
         val userMail = call.receive<RecoverMailRequestBody>().email
-        val responseStatusCode = userController.recoverPassword(userMail, tokenSecret)
-        call.response.status(responseStatusCode)
-
+        val responseBody = userController.recoverPassword(userMail, tokenSecret)
+        //sending response to client
+        if(responseBody.code != "success")
+            call.response.status(HttpStatusCode.BadRequest)
+        else
+            call.response.status(HttpStatusCode.OK)
+        call.respond(responseBody)
     }
 
 }
