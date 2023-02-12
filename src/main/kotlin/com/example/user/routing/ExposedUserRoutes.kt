@@ -1,7 +1,6 @@
 package com.example.user.routing
 
 import com.example.user.controller.UserController
-import com.example.user.model.UserInfo
 import com.example.user.model.request.RecoverMailRequestBody
 import com.example.user.model.request.SignInRequestBody
 import com.example.user.model.request.SignUpRequestBody
@@ -23,7 +22,7 @@ fun Route.exposedUserRoutes(tokenSecret: String) {
         //register new user to db
         val responseBody = userController.signUp(signUpRequestBody, tokenSecret)
         //sending response to client
-        if(Objects.isNull(responseBody.token))
+        if (Objects.isNull(responseBody.token))
             call.response.status(HttpStatusCode.BadRequest)
         else
             call.response.status(HttpStatusCode.OK)
@@ -37,7 +36,7 @@ fun Route.exposedUserRoutes(tokenSecret: String) {
         //get jwt token and user info
         val responseBody = userController.signIn(signInRequestBody, tokenSecret)
         //sending response to client
-        if(Objects.isNull(responseBody.token))
+        if (Objects.isNull(responseBody.token))
             call.response.status(HttpStatusCode.BadRequest)
         else
             call.response.status(HttpStatusCode.OK)
@@ -49,7 +48,7 @@ fun Route.exposedUserRoutes(tokenSecret: String) {
         val userMail = call.receive<RecoverMailRequestBody>().email
         val responseBody = userController.recoverPassword(userMail, tokenSecret)
         //sending response to client
-        if(responseBody.code != "success")
+        if (responseBody.code != "success")
             call.response.status(HttpStatusCode.BadRequest)
         else
             call.response.status(HttpStatusCode.OK)

@@ -2,14 +2,10 @@ package com.example.user.routing
 
 import com.example.user.controller.UserController
 import com.example.user.model.request.ChangePasswordRequestBody
-import com.example.user.model.request.RecoverMailRequestBody
-import io.ktor.client.request.*
-import io.ktor.client.statement.*
 import io.ktor.http.*
 import io.ktor.server.application.*
 import io.ktor.server.auth.*
 import io.ktor.server.auth.jwt.*
-import io.ktor.server.http.content.*
 import io.ktor.server.request.*
 import io.ktor.server.response.*
 import io.ktor.server.routing.*
@@ -25,7 +21,7 @@ fun Route.protectedUserRoutes() {
 
         val responseBody = userController.userInfo(userMail)
 
-        if(Objects.isNull(responseBody.userInfo))
+        if (Objects.isNull(responseBody.userInfo))
             call.response.status(HttpStatusCode.BadRequest)
         else
             call.response.status(HttpStatusCode.OK)
@@ -42,7 +38,7 @@ fun Route.protectedUserRoutes() {
 
         val responseBody = userController.deleteUser(userMail)
 
-        if(responseBody.code != "success")
+        if (responseBody.code != "success")
             call.response.status(HttpStatusCode.BadRequest)
         else
             call.response.status(HttpStatusCode.OK)
@@ -56,7 +52,7 @@ fun Route.protectedUserRoutes() {
 
         val responseBody = userController.changePassword(userMail, requestBody.newPassword, requestBody.oldPassword)
 
-        if(responseBody.code != "success")
+        if (responseBody.code != "success")
             call.response.status(HttpStatusCode.BadRequest)
         else
             call.response.status(HttpStatusCode.OK)

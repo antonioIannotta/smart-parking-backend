@@ -1,14 +1,11 @@
 package com.example.user.routing
 
 import com.example.plugins.configureAuthentication
-import com.example.plugins.configureRouting
 import io.ktor.client.request.*
 import io.ktor.http.*
 import io.ktor.server.testing.*
 import org.junit.Test
-import javax.swing.text.AbstractDocument
 import kotlin.test.assertEquals
-import kotlin.test.assertNotEquals
 
 class AuthenticationTest {
 

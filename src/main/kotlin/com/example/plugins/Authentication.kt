@@ -20,11 +20,13 @@ fun Application.configureAuthentication() {
 
         jwt("auth-jwt") {
             realm = "Parking System Backend"
-            verifier(JWT
-                .require(Algorithm.HMAC256(tokenSecret))
-                .build())
+            verifier(
+                JWT
+                    .require(Algorithm.HMAC256(tokenSecret))
+                    .build()
+            )
             validate { credential ->
-                if(credential.payload.getClaim("email").asString() != "")
+                if (credential.payload.getClaim("email").asString() != "")
                     JWTPrincipal(credential.payload)
                 else
                     null
