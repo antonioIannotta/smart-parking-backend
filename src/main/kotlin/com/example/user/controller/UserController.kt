@@ -13,6 +13,7 @@ import com.mongodb.MongoClientURI
 import com.mongodb.client.model.Filters
 import com.mongodb.client.model.Projections
 import com.mongodb.client.model.Updates
+import io.ktor.client.*
 import io.ktor.http.*
 import org.apache.commons.mail.DefaultAuthenticator
 import org.apache.commons.mail.SimpleEmail
@@ -130,14 +131,48 @@ class UserController {
         val userInfoDocument = mongoCollection.find(filter).projection(project).first()
         val userInfo = this.createUserInfoFromDocument(userInfoDocument)
 
+        mongoClient.close()
+
         return if(Objects.isNull(userInfo) or !userInfo.active)
-            HttpStatusCode(400, "Can't recover password for thi user")
+            HttpStatusCode(400, "Can't recover password for this user")
         else {
             val jwt = this.generateJWT(userInfo.email, tokenSecret)
             this.sendRecoverMail(userInfo.email, jwt)
             HttpStatusCode(200, "Recovery mail sent to the user")
         }
 
+    }
+
+    fun changePassword(email: String, newPassword: String, oldPassword: String?): HttpStatusCode {
+
+        val mongoClient = MongoClient(mongoClientURI)
+        val mongoCollection = mongoClient.getDatabase(databaseName).getCollection(userCollectionName)
+
+        val filter = Filters.eq("email", email)
+        val project = Projections.exclude("password")
+        val userInfoDocument = mongoCollection.find(filter).projection(project).first()
+        val userInfo = this.createUserInfoFromDocument(userInfoDocument)
+
+        //check the user exist and is active
+        if(Objects.isNull(userInfo) or !userInfo.active) {
+            mongoClient.close()
+            return HttpStatusCode(400, "Can't recover password for this user")
+        } else if(!Objects.isNull(oldPassword)) {
+            //password validation
+            val passwordProject = Projections.include("password")
+            val result = mongoCollection.find(filter).projection(passwordProject).first()
+            if(result["password"] != oldPassword){
+                mongoClient.close()
+                return HttpStatusCode(400, "Old password doesn't match")
+            }
+        }
+
+        //change password
+        val update = Updates.set("password", newPassword)
+        mongoCollection.updateOne(filter, update)
+        mongoClient.close()
+
+        return HttpStatusCode(200, "Password successfully changed")
     }
 
     /**

@@ -1,12 +1,16 @@
 package com.example.user.routing
 
 import com.example.user.controller.UserController
+import com.example.user.model.request.ChangePasswordRequestBody
+import com.example.user.model.request.RecoverMailRequestBody
 import io.ktor.client.request.*
 import io.ktor.client.statement.*
 import io.ktor.http.*
 import io.ktor.server.application.*
 import io.ktor.server.auth.*
 import io.ktor.server.auth.jwt.*
+import io.ktor.server.http.content.*
+import io.ktor.server.request.*
 import io.ktor.server.response.*
 import io.ktor.server.routing.*
 
@@ -38,6 +42,16 @@ fun Route.protectedUserRoutes() {
         val operationsResult = userController.deleteUser(userMail)
 
         call.response.status(HttpStatusCode(operationsResult.code, operationsResult.message))
+    }
+
+    post("/user/change-password") {
+        val principal = call.principal<JWTPrincipal>()
+        val userMail = principal!!.payload.getClaim("email").asString()
+        val requestBody = call.receive<ChangePasswordRequestBody>()
+
+        val httpStatusCode = userController.changePassword(userMail, requestBody.newPassword, requestBody.oldPassword)
+
+        call.response.status(httpStatusCode)
     }
 
 }
