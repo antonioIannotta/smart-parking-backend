@@ -18,6 +18,10 @@ Content-Type: application/json
     "password": "test123"
 }
 
+### USER INFO API ###
+GET http://localhost:8080/user/info
+Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJhdWQiOiJQYXJraW5nIENsaWVudCIsImlzcyI6Imx1Y2EgYnJhY2NoaSIsImV4cCI6MTY3NjEzNDUwMSwiZW1haWwiOiJsdWNhLmJyYWNjaGlAdGVzdC5pdCJ9.a-zCFL_EEoChkCMfbgePsdQZc1ZSe1d6uVIuRQ6pptk
+
 ### DELETE ACCOUNT API ###
 GET http://localhost:8080/user/delete
 Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJhdWQiOiJQYXJraW5nIENsaWVudCIsImlzcyI6Imx1Y2EgYnJhY2NoaSIsImV4cCI6MTY3NjEzNDUwMSwiZW1haWwiOiJsdWNhLmJyYWNjaGlAdGVzdC5pdCJ9.a-zCFL_EEoChkCMfbgePsdQZc1ZSe1d6uVIuRQ6pptk
