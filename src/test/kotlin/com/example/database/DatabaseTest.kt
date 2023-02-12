@@ -12,7 +12,7 @@ import org.bson.Document
 
 class DatabaseTest {
 
-    var parkingSlotList =
+    private var parkingSlotList =
         mutableListOf<ParkingSlot>(ParkingSlot("A1", false, ""),
             ParkingSlot("B2", false, ""),
             ParkingSlot("C3", true, LocalDateTime.now().toString()))
@@ -38,7 +38,11 @@ class DatabaseTest {
     }
 
     @Test
-    fun incrementOccupationTest() {
+    fun isParkingSlotValidTest() {
+        val slotId1 = "B2"
+        assertEquals(true, Database.isParkingSlotValid(slotId1, parkingSlotList))
 
+        val slotId2 = "Z7"
+        assertEquals(false, Database.isParkingSlotValid(slotId2, parkingSlotList))
     }
 }

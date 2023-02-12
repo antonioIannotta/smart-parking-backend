@@ -29,7 +29,8 @@ object Database {
 
         var returnValue = false
 
-        returnValue = if (!isSlotOccupied(slotOccupation.slotId, parkingSlotList)) {
+        returnValue = if (!isSlotOccupied(slotOccupation.slotId, parkingSlotList) and
+            isParkingSlotValid(slotOccupation.slotId, parkingSlotList)) {
             val mongoClient = MongoClient(MongoClientURI(mongoAddress))
 
             val filter = Filters.eq("id", slotOccupation.slotId)
@@ -63,7 +64,9 @@ object Database {
 
         var returnValue = false
 
-        if (isSlotOccupied(incrementOccupation.slotId, parkingSlotList)) {
+        if (isParkingSlotValid(incrementOccupation.slotId, parkingSlotList)) {
+            returnValue = false
+        } else if (isSlotOccupied(incrementOccupation.slotId, parkingSlotList)) {
             val parkingSlot = getParkingSlot(incrementOccupation.slotId)
             if (isTimeValid(incrementOccupation.endStop, parkingSlot.endStop)) {
                 val mongoClient = MongoClient(MongoClientURI(mongoAddress))
@@ -101,7 +104,11 @@ object Database {
 
         var returnValue = false
 
-        if (isSlotOccupied(slotId.slotId, parkingSlotList)) {
+        if (isParkingSlotValid(slotId.slotId, parkingSlotList)) {
+            returnValue = false
+        }
+
+        else if (isSlotOccupied(slotId.slotId, parkingSlotList)) {
             val mongoClient = MongoClient(MongoClientURI(mongoAddress))
 
             val filter = Filters.eq("id", slotId.slotId)
@@ -145,11 +152,17 @@ object Database {
      */
     fun getParkingSlot(id: String): ParkingSlot {
         val mongoClient = MongoClient(MongoClientURI(mongoAddress))
+        val parkingSlotListOfDocument = mongoClient.getDatabase(databaseName).getCollection(parkingSlotCollection).find()
+        val parkingSlotList = mutableListOf<ParkingSlot>()
+        lateinit var parkingSlot: ParkingSlot
 
-        val parkingSlot = createParkingSlotFromDocument(mongoClient.getDatabase(databaseName).getCollection(parkingSlotCollection)
-            .find().first {
-                document -> document["id"].toString() == id
-            })
+        if (isParkingSlotValid(id, parkingSlotList)) {
+            parkingSlot = parkingSlotList.first {
+                parkingSlot -> parkingSlot.id == id
+            }
+        } else {
+            parkingSlot = ParkingSlot("", false, "")
+        }
 
         mongoClient.close()
         return parkingSlot
@@ -163,5 +176,10 @@ object Database {
             document["occupied"].toString().toBoolean(),
             document["endStop"].toString())
 
+
+    fun isParkingSlotValid(slotId: String, parkingSlotList: MutableList<ParkingSlot>) =
+        parkingSlotList.filter {
+            parkingSlot -> parkingSlot.id == slotId
+        }.isNotEmpty()
 
 }

@@ -6,10 +6,14 @@ import com.example.parkingSlot.models.SlotId
 import com.example.parkingSlot.models.SlotOccupation
 import io.ktor.client.*
 import io.ktor.client.request.*
+import io.ktor.http.*
 import io.ktor.server.routing.*
 import io.ktor.server.response.*
 import io.ktor.server.application.*
 import io.ktor.server.request.*
+import kotlinx.serialization.json.Json
+import kotlinx.serialization.json.JsonElement
+import kotlinx.serialization.json.JsonObject
 
 fun Application.configureRouting() {
     routing {
@@ -25,19 +29,44 @@ fun Application.configureRouting() {
             val slotOccupation = call.receive<SlotOccupation>()
             val parkingSlotList = Database.getAllParkingSlots()
             val returnValue = Database.occupySlot(slotOccupation, parkingSlotList)
-            call.respond(returnValue)
+            if (!returnValue) {
+                val response = mutableMapOf<String, JsonElement>()
+                response["errorCode"] = Json.parseToJsonElement("ParkingSlotNotValid")
+                call.respond(HttpStatusCode.BadRequest, JsonObject(response))
+            } else {
+                val response = mutableMapOf<String, JsonElement>()
+                response["success"] = Json.parseToJsonElement("ParkingSlotOccupied")
+                call.respond(JsonObject(response))
+            }
         }
         put("/parking-slot/increment-occupation") {
             val incrementOccupation = call.receive<IncrementOccupation>()
             val parkingSlotList = Database.getAllParkingSlots()
             val returnValue = Database.incrementOccupation(incrementOccupation, parkingSlotList)
-            call.respond(returnValue)
+            if (!returnValue) {
+                val response = mutableMapOf<String, JsonElement>()
+                response["errorCode"] = Json.parseToJsonElement("ParkingSlotNotValid")
+                call.respond(HttpStatusCode.BadRequest, JsonObject(response))
+            } else {
+                val response = mutableMapOf<String, JsonElement>()
+                response["success"] = Json.parseToJsonElement("EndStopIncremented")
+                call.respond(JsonObject(response))
+            }
         }
         put("/parking-slot/free") {
             val slotId = call.receive<SlotId>()
             val parkingSlotList = Database.getAllParkingSlots()
             val returnValue = Database.freeSlot(slotId, parkingSlotList)
-            call.respond(returnValue)
+            if (!returnValue) {
+                val response = mutableMapOf<String, JsonElement>()
+                response["errorCode"] = Json.parseToJsonElement("ParkingSlotNotValid")
+                call.respond(HttpStatusCode.BadRequest, JsonObject(response))
+            } else {
+                val response = mutableMapOf<String, JsonElement>()
+                response["success"] = Json.parseToJsonElement("ParkingSlotIsFree")
+                call.respond(JsonObject(response))
+            }
+
         }
         get("/parking-slot/") {
             val parkingSlotList = Database.getAllParkingSlots()
@@ -45,7 +74,13 @@ fun Application.configureRouting() {
         }
         get("/parking-slot/{id?}") {
             val parkingSlot = Database.getParkingSlot(call.parameters["id"]!!)
-            call.respond(parkingSlot)
+            if (parkingSlot.id == "") {
+                val response = mutableMapOf<String, JsonElement>()
+                response["errorCode"] = Json.parseToJsonElement("ParkingSlotNotValid")
+                call.respond(HttpStatusCode.BadRequest, JsonObject(response))
+            } else {
+                call.respond(parkingSlot)
+            }
         }
     }
 }
