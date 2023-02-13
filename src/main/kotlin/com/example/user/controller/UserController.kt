@@ -28,7 +28,6 @@ class UserController {
         val mongoClient = MongoClient(mongoClientURI)
         val mongoCollection = mongoClient.getDatabase(databaseName).getCollection(userCollectionName)
 
-        //TODO: check if a user with this mail is already registered
         val filter = Filters.eq("email", signUpRequestBody.email)
         val registeredUser = mongoCollection.find(filter).first()
 

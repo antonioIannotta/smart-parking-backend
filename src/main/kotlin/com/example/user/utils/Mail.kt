@@ -13,6 +13,7 @@ fun sendRecoverMail(to: String, jwt: String) {
     email.setFrom("support.parkingslot@gmail.com")
     email.subject = "Richiesta di cambio password"
 
+    //TODO: add real link to change password page
     val mailContent = """
         <h2>cambia password</h2>
         <br>
