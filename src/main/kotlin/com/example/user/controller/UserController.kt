@@ -161,9 +161,12 @@ class UserController {
         val userInfo = this.createUserInfoFromDocument(userInfoDocument)
 
         //check the user exist and is active
-        if (Objects.isNull(userInfo) or !userInfo.active) {
+        if (Objects.isNull(userInfo)) {
             mongoClient.close()
-            return ServerResponseBody("userError", "Can't recover password for this user")
+            return ServerResponseBody("userNotFound", "Can't recover password for this user")
+        } else if (!userInfo.active) {
+            mongoClient.close()
+            return ServerResponseBody("userDeleted", "Can't recover password for a deleted user")
         } else if (!Objects.isNull(oldPassword)) {
             //password validation
             val passwordProject = Projections.include("password")
