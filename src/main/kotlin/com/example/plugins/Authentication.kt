@@ -15,7 +15,10 @@ import io.ktor.server.routing.*
 fun Application.configureAuthentication() {
 
     val tokenSecret = environment.config.property("jwt.secret").getString()
-    val userController = UserController()
+    val mongoAddress = environment.config.property("mongo.address").getString()
+    val databaseName = environment.config.property("mongo.database.name").getString()
+    val collectionName = environment.config.property("mongo.database.collections.user").getString()
+    val userController = UserController(mongoAddress, databaseName, collectionName, tokenSecret)
 
     install(Authentication) {
 

@@ -3,18 +3,31 @@ package com.example.user.utils
 import org.apache.commons.mail.DefaultAuthenticator
 import org.apache.commons.mail.HtmlEmail
 
-fun sendRecoverMail(to: String, jwt: String) {
+fun sendMail(
+    to: String,
+    subject: String,
+    content: String,
+    userMail: String = "team.parkingslot@gmail.com",
+    userPassword: String = "ionrkvjoukjhtezf",
+    host: String = "smtp.googlemail.com",
+    port: Int = 465,
+) {
 
     val email = HtmlEmail()
-    email.hostName = "smtp.googlemail.com" //live: smtp.live.com
-    email.setSmtpPort(465)
-    email.setAuthenticator(DefaultAuthenticator("team.parkingslot@gmail.com", "bvyjssfgkymtecue"))
+    email.hostName = host
+    email.setSmtpPort(port)
+    email.setAuthenticator(DefaultAuthenticator(userMail, userPassword))
     email.isSSLOnConnect = true
-    email.setFrom("support.parkingslot@gmail.com")
-    email.subject = "Richiesta di cambio password"
+    email.setFrom(userMail)
+    email.subject = subject
+    email.setHtmlMsg(content)
+    email.addTo(to)
+    email.send()
 
-    //TODO: add real link to change password page
-    val mailContent = """
+}
+
+//TODO: add real link to change password page
+fun getRecoverPasswordMailContent(jwt: String): String = """
         <h2>cambia password</h2>
         <br>
         <div>
@@ -24,9 +37,3 @@ fun sendRecoverMail(to: String, jwt: String) {
             <div>token: $jwt</div>
         </div>
     """.trimIndent()
-
-    email.setHtmlMsg(mailContent)
-    email.addTo(to)
-    email.send()
-
-}

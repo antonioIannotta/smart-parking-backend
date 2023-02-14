@@ -18,7 +18,7 @@ fun Route.exposedUserRoutes(userController: UserController, tokenSecret: String)
         //get parameter from request and create new user to register
         val signUpRequestBody = call.receive<SignUpRequestBody>()
         //register new user to db
-        val responseBody = userController.signUp(signUpRequestBody, tokenSecret)
+        val responseBody = userController.signUp(signUpRequestBody)
         //sending response to client
         if (Objects.isNull(responseBody.token))
             call.response.status(HttpStatusCode.BadRequest)
@@ -32,7 +32,7 @@ fun Route.exposedUserRoutes(userController: UserController, tokenSecret: String)
         //get parameter from request and create user to login
         val signInRequestBody = call.receive<SignInRequestBody>()
         //get jwt token and user info
-        val responseBody = userController.signIn(signInRequestBody, tokenSecret)
+        val responseBody = userController.signIn(signInRequestBody)
         //sending response to client
         if (Objects.isNull(responseBody.token))
             call.response.status(HttpStatusCode.BadRequest)
@@ -44,7 +44,7 @@ fun Route.exposedUserRoutes(userController: UserController, tokenSecret: String)
     post("/user/recover-password") {
 
         val userMail = call.receive<RecoverMailRequestBody>().email
-        val responseBody = userController.recoverPassword(userMail, tokenSecret)
+        val responseBody = userController.recoverPassword(userMail)
         //sending response to client
         if (responseBody.code != "success")
             call.response.status(HttpStatusCode.BadRequest)

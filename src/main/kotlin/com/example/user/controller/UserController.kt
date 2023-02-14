@@ -7,7 +7,8 @@ import com.example.user.model.response.ServerResponseBody
 import com.example.user.model.response.SigningResponseBody
 import com.example.user.model.response.UserInfoResponseBody
 import com.example.user.utils.generateJWT
-import com.example.user.utils.sendRecoverMail
+import com.example.user.utils.getRecoverPasswordMailContent
+import com.example.user.utils.sendMail
 import com.mongodb.MongoClient
 import com.mongodb.MongoClientURI
 import com.mongodb.client.model.Filters
@@ -16,14 +17,16 @@ import com.mongodb.client.model.Updates
 import org.bson.Document
 import java.util.*
 
-class UserController {
+class UserController(
+    mongoAddress: String,
+    private val databaseName: String,
+    private val userCollectionName: String,
+    private val tokenSecret: String
+) {
 
-    private val mongoAddress = "mongodb+srv://testUser:testUser@cluster0.r3hsl.mongodb.net/?retryWrites=true&w=majority"
-    private val databaseName = "test-db"
-    private val userCollectionName = "user-collection"
     private val mongoClientURI = MongoClientURI(mongoAddress)
 
-    fun signUp(signUpRequestBody: SignUpRequestBody, tokenSecret: String): SigningResponseBody {
+    fun signUp(signUpRequestBody: SignUpRequestBody): SigningResponseBody {
 
         val mongoClient = MongoClient(mongoClientURI)
         val mongoCollection = mongoClient.getDatabase(databaseName).getCollection(userCollectionName)
@@ -54,7 +57,7 @@ class UserController {
 
     }
 
-    fun signIn(signInRequestBody: SignInRequestBody, tokenSecret: String): SigningResponseBody {
+    fun signIn(signInRequestBody: SignInRequestBody): SigningResponseBody {
 
         val mongoClient = MongoClient(mongoClientURI)
         val mongoCollection = mongoClient.getDatabase(databaseName).getCollection(userCollectionName)
@@ -124,7 +127,7 @@ class UserController {
 
     }
 
-    fun recoverPassword(email: String, tokenSecret: String): ServerResponseBody {
+    fun recoverPassword(email: String): ServerResponseBody {
 
         val mongoClient = MongoClient(mongoClientURI)
         val mongoCollection = mongoClient.getDatabase(databaseName).getCollection(userCollectionName)
@@ -143,7 +146,8 @@ class UserController {
             ServerResponseBody("userDeleted", "Can't recover password for a deleted user")
         else {
             val jwt = generateJWT(userInfo.email, tokenSecret)
-            sendRecoverMail(userInfo.email, jwt)
+            val mailSubject = "Richiesta di cambio password"
+            sendMail(userInfo.email, mailSubject, getRecoverPasswordMailContent(jwt))
             ServerResponseBody("success", "Recovery mail sent to the user")
         }
 
