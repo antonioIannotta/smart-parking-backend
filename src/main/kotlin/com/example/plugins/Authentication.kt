@@ -1,6 +1,7 @@
 package com.example.plugins
 
 import com.example.user.controller.UserController
+import com.example.user.model.ResponseCode
 import com.example.user.model.response.ServerResponseBody
 import com.example.user.routing.exposedUserRoutes
 import com.example.user.routing.protectedUserRoutes
@@ -33,7 +34,7 @@ fun Application.configureAuthentication() {
             }
             challenge { _, _ ->
                 call.response.status(HttpStatusCode.Unauthorized)
-                call.respond(ServerResponseBody("unauthorizedUser", "Token is not valid or has expired"))
+                call.respond(ServerResponseBody(ResponseCode.UNAUTHORIZED.code, "Token is not valid or has expired"))
             }
         }
 

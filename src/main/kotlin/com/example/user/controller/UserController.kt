@@ -1,5 +1,6 @@
 package com.example.user.controller
 
+import com.example.user.model.ResponseCode
 import com.example.user.model.UserInfo
 import com.example.user.model.request.SignInRequestBody
 import com.example.user.model.request.SignUpRequestBody
@@ -36,7 +37,7 @@ class UserController(
 
         return if (!Objects.isNull(registeredUser)) {
             mongoClient.close()
-            SigningResponseBody("alreadyRegistered", "An user with that email is already registered")
+            SigningResponseBody(ResponseCode.ALREADY_REGISTERED.code, "An user with that email is already registered")
         } else {
 
             //user registration
@@ -51,7 +52,7 @@ class UserController(
 
             val jwt = generateJWT(signUpRequestBody.email, tokenSecret)
 
-            SigningResponseBody("success", "User successfully registered", jwt)
+            SigningResponseBody(ResponseCode.SUCCESS.code, "success", jwt)
 
         }
 
@@ -72,16 +73,16 @@ class UserController(
         signInResponseBody =
                 //check if a user was found
             if (Objects.isNull(userToSignIn))
-                SigningResponseBody("userNotFoundError", "User not found")
+                SigningResponseBody(ResponseCode.USER_NOT_FOUND.code, "User not found")
             //check if user is active or not
             else if (!userToSignIn["active"].toString().toBoolean())
-                SigningResponseBody("userDeletedError", "User was deleted")
+                SigningResponseBody(ResponseCode.USER_DELETED.code, "User was deleted")
             //check if passwords match (if they match, return generate the jwt)
             else if (userToSignIn["password"] != signInRequestBody.password)
-                SigningResponseBody("passwordError", "Wrong password")
+                SigningResponseBody(ResponseCode.PASSWORD_ERROR.code, "Wrong password")
             else {
                 val token = generateJWT(signInRequestBody.email, tokenSecret)
-                SigningResponseBody("success", "User logged", token)
+                SigningResponseBody(ResponseCode.SUCCESS.code, "success", token)
             }
 
         return signInResponseBody
@@ -100,9 +101,9 @@ class UserController(
         mongoClient.close()
 
         return if (Objects.isNull(userInfo))
-            UserInfoResponseBody("userNotFoundError", "User not found")
+            UserInfoResponseBody(ResponseCode.USER_NOT_FOUND.code, "User not found")
         else
-            UserInfoResponseBody("success", "User info retrieved", userInfo)
+            UserInfoResponseBody(ResponseCode.SUCCESS.code, "success", userInfo)
 
     }
 
@@ -121,9 +122,9 @@ class UserController(
         mongoClient.close()
 
         return if (Objects.isNull(deletedUserDocument))
-            ServerResponseBody("userNotFoundError", "User not found")
+            ServerResponseBody(ResponseCode.USER_NOT_FOUND.code, "User not found")
         else
-            ServerResponseBody("success", "User deleted successfully")
+            ServerResponseBody(ResponseCode.SUCCESS.code, "success")
 
     }
 
@@ -141,14 +142,14 @@ class UserController(
         mongoClient.close()
 
         return if (Objects.isNull(userInfo))
-            ServerResponseBody("userNotFound", "Can't recover password for this user")
+            ServerResponseBody(ResponseCode.USER_NOT_FOUND.code, "User not found")
         else if (!userInfo.active)
-            ServerResponseBody("userDeleted", "Can't recover password for a deleted user")
+            ServerResponseBody(ResponseCode.USER_DELETED.code, "User was deleted")
         else {
             val jwt = generateJWT(userInfo.email, tokenSecret)
             val mailSubject = "Richiesta di cambio password"
             sendMail(userInfo.email, mailSubject, getRecoverPasswordMailContent(jwt))
-            ServerResponseBody("success", "Recovery mail sent to the user")
+            ServerResponseBody(ResponseCode.SUCCESS.code, "success")
         }
 
     }
@@ -166,17 +167,17 @@ class UserController(
         //check the user exist and is active
         if (Objects.isNull(userInfo)) {
             mongoClient.close()
-            return ServerResponseBody("userNotFound", "Can't recover password for this user")
+            return ServerResponseBody(ResponseCode.USER_NOT_FOUND.code, "User not found")
         } else if (!userInfo.active) {
             mongoClient.close()
-            return ServerResponseBody("userDeleted", "Can't recover password for a deleted user")
+            return ServerResponseBody(ResponseCode.USER_DELETED.code, "Can't recover password for a deleted user")
         } else if (!Objects.isNull(oldPassword)) {
             //password validation
             val passwordProject = Projections.include("password")
             val result = mongoCollection.find(filter).projection(passwordProject).first()
             if (result["password"] != oldPassword) {
                 mongoClient.close()
-                return ServerResponseBody("passwordError", "Old password doesn't match")
+                return ServerResponseBody(ResponseCode.PASSWORD_ERROR.code, "Old password doesn't match")
             }
         }
 
@@ -185,7 +186,7 @@ class UserController(
         mongoCollection.updateOne(filter, update)
         mongoClient.close()
 
-        return ServerResponseBody("success", "Password successfully changed")
+        return ServerResponseBody(ResponseCode.SUCCESS.code, "success")
     }
 
     /**
