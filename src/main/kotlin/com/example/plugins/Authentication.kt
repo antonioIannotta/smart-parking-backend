@@ -1,5 +1,6 @@
 package com.example.plugins
 
+import com.example.user.controller.UserController
 import com.example.user.model.response.ServerResponseBody
 import com.example.user.routing.exposedUserRoutes
 import com.example.user.routing.protectedUserRoutes
@@ -13,7 +14,8 @@ import io.ktor.server.routing.*
 
 fun Application.configureAuthentication() {
 
-    val tokenSecret = "dSgUkXp2s5v8y/B?E(H+MbQeThWmYq3t"
+    val tokenSecret = environment.config.property("jwt.secret").getString()
+    val userController = UserController()
 
     install(Authentication) {
 
@@ -36,9 +38,9 @@ fun Application.configureAuthentication() {
 
     routing {
         authenticate("auth-jwt") {
-            protectedUserRoutes()
+            protectedUserRoutes(userController)
         }
-        exposedUserRoutes(tokenSecret)
+        exposedUserRoutes(userController, tokenSecret)
     }
 
 }

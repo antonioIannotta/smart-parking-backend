@@ -11,9 +11,7 @@ import io.ktor.server.response.*
 import io.ktor.server.routing.*
 import java.util.*
 
-fun Route.exposedUserRoutes(tokenSecret: String) {
-
-    val userController = UserController()
+fun Route.exposedUserRoutes(userController: UserController, tokenSecret: String) {
 
     post("/user/sign-up") {
 

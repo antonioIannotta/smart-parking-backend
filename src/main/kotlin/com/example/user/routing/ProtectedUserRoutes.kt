@@ -11,9 +11,7 @@ import io.ktor.server.response.*
 import io.ktor.server.routing.*
 import java.util.*
 
-fun Route.protectedUserRoutes() {
-
-    val userController = UserController()
+fun Route.protectedUserRoutes(userController: UserController) {
 
     get("/user/info") {
         val principal = call.principal<JWTPrincipal>()
