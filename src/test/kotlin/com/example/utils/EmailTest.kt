@@ -1,7 +1,7 @@
 package com.example.utils
 
 import com.example.user.utils.sendMail
-import org.junit.Test
+import org.junit.jupiter.api.Test
 
 class EmailTest {
 
