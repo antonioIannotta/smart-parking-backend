@@ -40,6 +40,10 @@ dependencies {
     implementation("ch.qos.logback:logback-classic:$logback_version")
     implementation("org.mongodb:mongo-java-driver:3.12.11")
     implementation("org.apache.commons:commons-email:1.5")
-    testImplementation("io.ktor:ktor-server-tests-jvm:$ktor_version")
-    testImplementation("org.jetbrains.kotlin:kotlin-test-junit:$kotlin_version")
+    testImplementation("org.junit.jupiter:junit-jupiter:5.8.0")
+    testImplementation("io.ktor:ktor-server-test-host:$ktor_version")
+}
+
+tasks.test {
+    useJUnitPlatform()
 }
