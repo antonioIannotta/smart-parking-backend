@@ -5,11 +5,8 @@ import org.junit.Test
 
 class EmailTest {
 
-    /**
-     * test successful authentication to google smtp server
-     */
     @Test
-    fun testAuthentication() {
+    fun `test successful authentication to google smtp server`() {
 
         sendMail("test@test.it", "test", "test")
 

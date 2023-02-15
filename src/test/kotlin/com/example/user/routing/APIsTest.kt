@@ -20,7 +20,7 @@ class APIsTest {
     private val testSurname = "testSurname"
 
     @Test
-    fun testUserAlreadyRegistered() = testApplication {
+    fun `test that sign-up API can't let register 2  user with the same mail`() = testApplication {
 
         val client = createClient {
             install(ContentNegotiation) {

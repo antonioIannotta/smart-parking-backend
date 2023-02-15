@@ -10,10 +10,7 @@ import org.junit.jupiter.api.Test
 
 class ApplicationTest {
     @Test
-    fun testRoot() = testApplication {
-        application {
-            configureRouting()
-        }
+    fun `test application startup and base endpoint connection`() = testApplication {
         client.get("/").apply {
             assertEquals(HttpStatusCode.OK, status)
             assertEquals("Hello World!", bodyAsText())
