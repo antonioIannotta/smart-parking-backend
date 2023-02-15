@@ -1,28 +1,16 @@
 package com.example.user.routing
 
-import com.example.plugins.configureAuthentication
-import com.example.plugins.configureRouting
-import com.example.user.controller.UserController
 import com.example.user.model.ResponseCode
 import com.example.user.model.request.SignUpRequestBody
 import com.example.user.model.response.SigningResponseBody
-import io.ktor.client.*
 import io.ktor.client.call.*
-import io.ktor.client.engine.cio.*
 import io.ktor.client.plugins.contentnegotiation.*
 import io.ktor.client.request.*
 import io.ktor.http.*
 import io.ktor.serialization.kotlinx.json.*
 import io.ktor.server.testing.*
-import io.ktor.test.dispatcher.*
-import io.ktor.util.*
-import io.ktor.util.reflect.*
-import org.hamcrest.MatcherAssert
-import org.junit.jupiter.api.AfterAll
-import org.junit.jupiter.api.BeforeAll
-import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.Assertions.assertEquals
-import kotlin.math.sign
+import org.junit.jupiter.api.Test
 
 class APIsTest {
 
