@@ -6,6 +6,5 @@ import kotlinx.serialization.Serializable
 data class UserInfo(
     val email: String,
     val name: String,
-    val surname: String,
-    val active: Boolean
+    val surname: String
 )
