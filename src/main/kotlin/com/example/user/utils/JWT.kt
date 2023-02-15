@@ -7,16 +7,18 @@ import java.util.*
 
 /**
  * generates a jwt encrypted with HMAC256, valid for 2 hours
+ * email: information to encrypt in the token
+ * tokenSecret: encryption key of the jwt
+ * duration: time required to jwt expiration, default is 7_200_000 (2 hours)
  */
-fun generateJWT(email: String, tokenSecret: String): String {
-    val expirationDate = Date(System.currentTimeMillis() + 7_200_000) //valid for 2 hours
+fun generateJWT(email: String, tokenSecret: String, duration: Int = 7_200_000): String {
+    val expirationDate = Date(System.currentTimeMillis() + duration)
     return JWT.create()
         .withAudience("Parking Client")
-        .withIssuer("luca bracchi")
         .withClaim("email", email)
         .withExpiresAt(expirationDate)
         .sign(Algorithm.HMAC256(tokenSecret))
 }
 
-fun verifyJWT(tokenSecret: String): JWTVerifier = JWT.require(Algorithm.HMAC256(tokenSecret))
+fun getJWTVerifier(tokenSecret: String): JWTVerifier = JWT.require(Algorithm.HMAC256(tokenSecret))
     .build()

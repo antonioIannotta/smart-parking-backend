@@ -5,7 +5,7 @@ import com.example.user.model.ResponseCode
 import com.example.user.model.response.ServerResponseBody
 import com.example.user.routing.exposedUserRoutes
 import com.example.user.routing.protectedUserRoutes
-import com.example.user.utils.verifyJWT
+import com.example.user.utils.getJWTVerifier
 import io.ktor.http.*
 import io.ktor.server.application.*
 import io.ktor.server.auth.*
@@ -25,7 +25,7 @@ fun Application.configureAuthentication() {
 
         jwt("auth-jwt") {
             realm = "Parking System Backend"
-            verifier(verifyJWT(tokenSecret))
+            verifier(getJWTVerifier(tokenSecret))
             validate { credential ->
                 if (credential.payload.getClaim("email").asString() != "")
                     JWTPrincipal(credential.payload)
