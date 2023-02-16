@@ -6,6 +6,7 @@ import com.example.parkingSlot.models.SlotId
 import com.example.parkingSlot.models.SlotOccupation
 import com.mongodb.MongoClient
 import com.mongodb.MongoClientURI
+import com.mongodb.client.MongoCollection
 import com.mongodb.client.model.Filters
 import com.mongodb.client.model.UpdateOptions
 import com.mongodb.client.model.Updates
@@ -19,13 +20,12 @@ import java.time.LocalDateTime
 object Database {
 
     private val mongoAddress = "mongodb+srv://antonioIannotta:AntonioIannotta-26@cluster0.a3rz8ro.mongodb.net/?retryWrites=true"
-    private val parkingSlotCollection = "parking-slot"
     private val databaseName = "ParkingSystem"
 
     /**
      * Function that occupy a certain slot based on the slotOccupation object received as argument
      */
-    fun occupySlot(slotOccupation: SlotOccupation, parkingSlotList: MutableList<ParkingSlot>): Boolean {
+    fun occupySlot(collection: String, slotOccupation: SlotOccupation, parkingSlotList: MutableList<ParkingSlot>): Boolean {
 
         var returnValue = false
 
@@ -39,7 +39,7 @@ object Database {
             updates.add(Updates.set("endStop", slotOccupation.endStop))
             val options = UpdateOptions().upsert(true)
 
-            mongoClient.getDatabase(databaseName).getCollection(parkingSlotCollection)
+            mongoClient.getDatabase(databaseName).getCollection(collection)
                 .updateOne(filter, updates, options)
 
             true
@@ -60,21 +60,21 @@ object Database {
     /**
      * Function that increment a certain slot based on the incrementOccupation object received as argument
      */
-    fun incrementOccupation(incrementOccupation: IncrementOccupation, parkingSlotList: MutableList<ParkingSlot>): Boolean {
+    fun incrementOccupation(collection: String, incrementOccupation: IncrementOccupation, parkingSlotList: MutableList<ParkingSlot>): Boolean {
 
         var returnValue = false
 
         if (isParkingSlotValid(incrementOccupation.slotId, parkingSlotList)) {
             returnValue = false
         } else if (isSlotOccupied(incrementOccupation.slotId, parkingSlotList)) {
-            val parkingSlot = getParkingSlot(incrementOccupation.slotId)
+            val parkingSlot = getParkingSlot(collection, incrementOccupation.slotId)
             if (isTimeValid(incrementOccupation.endStop, parkingSlot.endStop)) {
                 val mongoClient = MongoClient(MongoClientURI(mongoAddress))
 
                 val filter = Filters.eq("id", incrementOccupation.slotId)
                 val update = Updates.set("endStop", LocalDateTime.parse(incrementOccupation.endStop))
 
-                mongoClient.getDatabase(databaseName).getCollection(parkingSlotCollection)
+                mongoClient.getDatabase(databaseName).getCollection(collection)
                     .updateOne(filter, update)
 
                 mongoClient.close()
@@ -100,7 +100,7 @@ object Database {
     /**
      * Function that free a certain slot based on the slotId object received as argument
      */
-    fun freeSlot(slotId: SlotId, parkingSlotList: MutableList<ParkingSlot>): Boolean {
+    fun freeSlot(collection: String, slotId: SlotId, parkingSlotList: MutableList<ParkingSlot>): Boolean {
 
         var returnValue = false
 
@@ -118,7 +118,7 @@ object Database {
 
             val options = UpdateOptions().upsert(true)
 
-            mongoClient.getDatabase(databaseName).getCollection(parkingSlotCollection)
+            mongoClient.getDatabase(databaseName).getCollection(collection)
                 .updateOne(filter, updates, options)
 
             mongoClient.close()
@@ -135,12 +135,12 @@ object Database {
     /**
      * Function that returns all the parking slots that are stored into the database
      */
-    fun getAllParkingSlots(): MutableList<ParkingSlot> {
+    fun getAllParkingSlots(collection: String): MutableList<ParkingSlot> {
         val mongoClient = MongoClient(MongoClientURI(mongoAddress))
 
         val parkingSlotList = emptyList<ParkingSlot>().toMutableList()
 
-        mongoClient.getDatabase(databaseName).getCollection(parkingSlotCollection).find().forEach {
+        mongoClient.getDatabase(databaseName).getCollection(collection).find().forEach {
             document -> parkingSlotList.add(createParkingSlotFromDocument(document))
         }
 
@@ -150,9 +150,9 @@ object Database {
     /**
      * Function that returns the parking slot corresponding to the given Id
      */
-    fun getParkingSlot(id: String): ParkingSlot {
+    fun getParkingSlot(collection: String, id: String): ParkingSlot {
         val mongoClient = MongoClient(MongoClientURI(mongoAddress))
-        val parkingSlotListOfDocument = mongoClient.getDatabase(databaseName).getCollection(parkingSlotCollection).find()
+        val parkingSlotListOfDocument = mongoClient.getDatabase(databaseName).getCollection(collection).find()
         val parkingSlotList = mutableListOf<ParkingSlot>()
         lateinit var parkingSlot: ParkingSlot
 
