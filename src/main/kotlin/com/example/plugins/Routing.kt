@@ -26,9 +26,16 @@ fun Application.configureRouting() {
         get("/user/{userId?}/logout") {  }
         get("/user/{userId?}/delete") {  }
         put("/parking-slot/occupy") {
+
+            var collection = if (call.parameters["test"]!! == "yes") {
+                "parking-slot-test"
+            } else {
+                "parking-slot"
+            }
+
             val slotOccupation = call.receive<SlotOccupation>()
-            val parkingSlotList = Database.getAllParkingSlots()
-            val returnValue = Database.occupySlot(slotOccupation, parkingSlotList)
+            val parkingSlotList = Database.getAllParkingSlots(collection)
+            val returnValue = Database.occupySlot(collection, slotOccupation, parkingSlotList)
             if (!returnValue) {
                 val response = mutableMapOf<String, JsonElement>()
                 response["errorCode"] = Json.parseToJsonElement("ParkingSlotNotValid")
@@ -40,9 +47,16 @@ fun Application.configureRouting() {
             }
         }
         put("/parking-slot/increment-occupation") {
+
+            var collection = if (!call.parameters.isEmpty()) {
+                "parking-slot-test"
+            } else {
+                "parking-slot"
+            }
+
             val incrementOccupation = call.receive<IncrementOccupation>()
-            val parkingSlotList = Database.getAllParkingSlots()
-            val returnValue = Database.incrementOccupation(incrementOccupation, parkingSlotList)
+            val parkingSlotList = Database.getAllParkingSlots(collection)
+            val returnValue = Database.incrementOccupation(collection, incrementOccupation, parkingSlotList)
             if (!returnValue) {
                 val response = mutableMapOf<String, JsonElement>()
                 response["errorCode"] = Json.parseToJsonElement("ParkingSlotNotValid")
@@ -54,9 +68,16 @@ fun Application.configureRouting() {
             }
         }
         put("/parking-slot/free") {
+
+            var collection = if (!call.parameters.isEmpty()) {
+                "parking-slot-test"
+            } else {
+                "parking-slot"
+            }
+
             val slotId = call.receive<SlotId>()
-            val parkingSlotList = Database.getAllParkingSlots()
-            val returnValue = Database.freeSlot(slotId, parkingSlotList)
+            val parkingSlotList = Database.getAllParkingSlots(collection)
+            val returnValue = Database.freeSlot(collection, slotId, parkingSlotList)
             if (!returnValue) {
                 val response = mutableMapOf<String, JsonElement>()
                 response["errorCode"] = Json.parseToJsonElement("ParkingSlotNotValid")
@@ -69,11 +90,26 @@ fun Application.configureRouting() {
 
         }
         get("/parking-slot/") {
-            val parkingSlotList = Database.getAllParkingSlots()
+
+            var collection = if (!call.parameters.isEmpty()) {
+                "parking-slot-test"
+            } else {
+                "parking-slot"
+            }
+
+            val parkingSlotList = Database.getAllParkingSlots(collection)
             call.respond(parkingSlotList)
         }
-        get("/parking-slot/{id?}") {
-            val parkingSlot = Database.getParkingSlot(call.parameters["id"]!!)
+        get("/parking-slot/") {
+
+            var collection = if (!call.parameters.isEmpty()) {
+                "parking-slot-test"
+            } else {
+                "parking-slot"
+            }
+
+            val slotId = call.receive<SlotId>()
+            val parkingSlot = Database.getParkingSlot(collection, slotId.slotId)
             if (parkingSlot.id == "") {
                 val response = mutableMapOf<String, JsonElement>()
                 response["errorCode"] = Json.parseToJsonElement("ParkingSlotNotValid")
