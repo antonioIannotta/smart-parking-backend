@@ -27,11 +27,7 @@ fun Application.configureRouting() {
         get("/user/{userId?}/delete") {  }
         put("/parking-slot/occupy") {
 
-            var collection = if (call.parameters["test"]!! == "yes") {
-                "parking-slot-test"
-            } else {
-                "parking-slot"
-            }
+            val collection = "parking-slot"
 
             val slotOccupation = call.receive<SlotOccupation>()
             val parkingSlotList = Database.getAllParkingSlots(collection)
@@ -48,11 +44,7 @@ fun Application.configureRouting() {
         }
         put("/parking-slot/increment-occupation") {
 
-            var collection = if (!call.parameters.isEmpty()) {
-                "parking-slot-test"
-            } else {
-                "parking-slot"
-            }
+            val collection = "parking-slot"
 
             val incrementOccupation = call.receive<IncrementOccupation>()
             val parkingSlotList = Database.getAllParkingSlots(collection)
@@ -69,11 +61,7 @@ fun Application.configureRouting() {
         }
         put("/parking-slot/free") {
 
-            var collection = if (!call.parameters.isEmpty()) {
-                "parking-slot-test"
-            } else {
-                "parking-slot"
-            }
+            val collection = "parking-slot"
 
             val slotId = call.receive<SlotId>()
             val parkingSlotList = Database.getAllParkingSlots(collection)
@@ -91,22 +79,14 @@ fun Application.configureRouting() {
         }
         get("/parking-slot/") {
 
-            var collection = if (!call.parameters.isEmpty()) {
-                "parking-slot-test"
-            } else {
-                "parking-slot"
-            }
+            val collection = "parking-slot"
 
             val parkingSlotList = Database.getAllParkingSlots(collection)
             call.respond(parkingSlotList)
         }
         get("/parking-slot/") {
 
-            var collection = if (!call.parameters.isEmpty()) {
-                "parking-slot-test"
-            } else {
-                "parking-slot"
-            }
+            val collection = "parking-slot"
 
             val slotId = call.receive<SlotId>()
             val parkingSlot = Database.getParkingSlot(collection, slotId.slotId)

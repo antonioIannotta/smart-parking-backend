@@ -64,11 +64,11 @@ object Database {
 
         var returnValue = false
 
-        if (isParkingSlotValid(incrementOccupation.slotId, parkingSlotList)) {
+        if (!isParkingSlotValid(incrementOccupation.slotId, parkingSlotList)) {
             returnValue = false
         } else if (isSlotOccupied(incrementOccupation.slotId, parkingSlotList)) {
             val parkingSlot = getParkingSlot(collection, incrementOccupation.slotId)
-            if (isTimeValid(incrementOccupation.endStop, parkingSlot.endStop)) {
+            returnValue = if (isTimeValid(incrementOccupation.endStop, parkingSlot.endStop)) {
                 val mongoClient = MongoClient(MongoClientURI(mongoAddress))
 
                 val filter = Filters.eq("id", incrementOccupation.slotId)
@@ -79,10 +79,11 @@ object Database {
 
                 mongoClient.close()
 
-                returnValue = true
+                true
             } else {
-                returnValue = false
+                false
             }
+            returnValue = true
         } else {
             returnValue = false
         }
@@ -154,14 +155,17 @@ object Database {
         val mongoClient = MongoClient(MongoClientURI(mongoAddress))
         val parkingSlotListOfDocument = mongoClient.getDatabase(databaseName).getCollection(collection).find()
         val parkingSlotList = mutableListOf<ParkingSlot>()
-        lateinit var parkingSlot: ParkingSlot
 
-        if (isParkingSlotValid(id, parkingSlotList)) {
-            parkingSlot = parkingSlotList.first {
-                parkingSlot -> parkingSlot.id == id
+        parkingSlotListOfDocument.forEach {
+            document -> parkingSlotList.add(createParkingSlotFromDocument(document))
+        }
+
+        var parkingSlot: ParkingSlot = if (isParkingSlotValid(id, parkingSlotList)) {
+            parkingSlotList.first {
+                    parkingSlot -> parkingSlot.id == id
             }
         } else {
-            parkingSlot = ParkingSlot("", false, "")
+            ParkingSlot("", false, "")
         }
 
         mongoClient.close()
