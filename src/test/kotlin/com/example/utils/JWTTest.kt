@@ -2,8 +2,8 @@ package com.example.utils;
 
 import com.auth0.jwt.exceptions.JWTDecodeException
 import com.auth0.jwt.exceptions.TokenExpiredException
-import com.example.user.utils.generateJWT
-import com.example.user.utils.getJWTVerifier
+import com.example.interface_adapter.user.utils.generateJWT
+import com.example.interface_adapter.user.utils.getJWTVerifier
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.assertThrows
 
