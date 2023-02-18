@@ -6,7 +6,6 @@ import com.example.parkingSlot.models.SlotId
 import com.example.parkingSlot.models.SlotOccupation
 import com.mongodb.MongoClient
 import com.mongodb.MongoClientURI
-import com.mongodb.client.MongoCollection
 import com.mongodb.client.model.Filters
 import com.mongodb.client.model.UpdateOptions
 import com.mongodb.client.model.Updates
@@ -29,7 +28,7 @@ object Database {
 
         var returnValue = false
 
-        returnValue = if (!isSlotOccupied(slotOccupation.slotId, parkingSlotList) and
+        if (!isSlotOccupied(slotOccupation.slotId, parkingSlotList) and
             isParkingSlotValid(slotOccupation.slotId, parkingSlotList)) {
             val mongoClient = MongoClient(MongoClientURI(mongoAddress))
 
@@ -42,9 +41,9 @@ object Database {
             mongoClient.getDatabase(databaseName).getCollection(collection)
                 .updateOne(filter, updates, options)
 
-            true
+            returnValue = true
         } else {
-            false
+            returnValue = false
         }
 
         return returnValue
@@ -68,20 +67,18 @@ object Database {
             returnValue = false
         } else if (isSlotOccupied(incrementOccupation.slotId, parkingSlotList)) {
             val parkingSlot = getParkingSlot(collection, incrementOccupation.slotId)
-            returnValue = if (isTimeValid(incrementOccupation.endStop, parkingSlot.endStop)) {
+            if (isTimeValid(incrementOccupation.endStop, parkingSlot.endStop)) {
                 val mongoClient = MongoClient(MongoClientURI(mongoAddress))
 
                 val filter = Filters.eq("id", incrementOccupation.slotId)
-                val update = Updates.set("endStop", LocalDateTime.parse(incrementOccupation.endStop))
+                val update = Updates.set("endStop", LocalDateTime.parse(incrementOccupation.endStop).toString())
 
                 mongoClient.getDatabase(databaseName).getCollection(collection)
                     .updateOne(filter, update)
 
                 mongoClient.close()
-
-                true
             } else {
-                false
+                return false
             }
             returnValue = true
         } else {
@@ -105,7 +102,7 @@ object Database {
 
         var returnValue = false
 
-        if (isParkingSlotValid(slotId.slotId, parkingSlotList)) {
+        if (!isParkingSlotValid(slotId.slotId, parkingSlotList)) {
             returnValue = false
         }
 
@@ -168,6 +165,8 @@ object Database {
             ParkingSlot("", false, "")
         }
 
+        print("Parking slot -----------> " + parkingSlot.endStop)
+
         mongoClient.close()
         return parkingSlot
     }
@@ -175,10 +174,13 @@ object Database {
     /**
      * Function that returns a parking slot given a certain Bson Document
      */
-    fun createParkingSlotFromDocument(document: Document): ParkingSlot =
-        ParkingSlot(document["id"].toString(),
+    fun createParkingSlotFromDocument(document: Document): ParkingSlot {
+        return ParkingSlot(
+            document["id"].toString(),
             document["occupied"].toString().toBoolean(),
-            document["endStop"].toString())
+            document["endStop"].toString()
+        )
+    }
 
 
     fun isParkingSlotValid(slotId: String, parkingSlotList: MutableList<ParkingSlot>) =
