@@ -1,4 +1,4 @@
-package com.example.user.com.example.use_cases.user
+package com.example.use_cases.user
 
 import org.bson.Document
 

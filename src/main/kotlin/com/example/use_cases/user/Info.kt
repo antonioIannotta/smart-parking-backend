@@ -1,4 +1,4 @@
-package com.example.user.com.example.use_cases.user
+package com.example.use_cases.user
 
 import com.example.entity.user.UserInfo
 import com.mongodb.client.model.Filters

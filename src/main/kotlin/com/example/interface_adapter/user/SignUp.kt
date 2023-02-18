@@ -3,9 +3,9 @@ package com.example.interface_adapter.user
 import com.example.interface_adapter.user.model.ResponseCode
 import com.example.interface_adapter.user.model.request.SignUpRequestBody
 import com.example.interface_adapter.user.model.response.SigningResponseBody
-import com.example.user.com.example.use_cases.user.createUser
-import com.example.user.com.example.use_cases.user.getUserInfo
 import com.example.interface_adapter.user.utils.generateJWT
+import com.example.use_cases.user.createUser
+import com.example.use_cases.user.getUserInfo
 import java.util.*
 
 fun signUp(signUpRequestBody: SignUpRequestBody, tokenSecret: String): SigningResponseBody {

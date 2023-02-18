@@ -1,7 +1,9 @@
-package com.example.user.com.example.use_cases.user
+package com.example.use_cases.user
 
 import com.mongodb.MongoClient
 import com.mongodb.MongoClientURI
+import com.mongodb.client.MongoCollection
+import org.bson.Document
 
 const val defaultMongoAddress =
     "mongodb+srv://testUser:testUser@cluster0.r3hsl.mongodb.net/?retryWrites=true&w=majority"
@@ -19,4 +21,4 @@ fun getUserCollection(
     mongoClient: MongoClient,
     databaseName: String = defaultDBName,
     collectionName: String = defaultCollectionName
-) = mongoClient.getDatabase(databaseName).getCollection(collectionName)
+): MongoCollection<Document> = mongoClient.getDatabase(databaseName).getCollection(collectionName)

@@ -1,9 +1,9 @@
 package com.example.framework.routing
 
+import com.example.interface_adapter.user.deleteExistingUser
 import com.example.interface_adapter.user.model.request.ChangePasswordRequestBody
-import com.example.user.com.example.interface_adapter.user.changePassword
-import com.example.user.com.example.interface_adapter.user.deleteUser
-import com.example.user.com.example.interface_adapter.user.userInfo
+import com.example.interface_adapter.user.changePassword
+import com.example.interface_adapter.user.userInfo
 import io.ktor.http.*
 import io.ktor.server.application.*
 import io.ktor.server.auth.*
@@ -36,7 +36,7 @@ fun Route.protectedUserRoutes() {
         val principal = call.principal<JWTPrincipal>()
         val userMail = principal!!.payload.getClaim("email").asString()
 
-        val responseBody = deleteUser(userMail)
+        val responseBody = deleteExistingUser(userMail)
 
         if (responseBody.code != "success")
             call.response.status(HttpStatusCode.BadRequest)

@@ -1,6 +1,8 @@
-package com.example.user.com.example.use_cases.user
+package com.example.use_cases.user
 
 import com.example.entity.user.UserCredentials
+import com.example.use_cases.user.getMongoClient
+import com.example.use_cases.user.getUserCollection
 import com.mongodb.client.model.Filters
 
 fun validateCredentials(userCredentials: UserCredentials): Boolean {
