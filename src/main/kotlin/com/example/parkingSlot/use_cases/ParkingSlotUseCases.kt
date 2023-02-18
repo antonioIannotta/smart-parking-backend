@@ -1,9 +1,9 @@
-package com.example.parkingSlot.database
+package com.example.parkingSlot.use_cases
 
-import com.example.parkingSlot.models.IncrementOccupation
-import com.example.parkingSlot.models.ParkingSlot
-import com.example.parkingSlot.models.SlotId
-import com.example.parkingSlot.models.SlotOccupation
+import com.example.parkingSlot.entity.IncrementOccupation
+import com.example.parkingSlot.entity.ParkingSlot
+import com.example.parkingSlot.entity.SlotId
+import com.example.parkingSlot.entity.SlotOccupation
 import com.mongodb.MongoClient
 import com.mongodb.MongoClientURI
 import com.mongodb.client.model.Filters
@@ -16,7 +16,7 @@ import java.time.LocalDateTime
 /**
  * This object represents the operation that are performed on the database as response of a certain requests by the client
  */
-object Database {
+object ParkingSlotUseCases {
 
     private val mongoAddress = "mongodb+srv://antonioIannotta:AntonioIannotta-26@cluster0.a3rz8ro.mongodb.net/?retryWrites=true"
     private val databaseName = "ParkingSystem"
@@ -29,7 +29,8 @@ object Database {
         var returnValue = false
 
         if (!isSlotOccupied(slotOccupation.slotId, parkingSlotList) and
-            isParkingSlotValid(slotOccupation.slotId, parkingSlotList)) {
+            isParkingSlotValid(slotOccupation.slotId, parkingSlotList)
+        ) {
             val mongoClient = MongoClient(MongoClientURI(mongoAddress))
 
             val filter = Filters.eq("id", slotOccupation.slotId)
