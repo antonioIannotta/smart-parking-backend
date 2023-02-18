@@ -1,11 +1,10 @@
 package com.example.plugins
 
-import com.example.parkingSlot.database.Database
-import com.example.parkingSlot.models.IncrementOccupation
-import com.example.parkingSlot.models.SlotId
-import com.example.parkingSlot.models.SlotOccupation
-import io.ktor.client.*
-import io.ktor.client.request.*
+import com.example.parkingSlot.use_cases.ParkingSlotUseCases
+import com.example.parkingSlot.entity.IncrementOccupation
+import com.example.parkingSlot.entity.SlotId
+import com.example.parkingSlot.entity.SlotOccupation
+import com.example.parkingSlot.interface_adapter.InterfaceAdapter
 import io.ktor.http.*
 import io.ktor.server.routing.*
 import io.ktor.server.response.*
@@ -27,76 +26,33 @@ fun Application.configureRouting() {
         get("/user/{userId?}/delete") {  }
         put("/parking-slot/occupy") {
 
-            val collection = "parking-slot"
-
             val slotOccupation = call.receive<SlotOccupation>()
-            val parkingSlotList = Database.getAllParkingSlots(collection)
-            val returnValue = Database.occupySlot(collection, slotOccupation, parkingSlotList)
-            if (!returnValue) {
-                val response = mutableMapOf<String, JsonElement>()
-                response["errorCode"] = Json.parseToJsonElement("ParkingSlotNotValid")
-                call.respond(HttpStatusCode.BadRequest, JsonObject(response))
-            } else {
-                val response = mutableMapOf<String, JsonElement>()
-                response["success"] = Json.parseToJsonElement("ParkingSlotOccupied")
-                call.respond(JsonObject(response))
-            }
+            val response = InterfaceAdapter.occupy(slotOccupation)
+            call.respond(response.first, response.second)
         }
         put("/parking-slot/increment-occupation") {
 
-            val collection = "parking-slot"
-
             val incrementOccupation = call.receive<IncrementOccupation>()
-            val parkingSlotList = Database.getAllParkingSlots(collection)
-            val returnValue = Database.incrementOccupation(collection, incrementOccupation, parkingSlotList)
-            if (!returnValue) {
-                val response = mutableMapOf<String, JsonElement>()
-                response["errorCode"] = Json.parseToJsonElement("ParkingSlotNotValid")
-                call.respond(HttpStatusCode.BadRequest, JsonObject(response))
-            } else {
-                val response = mutableMapOf<String, JsonElement>()
-                response["success"] = Json.parseToJsonElement("EndStopIncremented")
-                call.respond(JsonObject(response))
-            }
+            val response = InterfaceAdapter.incrementOccupation(incrementOccupation)
+            call.respond(response.first, response.second)
         }
         put("/parking-slot/free") {
 
-            val collection = "parking-slot"
-
             val slotId = call.receive<SlotId>()
-            val parkingSlotList = Database.getAllParkingSlots(collection)
-            val returnValue = Database.freeSlot(collection, slotId, parkingSlotList)
-            if (!returnValue) {
-                val response = mutableMapOf<String, JsonElement>()
-                response["errorCode"] = Json.parseToJsonElement("ParkingSlotNotValid")
-                call.respond(HttpStatusCode.BadRequest, JsonObject(response))
-            } else {
-                val response = mutableMapOf<String, JsonElement>()
-                response["success"] = Json.parseToJsonElement("ParkingSlotIsFree")
-                call.respond(JsonObject(response))
-            }
+            val response = InterfaceAdapter.free(slotId)
+            call.respond(response.first, response.second)
 
         }
         get("/parking-slot/") {
 
-            val collection = "parking-slot"
-
-            val parkingSlotList = Database.getAllParkingSlots(collection)
-            call.respond(parkingSlotList)
+            val response = InterfaceAdapter.getParkingSlotList()
+            call.respond(response)
         }
         get("/parking-slot/") {
 
-            val collection = "parking-slot"
-
             val slotId = call.receive<SlotId>()
-            val parkingSlot = Database.getParkingSlot(collection, slotId.slotId)
-            if (parkingSlot.id == "") {
-                val response = mutableMapOf<String, JsonElement>()
-                response["errorCode"] = Json.parseToJsonElement("ParkingSlotNotValid")
-                call.respond(HttpStatusCode.BadRequest, JsonObject(response))
-            } else {
-                call.respond(parkingSlot)
-            }
+            val response = InterfaceAdapter.getParkingSlot(slotId)
+            call.respond(response)
         }
     }
 }
