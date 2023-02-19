@@ -76,7 +76,7 @@ object InterfaceAdapter {
 
     fun getParkingSlot(slotId: SlotId): Any {
         val collection = "parking-slot"
-        var response: Any
+        lateinit var  response: Any
         val parkingSlot = ParkingSlotUseCases.getParkingSlot(collection, slotId.slotId)
         if (parkingSlot.id == "") {
             val statusCode = HttpStatusCode.BadRequest
