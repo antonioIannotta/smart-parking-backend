@@ -1,4 +1,4 @@
-package com.example.models
+package com.example.entity
 
 import com.example.parkingSlot.entity.SlotOccupation
 import org.junit.Test
