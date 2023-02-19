@@ -1,17 +1,17 @@
 package com.example.framework.routing
 
-import com.example.entity.user.UserCredentials
 import com.example.framework.module
-import com.example.interface_adapter.user.deleteExistingUser
-import com.example.interface_adapter.user.model.request.SignUpRequestBody
-import com.example.interface_adapter.user.model.response.UserInfoResponseBody
-import com.example.interface_adapter.user.signUp
-import com.example.interface_adapter.user.signIn
+import entity.UserCredentials
+import interface_adapter.deleteExistingUser
+import interface_adapter.model.request.SignUpRequestBody
+import interface_adapter.model.response.UserInfoResponseBody
+import interface_adapter.signIn
+import interface_adapter.signUp
 import io.ktor.client.call.*
-import io.ktor.client.plugins.contentnegotiation.*
 import io.ktor.client.request.*
 import io.ktor.http.*
 import io.ktor.serialization.kotlinx.json.*
+import io.ktor.server.plugins.contentnegotiation.*
 import io.ktor.server.testing.*
 import io.ktor.test.dispatcher.*
 import org.junit.jupiter.api.AfterAll
