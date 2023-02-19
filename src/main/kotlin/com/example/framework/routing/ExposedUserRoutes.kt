@@ -46,7 +46,7 @@ fun Route.exposedUserRoutes(tokenSecret: String) {
     post("/user/recover-password") {
 
         val userMail = call.receive<RecoverMailRequestBody>().email
-        val responseBody = recoverPassword(userMail)
+        val responseBody = recoverPassword(userMail, tokenSecret)
         //sending response to client
         if (responseBody.code != "success")
             call.response.status(HttpStatusCode.BadRequest)

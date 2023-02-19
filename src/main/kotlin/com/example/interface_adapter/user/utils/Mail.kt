@@ -28,10 +28,10 @@ fun sendMail(
 
 //TODO: add real link to change password page
 fun getRecoverPasswordMailContent(jwt: String): String = """
-        <h2>cambia password</h2>
+        <h2>Change password</h2>
         <br>
         <div>
-            Per cambiare la pasword vai al link seguente:
+            To change your password go to the following link:
             <a href="https://jwt.io/">LINK</a>
             <br>
             <div>token: $jwt</div>
