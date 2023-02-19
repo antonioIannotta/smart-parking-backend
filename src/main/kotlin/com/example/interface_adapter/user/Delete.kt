@@ -6,12 +6,12 @@ import com.example.use_cases.user.deleteUser
 import com.example.use_cases.user.getUserInfo
 import java.util.*
 
-fun deleteExistingUser(mail: String): ServerResponseBody {
+fun deleteExistingUser(email: String): ServerResponseBody {
 
-    return if (Objects.isNull(getUserInfo(mail)))
+    return if (Objects.isNull(getUserInfo(email)))
         ServerResponseBody(ResponseCode.USER_NOT_FOUND.code, "User not found")
     else {
-        deleteUser(mail)
+        deleteUser(email)
         ServerResponseBody(ResponseCode.SUCCESS.code, "success")
     }
 

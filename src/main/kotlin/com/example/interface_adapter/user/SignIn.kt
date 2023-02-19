@@ -9,11 +9,11 @@ import java.util.*
 
 fun signIn(credentials: UserCredentials, tokenSecret: String): SigningResponseBody {
 
-    return if (Objects.isNull(userInfo(credentials.mail)))
+    return if (Objects.isNull(userInfo(credentials.email)))
         SigningResponseBody(ResponseCode.USER_NOT_FOUND.code, "User not found")
     else if (validateCredentials(credentials)) {
-        val jwt = generateJWT(credentials.mail, tokenSecret)
-        SigningResponseBody(ResponseCode.USER_NOT_FOUND.code, "User not found")
+        val jwt = generateJWT(credentials.email, tokenSecret)
+        SigningResponseBody(ResponseCode.SUCCESS.code, "success", jwt)
     } else
         return SigningResponseBody(ResponseCode.PASSWORD_ERROR.code, "Wrong password")
 

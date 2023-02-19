@@ -5,12 +5,12 @@ import com.mongodb.client.model.Filters
 import com.mongodb.client.model.Projections
 import java.util.*
 
-fun getUserInfo(mail: String): UserInfo? {
+fun getUserInfo(email: String): UserInfo? {
 
     val mongoClient = getMongoClient()
     val mongoCollection = getUserCollection(mongoClient)
 
-    val filter = Filters.eq("email", mail)
+    val filter = Filters.eq("email", email)
     val project = Projections.exclude("password")
     val userInfoDocument = mongoCollection.find(filter).projection(project).first()
 
