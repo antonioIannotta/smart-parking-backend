@@ -1,12 +1,9 @@
 package com.example
 
-import com.example.user.com.example.use_cases.user.getMongoClient
-import com.example.user.com.example.use_cases.user.getUserCollection
-import com.mongodb.MongoClient
-import com.mongodb.MongoClientURI
+import com.example.use_cases.user.getMongoClient
+import com.example.use_cases.user.getUserCollection
 import io.ktor.server.testing.*
 import org.junit.jupiter.api.Test
-import java.util.*
 
 class MongoConnectionTest {
 

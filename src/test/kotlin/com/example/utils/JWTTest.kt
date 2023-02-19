@@ -1,4 +1,4 @@
-package com.example.utils;
+package com.example.utils
 
 import com.auth0.jwt.exceptions.JWTDecodeException
 import com.auth0.jwt.exceptions.TokenExpiredException

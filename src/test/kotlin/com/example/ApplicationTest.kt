@@ -1,5 +1,8 @@
 package com.example
 
+import com.example.framework.module
+import com.example.framework.plugins.configureAuthentication
+import com.example.framework.plugins.configureRouting
 import io.ktor.client.request.*
 import io.ktor.client.statement.*
 import io.ktor.http.*
@@ -10,6 +13,11 @@ import org.junit.jupiter.api.Test
 class ApplicationTest {
     @Test
     fun `test application startup and base endpoint connection`() = testApplication {
+
+        application {
+            module()
+        }
+
         client.get("/").apply {
             assertEquals(HttpStatusCode.OK, status)
             assertEquals("Hello World!", bodyAsText())
