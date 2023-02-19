@@ -1,18 +1,13 @@
 package com.example.plugins
 
-import com.example.parkingSlot.use_cases.ParkingSlotUseCases
 import com.example.parkingSlot.entity.IncrementOccupation
 import com.example.parkingSlot.entity.SlotId
 import com.example.parkingSlot.entity.SlotOccupation
 import com.example.parkingSlot.interface_adapter.InterfaceAdapter
-import io.ktor.http.*
 import io.ktor.server.routing.*
 import io.ktor.server.response.*
 import io.ktor.server.application.*
 import io.ktor.server.request.*
-import kotlinx.serialization.json.Json
-import kotlinx.serialization.json.JsonElement
-import kotlinx.serialization.json.JsonObject
 
 fun Application.configureRouting() {
     routing {
