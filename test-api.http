@@ -1,0 +1,46 @@
+### USER REGISTRATION API ###
+POST http://localhost:8080/user/sign-up
+Content-Type: application/json
+
+{
+    "email": "luca.bracchi3@studio.unibo.it",
+    "password": "test123",
+    "name": "luca",
+    "surname": "bracchi"
+}
+
+### USER LOGIN API ###
+POST http://localhost:8080/user/sign-in
+Content-Type: application/json
+
+{
+    "email": "luca.bracchi@test.it",
+    "password": "test123"
+}
+
+### USER INFO API ###
+GET http://localhost:8080/user/info
+Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJhdWQiOiJQYXJraW5nIENsaWVudCIsImlzcyI6Imx1Y2EgYnJhY2NoaSIsImV4cCI6MTY3NjEzNDUwMSwiZW1haWwiOiJsdWNhLmJyYWNjaGlAdGVzdC5pdCJ9.a-zCFL_EEoChkCMfbgePsdQZc1ZSe1d6uVIuRQ6pptk
+
+### DELETE ACCOUNT API ###
+GET http://localhost:8080/user/delete
+Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJhdWQiOiJQYXJraW5nIENsaWVudCIsImlzcyI6Imx1Y2EgYnJhY2NoaSIsImV4cCI6MTY3NjEzNDUwMSwiZW1haWwiOiJsdWNhLmJyYWNjaGlAdGVzdC5pdCJ9.a-zCFL_EEoChkCMfbgePsdQZc1ZSe1d6uVIuRQ6pptk
+
+### USER MAIL RECOVERY API ###
+POST http://localhost:8080/user/recover-password
+Content-Type: application/json
+
+{
+    "email": "luca.bracchi3@studio.unibo.it"
+}
+
+### CHANGE PASSWORD API ###
+# called without oldPassword, required for password recovery flow 
+POST http://localhost:8080/user/change-password
+Content-Type: application/json
+Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJhdWQiOiJQYXJraW5nIENsaWVudCIsImlzcyI6Imx1Y2EgYnJhY2NoaSIsImV4cCI6MTY3NjIwNTEwMiwiZW1haWwiOiJsdWNhLmJyYWNjaGlAdGVzdC5pdCJ9.CmSr6GLEPV6empeIDTS_Ku2JFAzCXyN9eadktMqoaeE
+
+{
+    "oldPassword": "test123",
+    "newPassword": "123test"
+}

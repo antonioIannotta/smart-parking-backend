@@ -1,18 +1,23 @@
 package com.example
 
+import com.example.framework.module
+import com.example.framework.plugins.configureAuthentication
+import com.example.framework.plugins.configureRouting
 import io.ktor.client.request.*
 import io.ktor.client.statement.*
-import io.ktor.server.testing.*
-import kotlin.test.*
 import io.ktor.http.*
-import com.example.plugins.*
+import io.ktor.server.testing.*
+import org.junit.jupiter.api.Assertions.assertEquals
+import org.junit.jupiter.api.Test
 
 class ApplicationTest {
     @Test
-    fun testRoot() = testApplication {
+    fun `test application startup and base endpoint connection`() = testApplication {
+
         application {
-            configureRouting()
+            module()
         }
+
         client.get("/").apply {
             assertEquals(HttpStatusCode.OK, status)
             assertEquals("Hello World!", bodyAsText())
