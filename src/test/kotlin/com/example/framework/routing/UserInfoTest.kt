@@ -13,6 +13,7 @@ import io.ktor.client.request.*
 import io.ktor.http.*
 import io.ktor.serialization.kotlinx.json.*
 import io.ktor.server.testing.*
+import io.ktor.test.dispatcher.*
 import org.junit.jupiter.api.AfterAll
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.BeforeAll
@@ -21,24 +22,24 @@ import org.junit.jupiter.api.Test
 class UserInfoTest {
 
     companion object {
-
-        private val testMail = "test@test.it"
-        private val testPassword = "Test123!"
-        private val testName = "testName"
-        private val testSurname = "testSurname"
-        private val testsecret = "1234567890"
+        private lateinit var testApp: TestApplication
+        private const val testMail = "test@test.it"
+        private const val testPassword = "Test123!"
+        private const val testName = "testName"
+        private const val testSurname = "testSurname"
+        private const val testSecret = "1234567890"
 
         @JvmStatic
         @BeforeAll
-        fun config() = testApplication {
-
-            application {
-                module()
+        fun config() {
+            testApp = TestApplication {
+                application {
+                    module(testSecret)
+                }
+                //register test user
+                val signUpRequestBody = SignUpRequestBody(testMail, testPassword, testName, testSurname)
+                signUp(signUpRequestBody, testSecret)
             }
-
-            //register test user
-            val signUpRequestBody = SignUpRequestBody(testMail, testPassword, testName, testSurname)
-            signUp(signUpRequestBody, testsecret)
         }
 
         @JvmStatic
@@ -50,24 +51,21 @@ class UserInfoTest {
     }
 
     @Test
-    fun `test that user info return info about the user`() = testApplication {
-
-        val client = createClient {
+    fun `test that user info return info about the user`() = testSuspend {
+        //log user and get jwt
+        val credentials = UserCredentials(testMail, testPassword)
+        val jwt = signIn(credentials, testSecret).token
+        //get user info
+        testApp.createClient {
             install(ContentNegotiation) {
                 json()
             }
-        }
-
-        //log user and get jwt
-        val credentials = UserCredentials(testMail, testPassword)
-        val jwt = signIn(credentials, testsecret).token
-        //get user info
-        client.get("/user/info") {
+        }.get("/user/info") {
             header(HttpHeaders.Authorization, "Bearer $jwt")
         }.apply {
             val responseBody = call.response.body<UserInfoResponseBody>()
             //user info verification
-            assertEquals(responseBody.userInfo?.email ?: "", testMail)
+            assertEquals(testMail, responseBody.userInfo?.email)
         }
     }
 

@@ -1,10 +1,12 @@
 package com.example.framework.routing
 
+import com.example.entity.user.UserCredentials
 import com.example.framework.module
 import com.example.interface_adapter.user.model.ResponseCode
 import com.example.interface_adapter.user.model.request.SignInRequestBody
 import com.example.interface_adapter.user.model.request.SignUpRequestBody
 import com.example.interface_adapter.user.model.response.SigningResponseBody
+import com.example.interface_adapter.user.signIn
 import io.ktor.client.*
 import io.ktor.client.call.*
 import io.ktor.client.plugins.contentnegotiation.*
@@ -29,17 +31,18 @@ class APIsTest {
 
     companion object {
         private lateinit var testApp: TestApplication
-        private val testMail = "test@test.it"
-        private val testPassword = "Test123!"
-        private val testName = "testName"
-        private val testSurname = "testSurname"
+        private const val testMail = "test@test.it"
+        private const val testPassword = "Test123!"
+        private const val testName = "testName"
+        private const val testSurname = "testSurname"
+        private const val testSecret = "1234567890"
 
         @JvmStatic
         @BeforeAll
         fun config() {
             testApp = TestApplication {
                 application {
-                    module()
+                    module(testSecret)
                 }
             }
         }
@@ -69,18 +72,16 @@ class APIsTest {
 
     @Test
     @Order(2)
-    fun `test that sign-up API can't let register 2  user with the same mail`() = testApplication {
-
-        val client = createClient {
-            install(ContentNegotiation) {
-                json()
-            }
-        }
+    fun `test that sign-up API can't let register 2  user with the same mail`() = testSuspend {
 
         val signUpRequestBody = SignUpRequestBody(testMail, testPassword, testName, testSurname)
 
         //sign up user
-        client.post("/user/sign-up") {
+        testApp.createClient {
+            install(ContentNegotiation) {
+                json()
+            }
+        }.post("/user/sign-up") {
             contentType(ContentType.Application.Json)
             setBody(signUpRequestBody)
         }.apply {
@@ -93,18 +94,16 @@ class APIsTest {
 
     @Test
     @Order(3)
-    fun `test that sign-in API return success code and jwt`() = testApplication {
-
-        val client = createClient {
-            install(ContentNegotiation) {
-                json()
-            }
-        }
+    fun `test that sign-in API return success code and jwt`() = testSuspend {
 
         val signInRequestBody = SignInRequestBody(testMail, testPassword)
 
         //sign in user
-        client.post("/user/sign-in") {
+        testApp.createClient {
+            install(ContentNegotiation) {
+                json()
+            }
+        }.post("/user/sign-in") {
             contentType(ContentType.Application.Json)
             setBody(signInRequestBody)
         }.apply {
@@ -118,23 +117,17 @@ class APIsTest {
 
     @Test
     @Order(4)
-    fun `test that user delete API return success code`() = testApplication {
+    fun `test that user delete API return success code`() = testSuspend {
 
-        val client = createClient {
+        //get token
+        val token = signIn(UserCredentials(testMail, testPassword), testSecret).token
+
+        //call user delete endpoint
+        testApp.createClient {
             install(ContentNegotiation) {
                 json()
             }
-        }
-
-        //get token
-        val signInRequestBody = SignInRequestBody(testMail, testPassword)
-        val token = client.post("/user/sign-in") {
-            contentType(ContentType.Application.Json)
-            setBody(signInRequestBody)
-        }.body<SigningResponseBody>().token
-
-        //call user delete endpoint
-        client.get("/user/delete") {
+        }.get("/user/delete") {
             header(HttpHeaders.Authorization, "Bearer $token")
         }
 
