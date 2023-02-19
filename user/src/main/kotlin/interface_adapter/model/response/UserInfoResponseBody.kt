@@ -1,6 +1,6 @@
 package interface_adapter.model.response
 
-import com.example.entity.user.UserInfo
+import entity.UserInfo
 import kotlinx.serialization.Serializable
 
 @Serializable

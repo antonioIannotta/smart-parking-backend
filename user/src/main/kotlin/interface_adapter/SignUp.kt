@@ -1,11 +1,10 @@
 package interface_adapter
 
-import com.example.interface_adapter.user.model.ResponseCode
-import com.example.interface_adapter.user.model.request.SignUpRequestBody
-import com.example.interface_adapter.user.model.response.SigningResponseBody
-import com.example.interface_adapter.user.utils.generateJWT
-import com.example.use_cases.user.createUser
-import com.example.use_cases.user.getUserInfo
+import interface_adapter.model.ResponseCode
+import interface_adapter.model.request.SignUpRequestBody
+import interface_adapter.model.response.SigningResponseBody
+import interface_adapter.utils.generateJWT
+import use_cases.createUser
 import java.util.*
 
 fun signUp(signUpRequestBody: SignUpRequestBody, tokenSecret: String): SigningResponseBody {
@@ -25,4 +24,9 @@ fun signUp(signUpRequestBody: SignUpRequestBody, tokenSecret: String): SigningRe
         "An user with that email is already registered"
     )
 
+}
+
+fun getUserInfo(email: String): Any? {
+    //TODO
+    return null
 }

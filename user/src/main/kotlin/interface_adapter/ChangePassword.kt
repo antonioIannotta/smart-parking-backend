@@ -1,11 +1,12 @@
 package interface_adapter
 
-import com.example.entity.user.UserCredentials
-import com.example.interface_adapter.user.model.ResponseCode
-import com.example.interface_adapter.user.model.response.ServerResponseBody
-import com.example.use_cases.user.changeUserPassword
-import com.example.use_cases.user.getUserInfo
-import com.example.use_cases.user.validateCredentials
+import entity.UserCredentials
+import interface_adapter.model.ResponseCode
+import interface_adapter.model.response.ServerResponseBody
+import use_cases.changeUserPassword
+import use_cases.getUserInfo
+import use_cases.validateCredentials
+
 
 fun changePassword(email: String, newPassword: String, oldPassword: String?): ServerResponseBody {
 

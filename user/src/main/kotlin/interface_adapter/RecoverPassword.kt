@@ -1,11 +1,11 @@
 package interface_adapter
 
-import com.example.interface_adapter.user.model.ResponseCode
-import com.example.interface_adapter.user.model.response.ServerResponseBody
-import com.example.interface_adapter.user.utils.generateJWT
-import com.example.interface_adapter.user.utils.getRecoverPasswordMailContent
-import com.example.interface_adapter.user.utils.sendMail
-import com.example.use_cases.user.getUserInfo
+import interface_adapter.model.ResponseCode
+import interface_adapter.model.response.ServerResponseBody
+import interface_adapter.utils.generateJWT
+import interface_adapter.utils.getRecoverPasswordMailContent
+import interface_adapter.utils.sendMail
+import use_cases.getUserInfo
 import java.util.*
 
 fun recoverPassword(email: String, tokenSecret: String): ServerResponseBody {

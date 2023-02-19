@@ -1,8 +1,8 @@
 package interface_adapter
 
-import com.example.interface_adapter.user.model.ResponseCode
-import com.example.interface_adapter.user.model.response.UserInfoResponseBody
-import com.example.use_cases.user.getUserInfo
+import interface_adapter.model.ResponseCode
+import interface_adapter.model.response.UserInfoResponseBody
+import use_cases.getUserInfo
 import java.util.*
 
 fun userInfo(email: String): UserInfoResponseBody {

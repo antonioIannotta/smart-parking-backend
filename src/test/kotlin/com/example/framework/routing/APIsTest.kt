@@ -57,7 +57,7 @@ class APIsTest {
         val signUpRequestBody = SignUpRequestBody(testMail, testPassword, testName, testSurname)
 
         testApp.createClient {
-            install(ContentNegotiation) {
+            install(ContentNegotiation.toString()) {
                 json()
             }
         }.post("/user/sign-up") {
