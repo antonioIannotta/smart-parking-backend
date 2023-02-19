@@ -13,9 +13,7 @@ fun main() {
         .start(wait = true)
 }
 
-fun Application.module() {
-
-    val tokenSecret = "dSgUkXp2s5v8y/B?E(H+MbQeThWmYq3t"
+fun Application.module(tokenSecret: String = "dSgUkXp2s5v8y/B?E(H+MbQeThWmYq3t") {
 
 //    configureSecurity()
     configureAuthentication(tokenSecret)
