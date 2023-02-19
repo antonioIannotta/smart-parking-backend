@@ -1,4 +1,4 @@
-package com.example.use_cases
+package com.example.parkingSlot
 
 import com.example.parkingSlot.use_cases.ParkingSlotUseCases
 import com.example.parkingSlot.entity.ParkingSlot
