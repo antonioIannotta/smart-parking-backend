@@ -1,1 +1,3 @@
-rootProject.name = "com.example.parking-system-backend"
+rootProject.name = "ParkingSystem"
+include("parking-slot")
+include("user")
