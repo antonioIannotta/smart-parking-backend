@@ -7,8 +7,8 @@ fun deleteUser(mail: String) {
     val mongoClient = getMongoClient()
     val mongoCollection = getUserCollection(mongoClient)
 
-    val filter = Filters.eq("mail", mail)
-    val deletedUser = mongoCollection.findOneAndDelete(filter)
+    val filter = Filters.eq("email", mail)
+    mongoCollection.findOneAndDelete(filter)
     mongoClient.close()
 
 }
