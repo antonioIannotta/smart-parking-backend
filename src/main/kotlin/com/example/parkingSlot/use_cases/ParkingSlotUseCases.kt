@@ -1,9 +1,6 @@
 package com.example.parkingSlot.use_cases
 
-import com.example.parkingSlot.entity.IncrementOccupation
 import com.example.parkingSlot.entity.ParkingSlot
-import com.example.parkingSlot.entity.SlotId
-import com.example.parkingSlot.entity.SlotOccupation
 import com.mongodb.MongoClient
 import com.mongodb.MongoClientURI
 import com.mongodb.client.model.Filters

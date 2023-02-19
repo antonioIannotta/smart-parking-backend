@@ -1,4 +1,4 @@
-package com.example.parkingSlot.entity
+package com.example.parkingSlot.use_cases
 
 import kotlinx.serialization.Serializable
 

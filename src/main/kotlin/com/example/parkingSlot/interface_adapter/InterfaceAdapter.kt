@@ -1,9 +1,9 @@
 package com.example.parkingSlot.interface_adapter
 
-import com.example.parkingSlot.entity.IncrementOccupation
+import com.example.parkingSlot.use_cases.IncrementOccupation
 import com.example.parkingSlot.entity.ParkingSlot
-import com.example.parkingSlot.entity.SlotId
-import com.example.parkingSlot.entity.SlotOccupation
+import com.example.parkingSlot.use_cases.SlotId
+import com.example.parkingSlot.use_cases.SlotOccupation
 import com.example.parkingSlot.use_cases.ParkingSlotUseCases
 import io.ktor.http.*
 import kotlinx.serialization.json.Json

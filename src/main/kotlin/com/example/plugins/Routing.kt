@@ -1,8 +1,8 @@
 package com.example.plugins
 
-import com.example.parkingSlot.entity.IncrementOccupation
-import com.example.parkingSlot.entity.SlotId
-import com.example.parkingSlot.entity.SlotOccupation
+import com.example.parkingSlot.use_cases.IncrementOccupation
+import com.example.parkingSlot.use_cases.SlotId
+import com.example.parkingSlot.use_cases.SlotOccupation
 import com.example.parkingSlot.interface_adapter.InterfaceAdapter
 import io.ktor.server.routing.*
 import io.ktor.server.response.*

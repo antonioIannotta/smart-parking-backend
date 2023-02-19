@@ -1,6 +1,6 @@
 package com.example.parkingSlot
 
-import com.example.parkingSlot.entity.SlotId
+import com.example.parkingSlot.use_cases.SlotId
 import org.junit.Test
 import kotlin.test.assertEquals
 
