@@ -1,9 +1,9 @@
 package com.example.framework.routing
 
-import com.example.interface_adapter.user.deleteExistingUser
-import com.example.interface_adapter.user.model.request.ChangePasswordRequestBody
-import com.example.interface_adapter.user.changePassword
-import com.example.interface_adapter.user.userInfo
+import interface_adapter.changePassword
+import interface_adapter.deleteExistingUser
+import interface_adapter.model.request.ChangePasswordRequestBody
+import interface_adapter.userInfo
 import io.ktor.http.*
 import io.ktor.server.application.*
 import io.ktor.server.auth.*

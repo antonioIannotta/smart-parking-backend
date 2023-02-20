@@ -1,11 +1,11 @@
 package com.example.framework.routing
 
-import com.example.entity.user.UserCredentials
-import com.example.interface_adapter.user.model.request.RecoverMailRequestBody
-import com.example.interface_adapter.user.model.request.SignUpRequestBody
-import com.example.interface_adapter.user.signUp
-import com.example.interface_adapter.user.recoverPassword
-import com.example.interface_adapter.user.signIn
+import entity.UserCredentials
+import interface_adapter.model.request.RecoverMailRequestBody
+import interface_adapter.model.request.SignUpRequestBody
+import interface_adapter.recoverPassword
+import interface_adapter.signIn
+import interface_adapter.signUp
 import io.ktor.http.*
 import io.ktor.server.application.*
 import io.ktor.server.request.*
