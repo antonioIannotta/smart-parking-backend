@@ -1,7 +1,7 @@
 package com.example.entity
 
-import com.example.parkingSlot.use_cases.SlotOccupation
 import org.junit.Test
+import use_cases.SlotOccupation
 import java.time.LocalDateTime
 import kotlin.test.assertEquals
 

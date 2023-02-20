@@ -1,8 +1,6 @@
 package com.example
 
 import com.example.framework.module
-import com.example.framework.plugins.configureAuthentication
-import com.example.framework.plugins.configureRouting
 import io.ktor.client.request.*
 import io.ktor.client.statement.*
 import io.ktor.http.*

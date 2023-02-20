@@ -1,6 +1,5 @@
 package com.example.framework.routing
 
-
 import com.example.framework.module
 import entity.UserCredentials
 import interface_adapter.model.ResponseCode
@@ -8,13 +7,11 @@ import interface_adapter.model.request.SignInRequestBody
 import interface_adapter.model.request.SignUpRequestBody
 import interface_adapter.model.response.SigningResponseBody
 import interface_adapter.signIn
-import io.ktor.client.*
 import io.ktor.client.call.*
-import io.ktor.client.plugins.*
+import io.ktor.client.plugins.contentnegotiation.*
 import io.ktor.client.request.*
 import io.ktor.http.*
 import io.ktor.serialization.kotlinx.json.*
-import io.ktor.server.plugins.contentnegotiation.*
 import io.ktor.server.testing.*
 import io.ktor.test.dispatcher.*
 import org.junit.jupiter.api.Assertions.assertEquals
@@ -57,7 +54,7 @@ class APIsTest {
         val signUpRequestBody = SignUpRequestBody(testMail, testPassword, testName, testSurname)
 
         testApp.createClient {
-            install(ContentNegotiation.toString()) {
+            install(ContentNegotiation) {
                 json()
             }
         }.post("/user/sign-up") {

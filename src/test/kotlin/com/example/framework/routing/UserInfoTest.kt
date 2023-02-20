@@ -8,10 +8,10 @@ import interface_adapter.model.response.UserInfoResponseBody
 import interface_adapter.signIn
 import interface_adapter.signUp
 import io.ktor.client.call.*
+import io.ktor.client.plugins.contentnegotiation.*
 import io.ktor.client.request.*
 import io.ktor.http.*
 import io.ktor.serialization.kotlinx.json.*
-import io.ktor.server.plugins.contentnegotiation.*
 import io.ktor.server.testing.*
 import io.ktor.test.dispatcher.*
 import org.junit.jupiter.api.AfterAll

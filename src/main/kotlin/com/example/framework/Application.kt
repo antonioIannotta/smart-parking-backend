@@ -2,8 +2,8 @@ package com.example.framework
 
 import com.example.framework.plugins.configureAuthentication
 import com.example.framework.plugins.configureHTTP
-import com.example.framework.plugins.configureRouting
 import com.example.framework.plugins.configureSerialization
+import com.example.framework.plugins.configureRouting
 import io.ktor.server.application.*
 import io.ktor.server.engine.*
 import io.ktor.server.netty.*
@@ -14,8 +14,6 @@ fun main() {
 }
 
 fun Application.module(tokenSecret: String = "dSgUkXp2s5v8y/B?E(H+MbQeThWmYq3t") {
-
-//    configureSecurity()
     configureAuthentication(tokenSecret)
     configureSerialization()
     configureHTTP()

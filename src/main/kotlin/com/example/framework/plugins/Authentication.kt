@@ -1,8 +1,8 @@
 package com.example.framework.plugins
 
-import com.example.interface_adapter.user.model.ResponseCode
-import com.example.interface_adapter.user.model.response.ServerResponseBody
-import com.example.interface_adapter.user.utils.getJWTVerifier
+import interface_adapter.model.ResponseCode
+import interface_adapter.model.response.ServerResponseBody
+import interface_adapter.utils.getJWTVerifier
 import io.ktor.http.*
 import io.ktor.server.application.*
 import io.ktor.server.auth.*

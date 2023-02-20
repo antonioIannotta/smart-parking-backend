@@ -5,6 +5,7 @@ import interface_adapter.model.request.SignUpRequestBody
 import interface_adapter.model.response.SigningResponseBody
 import interface_adapter.utils.generateJWT
 import use_cases.createUser
+import use_cases.getUserInfo
 import java.util.*
 
 fun signUp(signUpRequestBody: SignUpRequestBody, tokenSecret: String): SigningResponseBody {
@@ -24,9 +25,4 @@ fun signUp(signUpRequestBody: SignUpRequestBody, tokenSecret: String): SigningRe
         "An user with that email is already registered"
     )
 
-}
-
-fun getUserInfo(email: String): Any? {
-    //TODO
-    return null
 }
