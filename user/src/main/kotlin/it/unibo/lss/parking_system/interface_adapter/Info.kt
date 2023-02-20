@@ -11,6 +11,6 @@ fun userInfo(email: String): UserInfoResponseBody {
 
     return if (Objects.isNull(userInfo))
         UserInfoResponseBody(ResponseCode.USER_NOT_FOUND.code, "User not found")
-    else UserInfoResponseBody(ResponseCode.SUCCESS.code, "success", userInfo)
+    else UserInfoResponseBody(ResponseCode.SUCCESS.code, "success", userInfo?.email, userInfo?.name)
 
 }

@@ -20,7 +20,6 @@ fun getUserInfo(email: String): UserInfo? {
     else UserInfo(
         userInfoDocument?.get("email").toString(),
         userInfoDocument?.get("name").toString(),
-        userInfoDocument?.get("surname").toString(),
     )
 
 }

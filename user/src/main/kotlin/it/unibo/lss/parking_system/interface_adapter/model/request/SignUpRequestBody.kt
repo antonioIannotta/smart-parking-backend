@@ -6,6 +6,5 @@ import kotlinx.serialization.Serializable
 data class SignUpRequestBody(
     val email: String,
     val password: String,
-    val name: String,
-    val surname: String
+    val name: String
 )

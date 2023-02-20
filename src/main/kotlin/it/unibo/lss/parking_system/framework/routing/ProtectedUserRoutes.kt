@@ -26,7 +26,7 @@ fun Route.protectedUserRoutes() {
 
         val responseBody = userInfo(userMail)
 
-        if (Objects.isNull(responseBody.userInfo))
+        if (Objects.isNull(responseBody.email))
             call.response.status(HttpStatusCode.BadRequest)
         else
             call.response.status(HttpStatusCode.OK)
