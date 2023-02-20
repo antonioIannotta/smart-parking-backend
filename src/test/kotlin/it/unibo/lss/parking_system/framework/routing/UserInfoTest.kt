@@ -26,7 +26,6 @@ class UserInfoTest {
         private const val testMail = "test@test.it"
         private const val testPassword = "Test123!"
         private const val testName = "testName"
-        private const val testSurname = "testSurname"
         private const val testSecret = "1234567890"
 
         @JvmStatic
@@ -37,7 +36,7 @@ class UserInfoTest {
                     module(testSecret)
                 }
                 //register test user
-                val signUpRequestBody = SignUpRequestBody(testMail, testPassword, testName, testSurname)
+                val signUpRequestBody = SignUpRequestBody(testMail, testPassword, testName)
                 signUp(signUpRequestBody, testSecret)
             }
         }
@@ -65,7 +64,7 @@ class UserInfoTest {
         }.apply {
             val responseBody = call.response.body<UserInfoResponseBody>()
             //user info verification
-            assertEquals(testMail, responseBody.userInfo?.email)
+            assertEquals(testMail, responseBody.email)
         }
     }
 

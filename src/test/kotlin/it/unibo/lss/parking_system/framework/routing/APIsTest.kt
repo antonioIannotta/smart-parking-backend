@@ -33,7 +33,6 @@ class APIsTest {
         private const val testMail = "test@test.it"
         private const val testPassword = "Test123!"
         private const val testName = "testName"
-        private const val testSurname = "testSurname"
         private const val testSecret = "1234567890"
 
         @JvmStatic
@@ -51,7 +50,7 @@ class APIsTest {
     @Order(1)
     fun `test sign-up API return success code and user jwt`() = testSuspend {
 
-        val signUpRequestBody = SignUpRequestBody(testMail, testPassword, testName, testSurname)
+        val signUpRequestBody = SignUpRequestBody(testMail, testPassword, testName)
 
         testApp.createClient {
             install(ContentNegotiation) {
@@ -73,7 +72,7 @@ class APIsTest {
     @Order(2)
     fun `test that sign-up API can't let register 2  user with the same mail`() = testSuspend {
 
-        val signUpRequestBody = SignUpRequestBody(testMail, testPassword, testName, testSurname)
+        val signUpRequestBody = SignUpRequestBody(testMail, testPassword, testName)
 
         //sign up user
         testApp.createClient {
