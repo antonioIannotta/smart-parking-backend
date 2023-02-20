@@ -62,7 +62,7 @@ class APIsTest {
         }.apply {
             val responseBody = call.response.body<SigningResponseBody>()
             assertEquals(HttpStatusCode.OK, call.response.status)
-            assertEquals(ResponseCode.SUCCESS.code, responseBody.code)
+            assertEquals(null, responseBody.errorCode)
             assert(responseBody.token is String)
         }
 
@@ -85,7 +85,7 @@ class APIsTest {
         }.apply {
             val responseBody = call.response.body<SigningResponseBody>()
             assertEquals(HttpStatusCode.BadRequest, call.response.status)
-            assertEquals(ResponseCode.ALREADY_REGISTERED.code, responseBody.code)
+            assertEquals(ResponseCode.ALREADY_REGISTERED.code, responseBody.errorCode)
             assertEquals(null, responseBody.token)
         }
     }
@@ -107,7 +107,7 @@ class APIsTest {
         }.apply {
             val responseBody = call.response.body<SigningResponseBody>()
             assertEquals(HttpStatusCode.OK, call.response.status)
-            assertEquals(ResponseCode.SUCCESS.code, responseBody.code)
+            assertEquals(null, responseBody.errorCode)
             assert(responseBody.token is String)
         }
 

@@ -13,7 +13,7 @@ fun signIn(credentials: UserCredentials, tokenSecret: String): SigningResponseBo
         SigningResponseBody(ResponseCode.USER_NOT_FOUND.code, "User not found")
     else if (validateCredentials(credentials)) {
         val jwt = generateJWT(credentials.email, tokenSecret)
-        SigningResponseBody(ResponseCode.SUCCESS.code, "success", jwt)
+        SigningResponseBody(null, "success", jwt)
     } else
         return SigningResponseBody(ResponseCode.PASSWORD_ERROR.code, "Wrong password")
 

@@ -17,7 +17,7 @@ fun recoverPassword(email: String, tokenSecret: String): ServerResponseBody {
             "Password recovery mail",
             getRecoverPasswordMailContent(jwt)
         )
-        ServerResponseBody(ResponseCode.SUCCESS.code, "success")
+        ServerResponseBody(null, "success")
     } else ServerResponseBody(ResponseCode.USER_NOT_FOUND.code, "User not found")
 
 }

@@ -8,6 +8,6 @@ import kotlinx.serialization.Serializable
  */
 @Serializable
 data class ServerResponseBody(
-    val code: String,
+    val errorCode: String?,
     val message: String
 )

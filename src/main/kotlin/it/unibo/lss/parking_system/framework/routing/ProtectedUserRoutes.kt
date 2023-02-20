@@ -39,7 +39,7 @@ fun Route.protectedUserRoutes() {
 
         val responseBody = deleteExistingUser(userMail)
 
-        if (responseBody.code != "success")
+        if (responseBody.errorCode != null)
             call.response.status(HttpStatusCode.BadRequest)
         else
             call.response.status(HttpStatusCode.OK)
@@ -53,7 +53,7 @@ fun Route.protectedUserRoutes() {
 
         val responseBody = changePassword(userMail, requestBody.newPassword, requestBody.oldPassword)
 
-        if (responseBody.code != "success")
+        if (responseBody.errorCode != null)
             call.response.status(HttpStatusCode.BadRequest)
         else
             call.response.status(HttpStatusCode.OK)

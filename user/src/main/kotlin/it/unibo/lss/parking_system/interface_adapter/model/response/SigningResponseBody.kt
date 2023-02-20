@@ -8,7 +8,7 @@ import kotlinx.serialization.Serializable
  */
 @Serializable
 data class SigningResponseBody(
-    val code: String,
+    val errorCode: String?,
     val message: String,
     val token: String? = null
 )

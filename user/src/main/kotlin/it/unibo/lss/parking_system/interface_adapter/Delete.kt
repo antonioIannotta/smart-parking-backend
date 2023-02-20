@@ -12,7 +12,7 @@ fun deleteExistingUser(email: String): ServerResponseBody {
         ServerResponseBody(ResponseCode.USER_NOT_FOUND.code, "User not found")
     else {
         deleteUser(email)
-        ServerResponseBody(ResponseCode.SUCCESS.code, "success")
+        ServerResponseBody(null, "success")
     }
 
 }

@@ -4,7 +4,7 @@ import kotlinx.serialization.Serializable
 
 @Serializable
 data class UserInfoResponseBody(
-    val code: String,
+    val errorCode: String?,
     val message: String,
     val email: String? = null,
     val name: String? = null

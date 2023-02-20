@@ -20,5 +20,5 @@ fun changePassword(email: String, newPassword: String, oldPassword: String?): Se
     }
 
     changeUserPassword(email, newPassword)
-    return ServerResponseBody(ResponseCode.SUCCESS.code, "success")
+    return ServerResponseBody(null, "success")
 }

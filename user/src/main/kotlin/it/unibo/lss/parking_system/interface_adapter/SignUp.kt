@@ -17,7 +17,7 @@ fun signUp(signUpRequestBody: SignUpRequestBody, tokenSecret: String): SigningRe
             signUpRequestBody.name
         )
         val jwt = generateJWT(signUpRequestBody.email, tokenSecret)
-        SigningResponseBody(ResponseCode.SUCCESS.code, "success", jwt)
+        SigningResponseBody(null, "success", jwt)
 
     } else SigningResponseBody(
         ResponseCode.ALREADY_REGISTERED.code,
