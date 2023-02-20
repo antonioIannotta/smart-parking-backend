@@ -33,10 +33,6 @@ fun Route.protectedUserRoutes() {
         call.respond(responseBody)
     }
 
-    get("/user/{userId?}/parking-slot") {
-        call.respondText("You called /user/{userId?}/parking-slot")
-    }
-
     get("/user/delete") {
         val principal = call.principal<JWTPrincipal>()
         val userMail = principal!!.payload.getClaim("email").asString()
