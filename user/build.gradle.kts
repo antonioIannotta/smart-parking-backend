@@ -23,6 +23,7 @@ dependencies {
     implementation("org.mongodb:mongo-java-driver:3.12.11")
     implementation("ch.qos.logback:logback-classic:$logbackVersion")
     implementation("org.apache.commons:commons-email:1.5")
+    testImplementation("io.ktor:ktor-server-test-host:$ktorVersion")
     testImplementation("org.jetbrains.kotlin:kotlin-test-junit:$kotlinVersion")
     testImplementation("org.junit.jupiter:junit-jupiter:5.8.1")
 }
