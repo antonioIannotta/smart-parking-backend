@@ -1,1 +1,1 @@
-# SMART PARKING
+# Parking system backend
