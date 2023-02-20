@@ -1,3 +1,13 @@
 FROM ubuntu:20.04
 
 # Necessario creare il Jar, portarlo sulla macchina virtuale ubuntu e lanciarlo
+RUN apt update
+RUN apt install git
+RUN apt install snapd
+RUN apt install default-jre
+RUN snap install --classic kotlin
+RUN git clone https://github.com/antonioIannotta/parking-system-backend.git
+RUN cd parking-system-backend
+RUN git checkout -b master
+RUN kotlinc src/Application.kt -include-runtime -d Application.jar
+RUN java -jar Application.jar
