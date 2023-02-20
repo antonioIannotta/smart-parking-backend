@@ -1,4 +1,4 @@
-package it.unibo.lss.parking_system.entity.interface_adapter.model
+package it.unibo.lss.parking_system.interface_adapter.model
 
 enum class ResponseCode(val code: String) {
     SUCCESS("success"),

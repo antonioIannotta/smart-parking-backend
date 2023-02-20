@@ -1,6 +1,6 @@
 package it.unibo.lss.parking_system.utils
 
-import it.unibo.lss.parking_system.entity.interface_adapter.utils.sendMail
+import it.unibo.lss.parking_system.interface_adapter.utils.sendMail
 import org.junit.jupiter.api.Test
 
 class EmailTest {

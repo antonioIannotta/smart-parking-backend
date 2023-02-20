@@ -1,10 +1,10 @@
-package it.unibo.lss.parking_system.entity.interface_adapter
+package it.unibo.lss.parking_system.interface_adapter
 
-import it.unibo.lss.parking_system.entity.interface_adapter.model.ResponseCode
-import it.unibo.lss.parking_system.entity.interface_adapter.model.response.ServerResponseBody
-import it.unibo.lss.parking_system.entity.interface_adapter.utils.generateJWT
-import it.unibo.lss.parking_system.entity.interface_adapter.utils.getRecoverPasswordMailContent
-import it.unibo.lss.parking_system.entity.interface_adapter.utils.sendMail
+import it.unibo.lss.parking_system.interface_adapter.model.ResponseCode
+import it.unibo.lss.parking_system.interface_adapter.model.response.ServerResponseBody
+import it.unibo.lss.parking_system.interface_adapter.utils.generateJWT
+import it.unibo.lss.parking_system.interface_adapter.utils.getRecoverPasswordMailContent
+import it.unibo.lss.parking_system.interface_adapter.utils.sendMail
 import it.unibo.lss.parking_system.use_cases.getUserInfo
 import java.util.*
 

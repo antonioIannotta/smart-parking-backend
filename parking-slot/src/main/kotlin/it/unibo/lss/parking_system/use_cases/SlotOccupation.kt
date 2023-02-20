@@ -1,4 +1,4 @@
-package it.unibo.lss.parking_system.entity.use_cases
+package it.unibo.lss.parking_system.use_cases
 
 import kotlinx.serialization.Serializable
 

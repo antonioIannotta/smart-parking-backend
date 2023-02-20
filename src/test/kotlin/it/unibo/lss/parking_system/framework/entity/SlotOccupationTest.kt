@@ -1,7 +1,7 @@
 package it.unibo.lss.parking_system.framework.entity
 
 import org.junit.Test
-import it.unibo.lss.parking_system.entity.use_cases.SlotOccupation
+import it.unibo.lss.parking_system.use_cases.SlotOccupation
 import java.time.LocalDateTime
 import kotlin.test.assertEquals
 

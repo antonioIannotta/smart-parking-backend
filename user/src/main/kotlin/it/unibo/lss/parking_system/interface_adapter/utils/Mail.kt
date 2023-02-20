@@ -1,4 +1,4 @@
-package it.unibo.lss.parking_system.entity.interface_adapter.utils
+package it.unibo.lss.parking_system.interface_adapter.utils
 
 import org.apache.commons.mail.DefaultAuthenticator
 import org.apache.commons.mail.HtmlEmail

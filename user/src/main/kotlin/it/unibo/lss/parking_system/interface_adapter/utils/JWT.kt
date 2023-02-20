@@ -1,4 +1,4 @@
-package it.unibo.lss.parking_system.entity.interface_adapter.utils
+package it.unibo.lss.parking_system.interface_adapter.utils
 
 import com.auth0.jwt.JWT
 import com.auth0.jwt.JWTVerifier

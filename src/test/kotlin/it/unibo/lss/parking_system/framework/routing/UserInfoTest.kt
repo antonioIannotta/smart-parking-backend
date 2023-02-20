@@ -2,11 +2,11 @@ package it.unibo.lss.parking_system.framework.routing
 
 import it.unibo.lss.parking_system.framework.module
 import it.unibo.lss.parking_system.entity.UserCredentials
-import it.unibo.lss.parking_system.entity.interface_adapter.deleteExistingUser
-import it.unibo.lss.parking_system.entity.interface_adapter.model.request.SignUpRequestBody
-import it.unibo.lss.parking_system.entity.interface_adapter.model.response.UserInfoResponseBody
-import it.unibo.lss.parking_system.entity.interface_adapter.signIn
-import it.unibo.lss.parking_system.entity.interface_adapter.signUp
+import it.unibo.lss.parking_system.interface_adapter.deleteExistingUser
+import it.unibo.lss.parking_system.interface_adapter.model.request.SignUpRequestBody
+import it.unibo.lss.parking_system.interface_adapter.model.response.UserInfoResponseBody
+import it.unibo.lss.parking_system.interface_adapter.signIn
+import it.unibo.lss.parking_system.interface_adapter.signUp
 import io.ktor.client.call.*
 import io.ktor.client.plugins.contentnegotiation.*
 import io.ktor.client.request.*

@@ -1,4 +1,4 @@
-package it.unibo.lss.parking_system.entity.interface_adapter.model.response
+package it.unibo.lss.parking_system.interface_adapter.model.response
 
 import kotlinx.serialization.Serializable
 

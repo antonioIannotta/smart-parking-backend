@@ -1,7 +1,7 @@
 package it.unibo.lss.parking_system.framework.entity
 
 import org.junit.Test
-import it.unibo.lss.parking_system.entity.use_cases.SlotId
+import it.unibo.lss.parking_system.use_cases.SlotId
 import kotlin.test.assertEquals
 
 class SlotTest {

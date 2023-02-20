@@ -2,8 +2,8 @@ package it.unibo.lss.parking_system.utils
 
 import com.auth0.jwt.exceptions.JWTDecodeException
 import com.auth0.jwt.exceptions.TokenExpiredException
-import it.unibo.lss.parking_system.entity.interface_adapter.utils.generateJWT
-import it.unibo.lss.parking_system.entity.interface_adapter.utils.getJWTVerifier
+import it.unibo.lss.parking_system.interface_adapter.utils.generateJWT
+import it.unibo.lss.parking_system.interface_adapter.utils.getJWTVerifier
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.assertThrows
 

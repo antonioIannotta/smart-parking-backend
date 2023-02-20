@@ -1,4 +1,4 @@
-package it.unibo.lss.parking_system.entity.interface_adapter
+package it.unibo.lss.parking_system.interface_adapter
 
 
 import it.unibo.lss.parking_system.entity.ParkingSlot
@@ -6,10 +6,10 @@ import io.ktor.http.*
 import kotlinx.serialization.json.Json
 import kotlinx.serialization.json.JsonElement
 import kotlinx.serialization.json.JsonObject
-import it.unibo.lss.parking_system.entity.use_cases.IncrementOccupation
-import it.unibo.lss.parking_system.entity.use_cases.ParkingSlotUseCases
-import it.unibo.lss.parking_system.entity.use_cases.SlotId
-import it.unibo.lss.parking_system.entity.use_cases.SlotOccupation
+import it.unibo.lss.parking_system.use_cases.IncrementOccupation
+import it.unibo.lss.parking_system.use_cases.ParkingSlotUseCases
+import it.unibo.lss.parking_system.use_cases.SlotId
+import it.unibo.lss.parking_system.use_cases.SlotOccupation
 
 object InterfaceAdapter {
 

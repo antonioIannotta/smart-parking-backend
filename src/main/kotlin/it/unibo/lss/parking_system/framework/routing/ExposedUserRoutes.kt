@@ -1,11 +1,11 @@
 package it.unibo.lss.parking_system.framework.routing
 
 import it.unibo.lss.parking_system.entity.UserCredentials
-import it.unibo.lss.parking_system.entity.interface_adapter.model.request.RecoverMailRequestBody
-import it.unibo.lss.parking_system.entity.interface_adapter.model.request.SignUpRequestBody
-import it.unibo.lss.parking_system.entity.interface_adapter.recoverPassword
-import it.unibo.lss.parking_system.entity.interface_adapter.signIn
-import it.unibo.lss.parking_system.entity.interface_adapter.signUp
+import it.unibo.lss.parking_system.interface_adapter.model.request.RecoverMailRequestBody
+import it.unibo.lss.parking_system.interface_adapter.model.request.SignUpRequestBody
+import it.unibo.lss.parking_system.interface_adapter.recoverPassword
+import it.unibo.lss.parking_system.interface_adapter.signIn
+import it.unibo.lss.parking_system.interface_adapter.signUp
 import io.ktor.http.*
 import io.ktor.server.application.*
 import io.ktor.server.request.*

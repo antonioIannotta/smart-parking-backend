@@ -1,8 +1,8 @@
 package it.unibo.lss.parking_system.framework.plugins
 
-import it.unibo.lss.parking_system.entity.interface_adapter.model.ResponseCode
-import it.unibo.lss.parking_system.entity.interface_adapter.model.response.ServerResponseBody
-import it.unibo.lss.parking_system.entity.interface_adapter.utils.getJWTVerifier
+import it.unibo.lss.parking_system.interface_adapter.model.ResponseCode
+import it.unibo.lss.parking_system.interface_adapter.model.response.ServerResponseBody
+import it.unibo.lss.parking_system.interface_adapter.utils.getJWTVerifier
 import io.ktor.http.*
 import io.ktor.server.application.*
 import io.ktor.server.auth.*
