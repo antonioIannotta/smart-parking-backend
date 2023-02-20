@@ -14,7 +14,6 @@ import use_cases.SlotOccupation
 
 fun Application.configureRouting(tokenSecret: String) {
 
-
     routing {
 
         authenticate("auth-jwt") {
