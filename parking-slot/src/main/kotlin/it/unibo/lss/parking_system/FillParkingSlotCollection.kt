@@ -1,4 +1,4 @@
-package it.unibo.lss.parking_system.entity
+package it.unibo.lss.parking_system
 
 import com.mongodb.MongoClient
 import com.mongodb.MongoClientURI
@@ -11,21 +11,20 @@ object FillParkingSlotCollection {
     private const val parkingSlotTestCollection = "parking-slot-test"
     private const val databaseName = "ParkingSystem"
 
-    private val literals = listOf("A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K", "L", "M", "N", "O",
-        "P", "Q", "R", "S", "T", "U", "V", "W", "X", "Y", "Z")
-    private val numbers = listOf("1", "2", "3", "4", "5", "6", "7", "8", "9")
+    private val literals = listOf("A", "B")
+    private val numbers = listOf("1", "2", "3", "4", "5")
 
 
-    fun eraseAndFillTestCollection() {
-        eraseTestCollection()
+    fun eraseAndFillCollection(collectionName: String) {
+        eraseCollection(collectionName)
         val mongoClient = MongoClient(MongoClientURI(mongoAddress))
-        val collection = mongoClient.getDatabase(databaseName).getCollection(parkingSlotTestCollection)
+        val collection = mongoClient.getDatabase(databaseName).getCollection(collectionName)
         fillCollection(collection)
     }
 
-    private fun eraseTestCollection() {
+    private fun eraseCollection(collectionName: String) {
         val mongoClient = MongoClient(MongoClientURI(mongoAddress))
-        val collection = mongoClient.getDatabase(databaseName).getCollection(parkingSlotTestCollection)
+        val collection = mongoClient.getDatabase(databaseName).getCollection(collectionName)
         collection.drop()
     }
 
@@ -41,5 +40,8 @@ object FillParkingSlotCollection {
         Document()
             .append("id", literal + number)
             .append("occupied", false)
-            .append("endStop", "")
+            .append("stopEnd", "")
+            .append("latitude", 0.0)
+            .append("longitude", 0.0)
+            .append("userId", "")
 }

@@ -7,4 +7,5 @@ import kotlinx.serialization.Serializable
  * parking slot is required by the client
  */
 @Serializable
-class ParkingSlot(var id: String, var occupied: Boolean, var endStop: String)
+class ParkingSlot(val id: String, val occupied: Boolean, val endStop: String,
+    val latitude: String, val longitude: String, val userId: String)

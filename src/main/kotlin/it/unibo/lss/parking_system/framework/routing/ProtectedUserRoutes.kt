@@ -1,10 +1,5 @@
 package it.unibo.lss.parking_system.framework.routing
 
-import it.unibo.lss.parking_system.interface_adapter.InterfaceAdapter
-import it.unibo.lss.parking_system.interface_adapter.changePassword
-import it.unibo.lss.parking_system.interface_adapter.deleteExistingUser
-import it.unibo.lss.parking_system.interface_adapter.model.request.ChangePasswordRequestBody
-import it.unibo.lss.parking_system.interface_adapter.userInfo
 import io.ktor.http.*
 import io.ktor.server.application.*
 import io.ktor.server.auth.*
@@ -12,6 +7,11 @@ import io.ktor.server.auth.jwt.*
 import io.ktor.server.request.*
 import io.ktor.server.response.*
 import io.ktor.server.routing.*
+import it.unibo.lss.parking_system.interface_adapter.InterfaceAdapter
+import it.unibo.lss.parking_system.interface_adapter.changePassword
+import it.unibo.lss.parking_system.interface_adapter.deleteExistingUser
+import it.unibo.lss.parking_system.interface_adapter.model.request.ChangePasswordRequestBody
+import it.unibo.lss.parking_system.interface_adapter.userInfo
 import it.unibo.lss.parking_system.use_cases.IncrementOccupation
 import it.unibo.lss.parking_system.use_cases.SlotId
 import it.unibo.lss.parking_system.use_cases.SlotOccupation
