@@ -39,7 +39,7 @@ class AuthenticationTest {
 
     @Test
     fun `test that sign-ip API doesn't require authentication`() = testSuspend {
-        testApp.client.post("/user/sign-in").apply {
+        testApp.client.post("/user/login").apply {
             assertNotEquals(HttpStatusCode.Unauthorized, status)
         }
     }
