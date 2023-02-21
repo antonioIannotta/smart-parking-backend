@@ -160,7 +160,7 @@ object ParkingSlotUseCases {
                     parkingSlot -> parkingSlot.id == id
             }
         } else {
-            ParkingSlot("", false, "", "", "", "")
+            ParkingSlot("", false, "", 0.0, 0.0, "")
         }
 
         print("Parking slot -----------> " + parkingSlot.endStop)
@@ -177,8 +177,8 @@ object ParkingSlotUseCases {
             document["id"].toString(),
             document["occupied"].toString().toBoolean(),
             document["endStop"].toString(),
-            document["latitude"].toString(),
-            document["longitude"].toString(),
+            document["latitude"].toString().toDouble(),
+            document["longitude"].toString().toDouble(),
             document["userId"].toString()
         )
     }

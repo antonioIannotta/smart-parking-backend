@@ -1,6 +1,7 @@
 package it.unibo.lss.parking_system.entity
 
 import kotlinx.serialization.Serializable
+import java.time.Instant
 
 /**
  * This data class represents a model for the Parking slot to be used when either a parking slot or the full list of
@@ -8,4 +9,4 @@ import kotlinx.serialization.Serializable
  */
 @Serializable
 class ParkingSlot(val id: String, val occupied: Boolean, val endStop: String,
-    val latitude: String, val longitude: String, val userId: String)
+    val latitude: Double, val longitude: Double, val userId: String)
