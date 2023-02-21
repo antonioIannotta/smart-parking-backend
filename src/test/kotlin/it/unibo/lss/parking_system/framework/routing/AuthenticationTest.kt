@@ -64,7 +64,7 @@ class AuthenticationTest {
 
     @Test
     fun `test that delete user API requires authentication`() = testSuspend {
-        testApp.client.get("/user/delete").apply {
+        testApp.client.delete("/user/current").apply {
             assertEquals(HttpStatusCode.Unauthorized, status)
         }
     }

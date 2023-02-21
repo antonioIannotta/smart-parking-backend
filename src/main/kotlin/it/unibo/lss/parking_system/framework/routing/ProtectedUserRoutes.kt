@@ -39,7 +39,7 @@ fun Route.protectedUserRoutes() {
         call.respond(responseBody)
     }
 
-    get("/user/delete") {
+    delete("/user/current") {
         val principal = call.principal<JWTPrincipal>()
         val userMail = principal!!.payload.getClaim("email").asString()
 
