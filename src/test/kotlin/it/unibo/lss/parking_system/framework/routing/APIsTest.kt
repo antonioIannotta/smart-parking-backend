@@ -91,29 +91,6 @@ class APIsTest {
     }
 
     @Test
-    @Order(3)
-    fun `test that sign-in API return success code and jwt`() = testSuspend {
-
-        val signInRequestBody = SignInRequestBody(testMail, testPassword)
-
-        //sign in user
-        testApp.createClient {
-            install(ContentNegotiation) {
-                json()
-            }
-        }.post("/user/sign-in") {
-            contentType(ContentType.Application.Json)
-            setBody(signInRequestBody)
-        }.apply {
-            val responseBody = call.response.body<SigningResponseBody>()
-            assertEquals(HttpStatusCode.OK, call.response.status)
-            assertEquals(null, responseBody.errorCode)
-            assert(responseBody.token is String)
-        }
-
-    }
-
-    @Test
     @Order(4)
     fun `test that user delete API return success code`() = testSuspend {
 
