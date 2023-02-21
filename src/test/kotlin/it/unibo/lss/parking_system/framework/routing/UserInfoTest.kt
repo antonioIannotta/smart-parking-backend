@@ -5,7 +5,7 @@ import it.unibo.lss.parking_system.entity.UserCredentials
 import it.unibo.lss.parking_system.interface_adapter.deleteExistingUser
 import it.unibo.lss.parking_system.interface_adapter.model.request.SignUpRequestBody
 import it.unibo.lss.parking_system.interface_adapter.model.response.UserInfoResponseBody
-import it.unibo.lss.parking_system.interface_adapter.signIn
+import it.unibo.lss.parking_system.interface_adapter.login
 import it.unibo.lss.parking_system.interface_adapter.signUp
 import io.ktor.client.call.*
 import io.ktor.client.plugins.contentnegotiation.*
@@ -23,6 +23,7 @@ class UserInfoTest {
 
     companion object {
         private lateinit var testApp: TestApplication
+        private const val userInfoEndpoint = "/user/current"
         private const val testMail = "test@test.it"
         private const val testPassword = "Test123!"
         private const val testName = "testName"
@@ -53,13 +54,13 @@ class UserInfoTest {
     fun `test that user info return info about the user`() = testSuspend {
         //log user and get jwt
         val credentials = UserCredentials(testMail, testPassword)
-        val jwt = signIn(credentials, testSecret).token
+        val jwt = login(credentials, testSecret).token
         //get user info
         testApp.createClient {
             install(ContentNegotiation) {
                 json()
             }
-        }.get("/user/info") {
+        }.get(userInfoEndpoint) {
             header(HttpHeaders.Authorization, "Bearer $jwt")
         }.apply {
             val responseBody = call.response.body<UserInfoResponseBody>()

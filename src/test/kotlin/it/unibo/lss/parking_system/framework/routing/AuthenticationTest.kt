@@ -39,7 +39,7 @@ class AuthenticationTest {
 
     @Test
     fun `test that sign-ip API doesn't require authentication`() = testSuspend {
-        testApp.client.post("/user/sign-in").apply {
+        testApp.client.post("/user/login").apply {
             assertNotEquals(HttpStatusCode.Unauthorized, status)
         }
     }
@@ -55,7 +55,7 @@ class AuthenticationTest {
     //BEGIN: protected APIs
     @Test
     fun `test that user info API requires authentication`() = testSuspend {
-        testApp.client.get("/user/info").apply {
+        testApp.client.get("/user/current").apply {
             assertEquals(HttpStatusCode.Unauthorized, status)
         }
     }
@@ -64,7 +64,7 @@ class AuthenticationTest {
 
     @Test
     fun `test that delete user API requires authentication`() = testSuspend {
-        testApp.client.get("/user/delete").apply {
+        testApp.client.delete("/user/current").apply {
             assertEquals(HttpStatusCode.Unauthorized, status)
         }
     }
