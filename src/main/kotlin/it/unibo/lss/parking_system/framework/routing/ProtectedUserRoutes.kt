@@ -71,10 +71,12 @@ fun Route.protectedUserRoutes() {
         val response = InterfaceAdapter.occupy(userId, slotId, endTime)
         call.respond(response.first, response.second)
     }
-    put("/parking-slot/increment-occupation") {
+    put("/parking-slot/{id}/increment-occupation") {
 
-        val incrementOccupation = call.receive<IncrementOccupation>()
-        val response = InterfaceAdapter.incrementOccupation(incrementOccupation)
+        val slotId = call.parameters["id"]!!
+        val newEndTime = call.receive<StopEnd>().stopEnd
+        val userId = call.principal<JWTPrincipal>()!!.payload.getClaim("email").asString()
+        val response = InterfaceAdapter.incrementOccupation(userId, slotId, newEndTime)
         call.respond(response.first, response.second)
     }
     put("/parking-slot/{id}/free") {

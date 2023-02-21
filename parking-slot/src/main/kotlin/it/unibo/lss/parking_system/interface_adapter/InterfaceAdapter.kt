@@ -13,30 +13,16 @@ import it.unibo.lss.parking_system.use_cases.SlotOccupation
 
 object InterfaceAdapter {
 
-    fun occupy(userId: String, slotId: String, endTime: String): Pair<HttpStatusCode, JsonObject> {
+    fun occupy(userId: String, slotId: String, stopEnd: String): Pair<HttpStatusCode, JsonObject> {
         val collection = "parking-slot"
-        lateinit var response: Pair<HttpStatusCode, JsonObject>
         val parkingSlotList = ParkingSlotUseCases.getParkingSlotList(collection)
-        return ParkingSlotUseCases.occupySlot(collection,userId, slotId, endTime, parkingSlotList)
+        return ParkingSlotUseCases.occupySlot(collection,userId, slotId, stopEnd, parkingSlotList)
     }
 
-    fun incrementOccupation(incrementOccupation: IncrementOccupation): Pair<HttpStatusCode, JsonObject> {
+    fun incrementOccupation(userId: String, slotId: String, stopEnd: String): Pair<HttpStatusCode, JsonObject> {
         val collection = "parking-slot"
-        lateinit var response: Pair<HttpStatusCode, JsonObject>
         val parkingSlotList = ParkingSlotUseCases.getParkingSlotList(collection)
-        val returnValue = ParkingSlotUseCases.incrementOccupation(collection, incrementOccupation, parkingSlotList)
-        if (!returnValue) {
-            val statusCode = HttpStatusCode.BadRequest
-            val jsonElement = mutableMapOf<String, JsonElement>()
-            jsonElement["errorCode"] = Json.parseToJsonElement("ParkingSlotNotValid")
-            response = Pair(statusCode, JsonObject(jsonElement))
-        } else {
-            val statusCode = HttpStatusCode.OK
-            val jsonElement = mutableMapOf<String, JsonElement>()
-            jsonElement["successCode"] = Json.parseToJsonElement("Success")
-            response = Pair(statusCode, JsonObject(jsonElement))
-        }
-        return response
+        return ParkingSlotUseCases.incrementOccupation(collection, userId, slotId, stopEnd, parkingSlotList)
     }
 
     fun free(slotId: String): Pair<HttpStatusCode, JsonObject> {

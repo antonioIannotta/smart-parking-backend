@@ -14,6 +14,7 @@ import kotlinx.serialization.json.JsonElement
 import kotlinx.serialization.json.JsonObject
 import org.bson.Document
 import org.bson.conversions.Bson
+import java.time.Instant
 import java.time.LocalDateTime
 
 /**
@@ -27,25 +28,37 @@ object ParkingSlotUseCases {
     /**
      * Function that occupy a certain slot based on the slotOccupation object received as argument
      */
-    fun occupySlot(collection: String, userId: String, slotId: String, endTime: String, parkingSlotList: MutableList<ParkingSlot>): Pair<HttpStatusCode, JsonObject> {
+    fun occupySlot(collection: String, userId: String, slotId: String, stopEnd: String, parkingSlotList: MutableList<ParkingSlot>): Pair<HttpStatusCode, JsonObject> {
 
-        if (!isSlotOccupied(slotOccupation.slotId, parkingSlotList) and
-            isParkingSlotValid(slotOccupation.slotId, parkingSlotList)
-        ) {
+        lateinit var returnValue: Pair<HttpStatusCode, JsonObject>
+
+        if (isSlotOccupied(slotId, parkingSlotList)) {
+            val statusCode = HttpStatusCode.BadRequest
+            val jsonElement = mutableMapOf<String, JsonElement>()
+            jsonElement["errorCode"] = Json.parseToJsonElement("ParkingSlotIsOccupied")
+            returnValue = Pair(statusCode, JsonObject(jsonElement))
+        } else if (!isParkingSlotValid(slotId, parkingSlotList)) {
+            val statusCode = HttpStatusCode.NotFound
+            val jsonElement = mutableMapOf<String, JsonElement>()
+            jsonElement["errorCode"] = Json.parseToJsonElement("ParkingSlotNotValid")
+            returnValue = Pair(statusCode, JsonObject(jsonElement))
+        } else {
             val mongoClient = MongoClient(MongoClientURI(mongoAddress))
 
-            val filter = Filters.eq("id", slotOccupation.slotId)
+            val filter = Filters.eq("id", slotId)
             val updates = mutableListOf<Bson>()
             updates.add(Updates.set("occupied", true))
-            updates.add(Updates.set("endStop", slotOccupation.endStop))
+            updates.add(Updates.set("endStop", stopEnd))
+            updates.add(Updates.set("userId", userId))
             val options = UpdateOptions().upsert(true)
 
             mongoClient.getDatabase(databaseName).getCollection(collection)
                 .updateOne(filter, updates, options)
 
-            returnValue = true
-        } else {
-            returnValue = false
+            val statusCode = HttpStatusCode.NotFound
+            val jsonElement = mutableMapOf<String, JsonElement>()
+            jsonElement["successCode"] = Json.parseToJsonElement("Success")
+            returnValue = Pair(statusCode, JsonObject(jsonElement))
         }
 
         return returnValue
@@ -61,30 +74,46 @@ object ParkingSlotUseCases {
     /**
      * Function that increment a certain slot based on the incrementOccupation object received as argument
      */
-    fun incrementOccupation(collection: String, incrementOccupation: IncrementOccupation, parkingSlotList: MutableList<ParkingSlot>): Boolean {
+    fun incrementOccupation(collection: String, userId: String, slotId: String, stopEnd: String, parkingSlotList: MutableList<ParkingSlot>): Pair<HttpStatusCode, JsonObject> {
 
-        var returnValue = false
+        lateinit var returnValue: Pair<HttpStatusCode, JsonObject>
 
-        if (!isParkingSlotValid(incrementOccupation.slotId, parkingSlotList)) {
-            returnValue = false
-        } else if (isSlotOccupied(incrementOccupation.slotId, parkingSlotList)) {
-            val parkingSlot = getParkingSlot(collection, incrementOccupation.slotId)
-            if (isTimeValid(incrementOccupation.endStop, parkingSlot.stopEnd)) {
+        if (!isParkingSlotValid(slotId, parkingSlotList)) {
+            val statusCode = HttpStatusCode.NotFound
+            val jsonElement = mutableMapOf<String, JsonElement>()
+            jsonElement["errorCode"] = Json.parseToJsonElement("ParkingSlotNotValid")
+            returnValue = Pair(statusCode, JsonObject(jsonElement))
+        } else if(!isSlotOccupied(slotId, parkingSlotList)) {
+            val statusCode = HttpStatusCode.BadRequest
+            val jsonElement = mutableMapOf<String, JsonElement>()
+            jsonElement["errorCode"] = Json.parseToJsonElement("ParkingSlotNotOccupied")
+            returnValue = Pair(statusCode, JsonObject(jsonElement))
+        } else {
+            val parkingSlot = getParkingSlot(collection, slotId)
+            if (!isTimeValid(stopEnd, parkingSlot.stopEnd)) {
+                val statusCode = HttpStatusCode.BadRequest
+                val jsonElement = mutableMapOf<String, JsonElement>()
+                jsonElement["errorCode"] = Json.parseToJsonElement("TimeIncrementNotValid")
+                returnValue = Pair(statusCode, JsonObject(jsonElement))
+            } else {
                 val mongoClient = MongoClient(MongoClientURI(mongoAddress))
 
-                val filter = Filters.eq("id", incrementOccupation.slotId)
-                val update = Updates.set("endStop", LocalDateTime.parse(incrementOccupation.endStop).toString())
+                val filters = mutableListOf<Bson>()
+                filters.add(Filters.eq("slotId", slotId))
+                filters.add(Filters.eq("userId", userId))
+                val filter = Filters.and(filters)
+                val update = Updates.set("endStop", Instant.parse(stopEnd).toString())
 
                 mongoClient.getDatabase(databaseName).getCollection(collection)
                     .updateOne(filter, update)
 
                 mongoClient.close()
-            } else {
-                return false
+
+                val statusCode = HttpStatusCode.OK
+                val jsonElement = mutableMapOf<String, JsonElement>()
+                jsonElement["successCode"] = Json.parseToJsonElement("Success")
+                returnValue = Pair(statusCode, JsonObject(jsonElement))
             }
-            returnValue = true
-        } else {
-            returnValue = false
         }
 
         return returnValue
@@ -94,7 +123,7 @@ object ParkingSlotUseCases {
      * Function used to check if the time inserted during the increment stop phase is greater than the actual one
      */
     fun isTimeValid(actualTime: String, previousTime: String) =
-        LocalDateTime.parse(actualTime).isAfter(LocalDateTime.parse(previousTime))
+        Instant.parse(actualTime).isAfter(Instant.parse(previousTime))
 
 
     /**
