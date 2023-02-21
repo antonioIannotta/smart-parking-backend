@@ -23,6 +23,7 @@ class UserLoginTest {
 
     companion object {
         private lateinit var testApp: TestApplication
+        private const val userLoginEndpoint = "/user/login"
         private const val testMail = "test@test.it"
         private const val testPassword = "Test123!"
         private const val testName = "testName"
@@ -58,7 +59,7 @@ class UserLoginTest {
             install(ContentNegotiation) {
                 json()
             }
-        }.post("/user/login") {
+        }.post(userLoginEndpoint) {
             contentType(ContentType.Application.Json)
             setBody(credentials)
         }.apply {
@@ -78,7 +79,7 @@ class UserLoginTest {
             install(ContentNegotiation) {
                 json()
             }
-        }.post("/user/login") {
+        }.post(userLoginEndpoint) {
             contentType(ContentType.Application.Json)
             setBody(credentials)
         }.apply {
@@ -99,7 +100,7 @@ class UserLoginTest {
             install(ContentNegotiation) {
                 json()
             }
-        }.post("/user/login") {
+        }.post(userLoginEndpoint) {
             contentType(ContentType.Application.Json)
             setBody(credentials)
         }.apply {

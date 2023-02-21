@@ -23,6 +23,7 @@ class UserInfoTest {
 
     companion object {
         private lateinit var testApp: TestApplication
+        private const val userInfoEndpoint = "/user/current"
         private const val testMail = "test@test.it"
         private const val testPassword = "Test123!"
         private const val testName = "testName"
@@ -59,7 +60,7 @@ class UserInfoTest {
             install(ContentNegotiation) {
                 json()
             }
-        }.get("/user/info") {
+        }.get(userInfoEndpoint) {
             header(HttpHeaders.Authorization, "Bearer $jwt")
         }.apply {
             val responseBody = call.response.body<UserInfoResponseBody>()

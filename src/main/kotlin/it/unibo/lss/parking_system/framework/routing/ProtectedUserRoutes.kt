@@ -26,7 +26,7 @@ val collectionName = "parking-slot"
 fun Route.protectedUserRoutes() {
 
     //BEGIN: user endpoints
-    get("/user/info") {
+    get("/user/current") {
         val principal = call.principal<JWTPrincipal>()
         val userMail = principal!!.payload.getClaim("email").asString()
 

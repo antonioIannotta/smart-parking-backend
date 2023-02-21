@@ -55,7 +55,7 @@ class AuthenticationTest {
     //BEGIN: protected APIs
     @Test
     fun `test that user info API requires authentication`() = testSuspend {
-        testApp.client.get("/user/info").apply {
+        testApp.client.get("/user/current").apply {
             assertEquals(HttpStatusCode.Unauthorized, status)
         }
     }
