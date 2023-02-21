@@ -1,12 +1,5 @@
 package it.unibo.lss.parking_system.framework.routing
 
-import it.unibo.lss.parking_system.framework.module
-import it.unibo.lss.parking_system.entity.UserCredentials
-import it.unibo.lss.parking_system.interface_adapter.deleteExistingUser
-import it.unibo.lss.parking_system.interface_adapter.model.request.SignUpRequestBody
-import it.unibo.lss.parking_system.interface_adapter.model.response.UserInfoResponseBody
-import it.unibo.lss.parking_system.interface_adapter.login
-import it.unibo.lss.parking_system.interface_adapter.signUp
 import io.ktor.client.call.*
 import io.ktor.client.plugins.contentnegotiation.*
 import io.ktor.client.request.*
@@ -14,12 +7,11 @@ import io.ktor.http.*
 import io.ktor.serialization.kotlinx.json.*
 import io.ktor.server.testing.*
 import io.ktor.test.dispatcher.*
-import it.unibo.lss.parking_system.interface_adapter.model.ResponseCode
+import it.unibo.lss.parking_system.framework.module
+import it.unibo.lss.parking_system.interface_adapter.model.request.SignUpRequestBody
 import it.unibo.lss.parking_system.interface_adapter.model.response.ServerResponseBody
+import it.unibo.lss.parking_system.interface_adapter.signUp
 import it.unibo.lss.parking_system.use_cases.getUserInfo
-import it.unibo.lss.parking_system.use_cases.validateCredentials
-import org.apache.http.auth.Credentials
-import org.junit.jupiter.api.AfterAll
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.BeforeAll
 import org.junit.jupiter.api.Test

@@ -16,13 +16,11 @@ import it.unibo.lss.parking_system.interface_adapter.changePassword
 import it.unibo.lss.parking_system.interface_adapter.deleteExistingUser
 import it.unibo.lss.parking_system.interface_adapter.model.request.ChangePasswordRequestBody
 import it.unibo.lss.parking_system.interface_adapter.userInfo
-import it.unibo.lss.parking_system.use_cases.IncrementOccupation
-import it.unibo.lss.parking_system.use_cases.SlotOccupation
 import java.util.*
 
-val mongoAddress = "mongodb+srv://antonioIannotta:AntonioIannotta-26@cluster0.a3rz8ro.mongodb.net/?retryWrites=true"
-val databaseName = "ParkingSystem"
-val collectionName = "parking-slot"
+const val mongoAddress = "mongodb+srv://antonioIannotta:AntonioIannotta-26@cluster0.a3rz8ro.mongodb.net/?retryWrites=true"
+const val databaseName = "ParkingSystem"
+const val collectionName = "parking-slot"
 fun Route.protectedUserRoutes() {
 
     //BEGIN: user endpoints
