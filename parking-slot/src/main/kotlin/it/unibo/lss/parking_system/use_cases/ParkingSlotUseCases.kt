@@ -2,6 +2,7 @@ package it.unibo.lss.parking_system.use_cases
 
 import com.mongodb.MongoClient
 import com.mongodb.MongoClientURI
+import com.mongodb.client.MongoCollection
 import com.mongodb.client.model.Filters
 import com.mongodb.client.model.UpdateOptions
 import com.mongodb.client.model.Updates
@@ -28,7 +29,7 @@ object ParkingSlotUseCases {
     /**
      * Function that occupy a certain slot based on the slotOccupation object received as argument
      */
-    fun occupySlot(collection: String, userId: String, slotId: String, stopEnd: String, parkingSlotList: MutableList<ParkingSlot>): Pair<HttpStatusCode, JsonObject> {
+    fun occupySlot(userId: String, slotId: String, stopEnd: String, parkingSlotList: MutableList<ParkingSlot>, collection: MongoCollection<Document>): Pair<HttpStatusCode, JsonObject> {
 
         lateinit var returnValue: Pair<HttpStatusCode, JsonObject>
 
@@ -43,7 +44,6 @@ object ParkingSlotUseCases {
             jsonElement["errorCode"] = Json.parseToJsonElement("ParkingSlotNotValid")
             returnValue = Pair(statusCode, JsonObject(jsonElement))
         } else {
-            val mongoClient = MongoClient(MongoClientURI(mongoAddress))
 
             val filter = Filters.eq("id", slotId)
             val updates = mutableListOf<Bson>()
@@ -52,8 +52,7 @@ object ParkingSlotUseCases {
             updates.add(Updates.set("userId", userId))
             val options = UpdateOptions().upsert(true)
 
-            mongoClient.getDatabase(databaseName).getCollection(collection)
-                .updateOne(filter, updates, options)
+            collection.updateOne(filter, updates, options)
 
             val statusCode = HttpStatusCode.NotFound
             val jsonElement = mutableMapOf<String, JsonElement>()
@@ -74,7 +73,7 @@ object ParkingSlotUseCases {
     /**
      * Function that increment a certain slot based on the incrementOccupation object received as argument
      */
-    fun incrementOccupation(collection: String, userId: String, slotId: String, stopEnd: String, parkingSlotList: MutableList<ParkingSlot>): Pair<HttpStatusCode, JsonObject> {
+    fun incrementOccupation(userId: String, slotId: String, stopEnd: String, parkingSlotList: MutableList<ParkingSlot>, collection: MongoCollection<Document>): Pair<HttpStatusCode, JsonObject> {
 
         lateinit var returnValue: Pair<HttpStatusCode, JsonObject>
 
@@ -104,8 +103,7 @@ object ParkingSlotUseCases {
                 val filter = Filters.and(filters)
                 val update = Updates.set("endStop", Instant.parse(stopEnd).toString())
 
-                mongoClient.getDatabase(databaseName).getCollection(collection)
-                    .updateOne(filter, update)
+                collection.updateOne(filter, update)
 
                 mongoClient.close()
 
@@ -129,7 +127,7 @@ object ParkingSlotUseCases {
     /**
      * Function that free a certain slot based on the slotId object received as argument
      */
-    fun freeSlot(collection: String, slotId: String, parkingSlotList: MutableList<ParkingSlot>): Pair<HttpStatusCode, JsonObject> {
+    fun freeSlot(collection: MongoCollection<Document>, slotId: String, parkingSlotList: MutableList<ParkingSlot>): Pair<HttpStatusCode, JsonObject> {
 
         lateinit var returnValue: Pair<HttpStatusCode, JsonObject>
 
@@ -151,8 +149,7 @@ object ParkingSlotUseCases {
 
             val options = UpdateOptions().upsert(true)
 
-            mongoClient.getDatabase(databaseName).getCollection(collection)
-                .updateOne(filter, updates, options)
+            collection.updateOne(filter, updates, options)
 
             mongoClient.close()
 
@@ -174,43 +171,34 @@ object ParkingSlotUseCases {
     /**
      * Function that returns all the parking slots that are stored into the database
      */
-    fun getAllParkingSlotsByRadius(collection: String, center: Center): MutableList<ParkingSlot> {
-        val mongoClient = MongoClient(MongoClientURI(mongoAddress))
+    fun getAllParkingSlotsByRadius(collection: MongoCollection<Document>, center: Center): MutableList<ParkingSlot> {
 
         val parkingSlotList = emptyList<ParkingSlot>().toMutableList()
 
-        mongoClient.getDatabase(databaseName).getCollection(collection)
+        collection
             .find(Filters.geoWithinCenterSphere("location", center.position.longitude, center.position.latitude, center.radius / 6371))
             .forEach {
                 document ->  parkingSlotList.add(createParkingSlotFromDocument(document))
             }
-
-        mongoClient.close()
         return parkingSlotList
     }
 
-    fun getParkingSlotList(collection: String): MutableList<ParkingSlot> {
-        val mongoClient = MongoClient(MongoClientURI(mongoAddress))
+    fun getParkingSlotList(collection: MongoCollection<Document>): MutableList<ParkingSlot> {
         val parkingSlotList = emptyList<ParkingSlot>().toMutableList()
 
-        mongoClient.getDatabase(databaseName).getCollection(collection)
-            .find().forEach {
-                document -> parkingSlotList.add(createParkingSlotFromDocument(document))
-            }
-
-        mongoClient.close()
+        collection.find().forEach {
+            document -> parkingSlotList.add(createParkingSlotFromDocument(document))
+        }
         return parkingSlotList
     }
 
     /**
      * Function that returns the parking slot corresponding to the given Id
      */
-    fun getParkingSlot(collection: String, id: String): ParkingSlot {
-        val mongoClient = MongoClient(MongoClientURI(mongoAddress))
-        val parkingSlotListOfDocument = mongoClient.getDatabase(databaseName).getCollection(collection).find()
+    fun getParkingSlot(collection: MongoCollection<Document>, id: String): ParkingSlot {
         val parkingSlotList = mutableListOf<ParkingSlot>()
 
-        parkingSlotListOfDocument.forEach {
+        collection.find().forEach {
                 document -> parkingSlotList.add(createParkingSlotFromDocument(document))
         }
 
@@ -221,8 +209,6 @@ object ParkingSlotUseCases {
         } else {
             ParkingSlot("", false, "", 0.0, 0.0, "")
         }
-
-        mongoClient.close()
         return parkingSlot
     }
 

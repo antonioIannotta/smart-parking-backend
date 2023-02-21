@@ -1,5 +1,7 @@
 package it.unibo.lss.parking_system.framework.routing
 
+import com.mongodb.MongoClient
+import com.mongodb.MongoClientURI
 import io.ktor.http.*
 import io.ktor.server.application.*
 import io.ktor.server.auth.*
@@ -18,6 +20,9 @@ import it.unibo.lss.parking_system.use_cases.IncrementOccupation
 import it.unibo.lss.parking_system.use_cases.SlotOccupation
 import java.util.*
 
+val mongoAddress = "mongodb+srv://antonioIannotta:AntonioIannotta-26@cluster0.a3rz8ro.mongodb.net/?retryWrites=true"
+val databaseName = "ParkingSystem"
+val collectionName = "parking-slot"
 fun Route.protectedUserRoutes() {
 
     //BEGIN: user endpoints
@@ -65,36 +70,60 @@ fun Route.protectedUserRoutes() {
     //BEGIN: parking-slot endpoints
     put("/parking-slot/{id}/occupy") {
 
+        val mongoClient = MongoClient(MongoClientURI(mongoAddress))
+        val collection = mongoClient.getDatabase(databaseName).getCollection(collectionName)
+
         val slotId = call.parameters["id"]!!
         val endTime = call.receive<StopEnd>().stopEnd
         val userId = call.principal<JWTPrincipal>()!!.payload.getClaim("email").asString()
-        val response = InterfaceAdapter.occupy(userId, slotId, endTime)
+        val response = InterfaceAdapter.occupy(userId, slotId, endTime, collection)
+
+        mongoClient.close()
         call.respond(response.first, response.second)
     }
     put("/parking-slot/{id}/increment-occupation") {
 
+        val mongoClient = MongoClient(MongoClientURI(mongoAddress))
+        val collection = mongoClient.getDatabase(databaseName).getCollection(collectionName)
+
         val slotId = call.parameters["id"]!!
         val newEndTime = call.receive<StopEnd>().stopEnd
         val userId = call.principal<JWTPrincipal>()!!.payload.getClaim("email").asString()
-        val response = InterfaceAdapter.incrementOccupation(userId, slotId, newEndTime)
+        val response = InterfaceAdapter.incrementOccupation(userId, slotId, newEndTime, collection)
+
+        mongoClient.close()
         call.respond(response.first, response.second)
     }
     put("/parking-slot/{id}/free") {
 
+        val mongoClient = MongoClient(MongoClientURI(mongoAddress))
+        val collection = mongoClient.getDatabase(databaseName).getCollection(collectionName)
+
         val slotId = call.parameters["id"]!!
-        val response = InterfaceAdapter.free(slotId)
+        val response = InterfaceAdapter.free(slotId, collection)
+
+        mongoClient.close()
         call.respond(response.first, response.second)
 
     }
     get("/parking-slots/") {
+
+        val mongoClient = MongoClient(MongoClientURI(mongoAddress))
+        val collection = mongoClient.getDatabase(databaseName).getCollection(collectionName)
         val center = call.receive<Center>()
-        val response = InterfaceAdapter.getParkingSlotList(center)
+        val response = InterfaceAdapter.getParkingSlotList(center, collection)
+
+        mongoClient.close()
         call.respond(response)
     }
     get("/parking-slot/{id}") {
 
+        val mongoClient = MongoClient(MongoClientURI(mongoAddress))
+        val collection = mongoClient.getDatabase(databaseName).getCollection(collectionName)
         val slotId = call.parameters["id"]!!
-        val response = InterfaceAdapter.getParkingSlot(slotId)
+        val response = InterfaceAdapter.getParkingSlot(slotId, collection)
+
+        mongoClient.close()
         call.respond(response)
     }
     //END: parking-slot endpoints
