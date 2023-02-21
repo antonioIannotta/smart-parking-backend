@@ -5,7 +5,13 @@ import com.mongodb.MongoClientURI
 import com.mongodb.client.model.Filters
 import com.mongodb.client.model.UpdateOptions
 import com.mongodb.client.model.Updates
+import com.mongodb.client.model.geojson.Point
+import io.ktor.http.*
+import it.unibo.lss.parking_system.entity.Center
 import it.unibo.lss.parking_system.entity.ParkingSlot
+import kotlinx.serialization.json.Json
+import kotlinx.serialization.json.JsonElement
+import kotlinx.serialization.json.JsonObject
 import org.bson.Document
 import org.bson.conversions.Bson
 import java.time.LocalDateTime
@@ -21,9 +27,7 @@ object ParkingSlotUseCases {
     /**
      * Function that occupy a certain slot based on the slotOccupation object received as argument
      */
-    fun occupySlot(collection: String, slotOccupation: SlotOccupation, parkingSlotList: MutableList<ParkingSlot>): Boolean {
-
-        var returnValue = false
+    fun occupySlot(collection: String, userId: String, slotId: String, endTime: String, parkingSlotList: MutableList<ParkingSlot>): Pair<HttpStatusCode, JsonObject> {
 
         if (!isSlotOccupied(slotOccupation.slotId, parkingSlotList) and
             isParkingSlotValid(slotOccupation.slotId, parkingSlotList)
@@ -65,7 +69,7 @@ object ParkingSlotUseCases {
             returnValue = false
         } else if (isSlotOccupied(incrementOccupation.slotId, parkingSlotList)) {
             val parkingSlot = getParkingSlot(collection, incrementOccupation.slotId)
-            if (isTimeValid(incrementOccupation.endStop, parkingSlot.endStop)) {
+            if (isTimeValid(incrementOccupation.endStop, parkingSlot.stopEnd)) {
                 val mongoClient = MongoClient(MongoClientURI(mongoAddress))
 
                 val filter = Filters.eq("id", incrementOccupation.slotId)
@@ -96,21 +100,25 @@ object ParkingSlotUseCases {
     /**
      * Function that free a certain slot based on the slotId object received as argument
      */
-    fun freeSlot(collection: String, slotId: SlotId, parkingSlotList: MutableList<ParkingSlot>): Boolean {
+    fun freeSlot(collection: String, slotId: String, parkingSlotList: MutableList<ParkingSlot>): Pair<HttpStatusCode, JsonObject> {
 
-        var returnValue = false
+        lateinit var returnValue: Pair<HttpStatusCode, JsonObject>
 
-        if (!isParkingSlotValid(slotId.slotId, parkingSlotList)) {
-            returnValue = false
+        if (!isParkingSlotValid(slotId, parkingSlotList)) {
+            val statusCode = HttpStatusCode.NotFound
+            val jsonElement = mutableMapOf<String, JsonElement>()
+            jsonElement["errorCode"] = Json.parseToJsonElement("ParkingSlotNotValid")
+            returnValue = Pair(statusCode, JsonObject(jsonElement))
         }
 
-        else if (isSlotOccupied(slotId.slotId, parkingSlotList)) {
+        else if (isSlotOccupied(slotId, parkingSlotList)) {
             val mongoClient = MongoClient(MongoClientURI(mongoAddress))
 
-            val filter = Filters.eq("id", slotId.slotId)
+            val filter = Filters.eq("id", slotId)
             val updates = emptyList<Bson>().toMutableList()
             updates.add(Updates.set("occupied", false))
             updates.add(Updates.set("endStop", ""))
+            updates.add(Updates.set("userId", ""))
 
             val options = UpdateOptions().upsert(true)
 
@@ -119,10 +127,16 @@ object ParkingSlotUseCases {
 
             mongoClient.close()
 
-            returnValue = true
+            val statusCode = HttpStatusCode.OK
+            val jsonElement = mutableMapOf<String, JsonElement>()
+            jsonElement["successCode"] = Json.parseToJsonElement("Success")
+            returnValue = Pair(statusCode, JsonObject(jsonElement))
 
         } else {
-            returnValue = false
+            val statusCode = HttpStatusCode.NotFound
+            val jsonElement = mutableMapOf<String, JsonElement>()
+            jsonElement["errorCode"] = Json.parseToJsonElement("ParkingSlotNotOccupied")
+            returnValue = Pair(statusCode, JsonObject(jsonElement))
         }
 
         return returnValue
@@ -131,15 +145,31 @@ object ParkingSlotUseCases {
     /**
      * Function that returns all the parking slots that are stored into the database
      */
-    fun getAllParkingSlots(collection: String): MutableList<ParkingSlot> {
+    fun getAllParkingSlotsByRadius(collection: String, center: Center): MutableList<ParkingSlot> {
         val mongoClient = MongoClient(MongoClientURI(mongoAddress))
 
         val parkingSlotList = emptyList<ParkingSlot>().toMutableList()
 
-        mongoClient.getDatabase(databaseName).getCollection(collection).find().forEach {
-                document -> parkingSlotList.add(createParkingSlotFromDocument(document))
-        }
+        mongoClient.getDatabase(databaseName).getCollection(collection)
+            .find(Filters.geoWithinCenterSphere("location", center.position.longitude, center.position.latitude, center.radius / 6371))
+            .forEach {
+                document ->  parkingSlotList.add(createParkingSlotFromDocument(document))
+            }
 
+        mongoClient.close()
+        return parkingSlotList
+    }
+
+    fun getParkingSlotList(collection: String): MutableList<ParkingSlot> {
+        val mongoClient = MongoClient(MongoClientURI(mongoAddress))
+        val parkingSlotList = emptyList<ParkingSlot>().toMutableList()
+
+        mongoClient.getDatabase(databaseName).getCollection(collection)
+            .find().forEach {
+                document -> parkingSlotList.add(createParkingSlotFromDocument(document))
+            }
+
+        mongoClient.close()
         return parkingSlotList
     }
 
@@ -163,8 +193,6 @@ object ParkingSlotUseCases {
             ParkingSlot("", false, "", 0.0, 0.0, "")
         }
 
-        print("Parking slot -----------> " + parkingSlot.endStop)
-
         mongoClient.close()
         return parkingSlot
     }
@@ -177,8 +205,8 @@ object ParkingSlotUseCases {
             document["id"].toString(),
             document["occupied"].toString().toBoolean(),
             document["endStop"].toString(),
-            document["latitude"].toString().toDouble(),
-            document["longitude"].toString().toDouble(),
+            (document["location"] as Point).position.values[1],
+            (document["longitude"] as Point).position.values[0],
             document["userId"].toString()
         )
     }

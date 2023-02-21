@@ -7,13 +7,14 @@ import io.ktor.server.auth.jwt.*
 import io.ktor.server.request.*
 import io.ktor.server.response.*
 import io.ktor.server.routing.*
+import it.unibo.lss.parking_system.entity.Center
+import it.unibo.lss.parking_system.entity.StopEnd
 import it.unibo.lss.parking_system.interface_adapter.InterfaceAdapter
 import it.unibo.lss.parking_system.interface_adapter.changePassword
 import it.unibo.lss.parking_system.interface_adapter.deleteExistingUser
 import it.unibo.lss.parking_system.interface_adapter.model.request.ChangePasswordRequestBody
 import it.unibo.lss.parking_system.interface_adapter.userInfo
 import it.unibo.lss.parking_system.use_cases.IncrementOccupation
-import it.unibo.lss.parking_system.use_cases.SlotId
 import it.unibo.lss.parking_system.use_cases.SlotOccupation
 import java.util.*
 
@@ -62,10 +63,12 @@ fun Route.protectedUserRoutes() {
     //END: user endpoints
 
     //BEGIN: parking-slot endpoints
-    put("/parking-slot/occupy") {
+    put("/parking-slot/{id}/occupy") {
 
-        val slotOccupation = call.receive<SlotOccupation>()
-        val response = InterfaceAdapter.occupy(slotOccupation)
+        val slotId = call.parameters["id"]!!
+        val endTime = call.receive<StopEnd>().stopEnd
+        val userId = call.principal<JWTPrincipal>()!!.payload.getClaim("email").asString()
+        val response = InterfaceAdapter.occupy(userId, slotId, endTime)
         call.respond(response.first, response.second)
     }
     put("/parking-slot/increment-occupation") {
@@ -74,21 +77,21 @@ fun Route.protectedUserRoutes() {
         val response = InterfaceAdapter.incrementOccupation(incrementOccupation)
         call.respond(response.first, response.second)
     }
-    put("/parking-slot/free") {
+    put("/parking-slot/{id}/free") {
 
-        val slotId = call.receive<SlotId>()
+        val slotId = call.parameters["id"]!!
         val response = InterfaceAdapter.free(slotId)
         call.respond(response.first, response.second)
 
     }
-    get("/parking-slot/") {
-
-        val response = InterfaceAdapter.getParkingSlotList()
+    get("/parking-slots/") {
+        val center = call.receive<Center>()
+        val response = InterfaceAdapter.getParkingSlotList(center)
         call.respond(response)
     }
-    get("/parking-slot/") {
+    get("/parking-slot/{id}") {
 
-        val slotId = call.receive<SlotId>()
+        val slotId = call.parameters["id"]!!
         val response = InterfaceAdapter.getParkingSlot(slotId)
         call.respond(response)
     }

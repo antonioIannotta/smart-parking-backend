@@ -3,6 +3,8 @@ package it.unibo.lss.parking_system
 import com.mongodb.MongoClient
 import com.mongodb.MongoClientURI
 import com.mongodb.client.MongoCollection
+import com.mongodb.client.model.geojson.Point
+import com.mongodb.client.model.geojson.Position
 import org.bson.Document
 
 object FillParkingSlotCollection {
@@ -41,7 +43,6 @@ object FillParkingSlotCollection {
             .append("id", literal + number)
             .append("occupied", false)
             .append("stopEnd", "")
-            .append("latitude", 0.0)
-            .append("longitude", 0.0)
+            .append("location", Point(Position(0.0, 0.0)))
             .append("userId", "")
 }

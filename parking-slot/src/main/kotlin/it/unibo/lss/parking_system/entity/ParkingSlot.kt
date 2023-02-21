@@ -8,5 +8,5 @@ import java.time.Instant
  * parking slot is required by the client
  */
 @Serializable
-class ParkingSlot(val id: String, val occupied: Boolean, val endStop: String,
+class ParkingSlot(val id: String, val occupied: Boolean, val stopEnd: String,
     val latitude: Double, val longitude: Double, val userId: String)
