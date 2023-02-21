@@ -58,7 +58,7 @@ class UserLoginTest {
             install(ContentNegotiation) {
                 json()
             }
-        }.post("/user/sign-in") {
+        }.post("/user/login") {
             contentType(ContentType.Application.Json)
             setBody(credentials)
         }.apply {
@@ -78,7 +78,7 @@ class UserLoginTest {
             install(ContentNegotiation) {
                 json()
             }
-        }.post("/user/sign-in") {
+        }.post("/user/login") {
             contentType(ContentType.Application.Json)
             setBody(credentials)
         }.apply {
@@ -99,7 +99,7 @@ class UserLoginTest {
             install(ContentNegotiation) {
                 json()
             }
-        }.post("/user/sign-in") {
+        }.post("/user/login") {
             contentType(ContentType.Application.Json)
             setBody(credentials)
         }.apply {

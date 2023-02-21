@@ -8,7 +8,7 @@ import it.unibo.lss.parking_system.use_cases.getUserInfo
 import it.unibo.lss.parking_system.use_cases.validateCredentials
 import java.util.*
 
-fun signIn(credentials: UserCredentials, tokenSecret: String): SigningResponseBody {
+fun login(credentials: UserCredentials, tokenSecret: String): SigningResponseBody {
 
     return if (Objects.isNull(getUserInfo(credentials.email)))
         SigningResponseBody(ResponseCode.USER_NOT_FOUND.code, "User not found")

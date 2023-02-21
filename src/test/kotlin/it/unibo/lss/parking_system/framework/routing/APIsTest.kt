@@ -3,10 +3,9 @@ package it.unibo.lss.parking_system.framework.routing
 import it.unibo.lss.parking_system.framework.module
 import it.unibo.lss.parking_system.entity.UserCredentials
 import it.unibo.lss.parking_system.interface_adapter.model.ResponseCode
-import it.unibo.lss.parking_system.interface_adapter.model.request.SignInRequestBody
 import it.unibo.lss.parking_system.interface_adapter.model.request.SignUpRequestBody
 import it.unibo.lss.parking_system.interface_adapter.model.response.SigningResponseBody
-import it.unibo.lss.parking_system.interface_adapter.signIn
+import it.unibo.lss.parking_system.interface_adapter.login
 import io.ktor.client.call.*
 import io.ktor.client.plugins.contentnegotiation.*
 import io.ktor.client.request.*
@@ -95,7 +94,7 @@ class APIsTest {
     fun `test that user delete API return success code`() = testSuspend {
 
         //get token
-        val token = signIn(UserCredentials(testMail, testPassword), testSecret).token
+        val token = login(UserCredentials(testMail, testPassword), testSecret).token
 
         //call user delete endpoint
         testApp.createClient {
