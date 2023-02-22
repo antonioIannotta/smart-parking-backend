@@ -8,13 +8,13 @@ import it.unibo.lss.parking_system.use_cases.getUserInfo
 import it.unibo.lss.parking_system.use_cases.validateCredentials
 
 
-fun changePassword(email: String, newPassword: String, oldPassword: String?): ServerResponseBody {
+fun changePassword(email: String, newPassword: String, currentPassword: String?): ServerResponseBody {
 
     if (getUserInfo(email) == null)
         return ServerResponseBody(ResponseCode.USER_NOT_FOUND.code, "User not found")
-    else if (oldPassword != null){
+    else if (currentPassword != null){
         //old password validation
-        val credentials = UserCredentials(email, oldPassword)
+        val credentials = UserCredentials(email, currentPassword)
         if (!validateCredentials(credentials))
             return ServerResponseBody(ResponseCode.PASSWORD_ERROR.code, "Wrong password")
     }

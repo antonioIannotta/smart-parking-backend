@@ -4,6 +4,6 @@ import kotlinx.serialization.Serializable
 
 @Serializable
 data class ChangePasswordRequestBody(
-    val oldPassword: String? = null,
+    val currentPassword: String? = null,
     val newPassword: String
 )
