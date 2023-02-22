@@ -1,1 +1,0 @@
-package it.unibo.lss.parking_system.entity
