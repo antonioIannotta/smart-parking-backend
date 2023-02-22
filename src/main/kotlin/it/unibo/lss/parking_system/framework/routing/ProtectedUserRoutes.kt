@@ -55,7 +55,7 @@ fun Route.protectedUserRoutes() {
         val userMail = principal!!.payload.getClaim("email").asString()
         val requestBody = call.receive<ChangePasswordRequestBody>()
 
-        val responseBody = changePassword(userMail, requestBody.newPassword, requestBody.oldPassword)
+        val responseBody = changePassword(userMail, requestBody.newPassword, requestBody.currentPassword)
 
         if (responseBody.errorCode != null)
             call.response.status(HttpStatusCode.BadRequest)

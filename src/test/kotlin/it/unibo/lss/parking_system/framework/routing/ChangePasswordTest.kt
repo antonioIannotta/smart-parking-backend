@@ -1,6 +1,5 @@
 package it.unibo.lss.parking_system.framework.routing
 
-import io.ktor.client.call.*
 import io.ktor.client.plugins.contentnegotiation.*
 import io.ktor.client.request.*
 import io.ktor.http.*
@@ -11,19 +10,20 @@ import it.unibo.lss.parking_system.entity.UserCredentials
 import it.unibo.lss.parking_system.framework.module
 import it.unibo.lss.parking_system.interface_adapter.deleteExistingUser
 import it.unibo.lss.parking_system.interface_adapter.login
+import it.unibo.lss.parking_system.interface_adapter.model.request.ChangePasswordRequestBody
 import it.unibo.lss.parking_system.interface_adapter.model.request.SignUpRequestBody
-import it.unibo.lss.parking_system.interface_adapter.model.response.UserInfoResponseBody
 import it.unibo.lss.parking_system.interface_adapter.signUp
+import it.unibo.lss.parking_system.use_cases.validateCredentials
 import org.junit.jupiter.api.AfterAll
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.BeforeAll
 import org.junit.jupiter.api.Test
 
-class UserInfoTest {
+class ChangePasswordTest {
 
     companion object {
         private lateinit var testApp: TestApplication
-        private const val userInfoEndpoint = "/user/current"
+        private const val changePasswordEndpoint = "/user/change-password"
         private const val testMail = "test@test.it"
         private const val testPassword = "Test123!"
         private const val testName = "testName"
@@ -51,21 +51,27 @@ class UserInfoTest {
     }
 
     @Test
-    fun `test that user info return info about the user`() = testSuspend {
-        //log user and get jwt
+    fun `test that change-password api let a user to change his password`() = testSuspend {
+        //get a valid jwt for the user and prepare request body
         val credentials = UserCredentials(testMail, testPassword)
         val jwt = login(credentials, testSecret).token
-        //get user info
+        val newPassword = "abcde"
+        val changePasswordRequestBody = ChangePasswordRequestBody(testPassword, newPassword)
+        //change user's password
         testApp.createClient {
             install(ContentNegotiation) {
                 json()
             }
-        }.get(userInfoEndpoint) {
+        }.post(changePasswordEndpoint) {
             header(HttpHeaders.Authorization, "Bearer $jwt")
+            contentType(ContentType.Application.Json)
+            setBody(changePasswordRequestBody)
         }.apply {
-            val responseBody = call.response.body<UserInfoResponseBody>()
-            //user info verification
-            assertEquals(testMail, responseBody.email)
+            //response verification
+            assertEquals(HttpStatusCode.OK, call.response.status)
+            //new password verification
+            val newCredentials = UserCredentials(testMail, newPassword)
+            assertEquals(true, validateCredentials(newCredentials))
         }
     }
 
