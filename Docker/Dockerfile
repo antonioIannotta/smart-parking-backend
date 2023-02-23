@@ -1,13 +1,13 @@
-FROM ubuntu:22.04
+FROM alpine/3.14
 
 
 EXPOSE 8888/tcp
 
 # Necessario creare il Jar, portarlo sulla macchina virtuale ubuntu e lanciarlo
-RUN apt update
-RUN apt add git
-RUN apt add snapd
-RUN apt add default-jre
+RUN apk update
+RUN apk add git
+RUN apk add snapd
+RUN apk add default-jre
 RUN snap install --classic kotlin
 RUN git clone https://github.com/antonioIannotta/parking-system-backend.git
 RUN cd parking-system-backend
