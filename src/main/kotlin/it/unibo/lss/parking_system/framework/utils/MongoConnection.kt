@@ -1,4 +1,4 @@
-package it.unibo.lss.parking_system.use_cases
+package it.unibo.lss.parking_system.framework.utils
 
 import com.mongodb.MongoClient
 import com.mongodb.MongoClientURI
@@ -18,7 +18,7 @@ fun getMongoClient(mongoAddress: String = defaultMongoAddress): MongoClient {
 }
 
 fun getUserCollection(
-    mongoClient: MongoClient,
+    mongoClient: MongoClient = getMongoClient(),
     databaseName: String = defaultDBName,
     collectionName: String = defaultCollectionName
 ): MongoCollection<Document> = mongoClient.getDatabase(databaseName).getCollection(collectionName)

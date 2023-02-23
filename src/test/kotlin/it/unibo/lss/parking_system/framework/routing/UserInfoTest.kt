@@ -9,11 +9,10 @@ import io.ktor.server.testing.*
 import io.ktor.test.dispatcher.*
 import it.unibo.lss.parking_system.entity.UserCredentials
 import it.unibo.lss.parking_system.framework.module
-import it.unibo.lss.parking_system.interface_adapter.deleteExistingUser
-import it.unibo.lss.parking_system.interface_adapter.login
+import it.unibo.lss.parking_system.framework.utils.getUserCollection
+import it.unibo.lss.parking_system.interface_adapter.UserInterfaceAdapter
 import it.unibo.lss.parking_system.interface_adapter.model.request.SignUpRequestBody
 import it.unibo.lss.parking_system.interface_adapter.model.response.UserInfoResponseBody
-import it.unibo.lss.parking_system.interface_adapter.signUp
 import org.junit.jupiter.api.AfterAll
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.BeforeAll
@@ -23,6 +22,7 @@ class UserInfoTest {
 
     companion object {
         private lateinit var testApp: TestApplication
+        private var interfaceAdapter = UserInterfaceAdapter(getUserCollection())
         private const val userInfoEndpoint = "/user/current"
         private const val testMail = "test@test.it"
         private const val testPassword = "Test123!"
@@ -38,14 +38,14 @@ class UserInfoTest {
                 }
                 //register test user
                 val signUpRequestBody = SignUpRequestBody(testMail, testPassword, testName)
-                signUp(signUpRequestBody, testSecret)
+                interfaceAdapter.createUser(signUpRequestBody, testSecret)
             }
         }
 
         @JvmStatic
         @AfterAll
         fun deleteTestUser() = testApplication {
-            deleteExistingUser(testMail)
+            interfaceAdapter.deleteUser(testMail)
         }
 
     }
@@ -54,7 +54,7 @@ class UserInfoTest {
     fun `test that user info return info about the user`() = testSuspend {
         //log user and get jwt
         val credentials = UserCredentials(testMail, testPassword)
-        val jwt = login(credentials, testSecret).token
+        val jwt = interfaceAdapter.login(credentials, testSecret).token
         //get user info
         testApp.createClient {
             install(ContentNegotiation) {

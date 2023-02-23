@@ -1,9 +1,7 @@
-package it.unibo.lss.parking_system
+package it.unibo.lss.parking_system.framework.utils
 
 import io.ktor.server.testing.*
 import org.junit.jupiter.api.Test
-import it.unibo.lss.parking_system.use_cases.getMongoClient
-import it.unibo.lss.parking_system.use_cases.getUserCollection
 
 class MongoConnectionTest {
 

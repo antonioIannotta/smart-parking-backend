@@ -11,11 +11,9 @@ import io.ktor.server.response.*
 import io.ktor.server.routing.*
 import it.unibo.lss.parking_system.entity.Center
 import it.unibo.lss.parking_system.entity.StopEnd
-import it.unibo.lss.parking_system.interface_adapter.InterfaceAdapter
-import it.unibo.lss.parking_system.interface_adapter.changePassword
-import it.unibo.lss.parking_system.interface_adapter.deleteExistingUser
+import it.unibo.lss.parking_system.framework.utils.getUserCollection
+import it.unibo.lss.parking_system.interface_adapter.*
 import it.unibo.lss.parking_system.interface_adapter.model.request.ChangePasswordRequestBody
-import it.unibo.lss.parking_system.interface_adapter.userInfo
 import java.util.*
 
 const val mongoAddress = "mongodb+srv://antonioIannotta:AntonioIannotta-26@cluster0.a3rz8ro.mongodb.net/?retryWrites=true"
@@ -28,7 +26,8 @@ fun Route.protectedUserRoutes() {
         val principal = call.principal<JWTPrincipal>()
         val userMail = principal!!.payload.getClaim("email").asString()
 
-        val responseBody = userInfo(userMail)
+        val interfaceAdapter = UserInterfaceAdapter(getUserCollection())
+        val responseBody = interfaceAdapter.getUserInfo(userMail)
 
         if (Objects.isNull(responseBody.email))
             call.response.status(HttpStatusCode.BadRequest)
@@ -41,7 +40,8 @@ fun Route.protectedUserRoutes() {
         val principal = call.principal<JWTPrincipal>()
         val userMail = principal!!.payload.getClaim("email").asString()
 
-        val responseBody = deleteExistingUser(userMail)
+        val interfaceAdapter = UserInterfaceAdapter(getUserCollection())
+        val responseBody = interfaceAdapter.deleteUser(userMail)
 
         if (responseBody.errorCode != null)
             call.response.status(HttpStatusCode.BadRequest)
@@ -55,7 +55,8 @@ fun Route.protectedUserRoutes() {
         val userMail = principal!!.payload.getClaim("email").asString()
         val requestBody = call.receive<ChangePasswordRequestBody>()
 
-        val responseBody = changePassword(userMail, requestBody.newPassword, requestBody.currentPassword)
+        val interfaceAdapter = UserInterfaceAdapter(getUserCollection())
+        val responseBody = interfaceAdapter.changePassword(userMail, requestBody.newPassword, requestBody.currentPassword)
 
         if (responseBody.errorCode != null)
             call.response.status(HttpStatusCode.BadRequest)

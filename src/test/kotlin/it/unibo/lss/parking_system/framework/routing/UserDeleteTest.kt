@@ -8,19 +8,21 @@ import io.ktor.serialization.kotlinx.json.*
 import io.ktor.server.testing.*
 import io.ktor.test.dispatcher.*
 import it.unibo.lss.parking_system.framework.module
+import it.unibo.lss.parking_system.framework.utils.getUserCollection
+import it.unibo.lss.parking_system.interface_adapter.UserInterfaceAdapter
+import it.unibo.lss.parking_system.interface_adapter.model.ResponseCode
 import it.unibo.lss.parking_system.interface_adapter.model.request.SignUpRequestBody
 import it.unibo.lss.parking_system.interface_adapter.model.response.ServerResponseBody
-import it.unibo.lss.parking_system.interface_adapter.signUp
-import it.unibo.lss.parking_system.use_cases.getUserInfo
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.BeforeAll
 import org.junit.jupiter.api.Test
-import kotlin.test.assertNotEquals
+import kotlin.test.assertNull
 
 class UserDeleteTest {
 
     companion object {
         private lateinit var testApp: TestApplication
+        private var interfaceAdapter = UserInterfaceAdapter(getUserCollection())
         private const val userInfoEndpoint = "/user/current"
         private const val testMail = "test@test.it"
         private const val testPassword = "Test123!"
@@ -42,9 +44,9 @@ class UserDeleteTest {
     fun `test that delete user api delete the selected user`() = testSuspend {
         //register the user and get a valid jwt for him
         val signUpRequestBody = SignUpRequestBody(testMail, testPassword, testName)
-        val signUpResponse = signUp(signUpRequestBody, testSecret)
+        val signUpResponse = interfaceAdapter.createUser(signUpRequestBody, testSecret)
         //test that user is signed up
-        assertNotEquals(null, getUserInfo(testMail))
+        assertNull(interfaceAdapter.getUserInfo(testMail).errorCode)
         //delete user
         testApp.createClient {
             install(ContentNegotiation) {
@@ -57,7 +59,7 @@ class UserDeleteTest {
             //response verification
             assertEquals(HttpStatusCode.OK, call.response.status)
             //check user doesn't exist anymore
-            assertEquals(null, getUserInfo(testMail))
+            assertEquals(ResponseCode.USER_NOT_FOUND.code, interfaceAdapter.getUserInfo(testMail).errorCode)
         }
     }
 
