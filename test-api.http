@@ -3,28 +3,27 @@ POST http://localhost:8080/user/sign-up
 Content-Type: application/json
 
 {
-    "email": "luca.bracchi3@studio.unibo.it",
+    "email": "luca.bracchi5@studio.unibo.it",
     "password": "test123",
-    "name": "luca",
-    "surname": "bracchi"
+    "name": "luca"
 }
 
 ### USER LOGIN API ###
-POST http://localhost:8080/user/sign-in
+POST http://localhost:8080/user/login
 Content-Type: application/json
 
 {
-    "email": "luca.bracchi@test.it",
+    "email": "luca.bracchi5@studio.unibo.it",
     "password": "test123"
 }
 
 ### USER INFO API ###
-GET http://localhost:8080/user/info
-Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJhdWQiOiJQYXJraW5nIENsaWVudCIsImlzcyI6Imx1Y2EgYnJhY2NoaSIsImV4cCI6MTY3NjEzNDUwMSwiZW1haWwiOiJsdWNhLmJyYWNjaGlAdGVzdC5pdCJ9.a-zCFL_EEoChkCMfbgePsdQZc1ZSe1d6uVIuRQ6pptk
+GET http://localhost:8080/user/current
+Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJhdWQiOiJQYXJraW5nIENsaWVudCIsImV4cCI6MTY3NzE3NzMzOCwiZW1haWwiOiJsdWNhLmJyYWNjaGk1QHN0dWRpby51bmliby5pdCJ9.1gd9IJUf-O50BGnNKLAlfqY6Bi00OAMLNt8In8a41iQ
 
 ### DELETE ACCOUNT API ###
-GET http://localhost:8080/user/delete
-Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJhdWQiOiJQYXJraW5nIENsaWVudCIsImlzcyI6Imx1Y2EgYnJhY2NoaSIsImV4cCI6MTY3NjEzNDUwMSwiZW1haWwiOiJsdWNhLmJyYWNjaGlAdGVzdC5pdCJ9.a-zCFL_EEoChkCMfbgePsdQZc1ZSe1d6uVIuRQ6pptk
+DELETE http://localhost:8080/user/current
+Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJhdWQiOiJQYXJraW5nIENsaWVudCIsImV4cCI6MTY3NzE3NzMzOCwiZW1haWwiOiJsdWNhLmJyYWNjaGk1QHN0dWRpby51bmliby5pdCJ9.1gd9IJUf-O50BGnNKLAlfqY6Bi00OAMLNt8In8a41iQ
 
 ### USER MAIL RECOVERY API ###
 POST http://localhost:8080/user/recover-password
@@ -43,4 +42,13 @@ Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJhdWQiOiJQYXJraW5nI
 {
     "oldPassword": "test123",
     "newPassword": "123test"
+}
+
+### test parking-slot api
+PUT http://localhost:8080/parking-slot/occupy
+Content-Type: application/json
+
+{
+    "slotId": 123,
+    "endStop": 123
 }
