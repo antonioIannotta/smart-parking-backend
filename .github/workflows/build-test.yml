@@ -4,6 +4,11 @@ on:
   push:
     branches:
       - dev
+    paths-ignore: 
+      - '.gitignore'
+      - 'LICENSE'
+      - '**.md'
+      - '**.http'
 
 jobs:
   build:
