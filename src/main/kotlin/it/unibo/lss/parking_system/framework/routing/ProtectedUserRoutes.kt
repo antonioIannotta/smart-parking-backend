@@ -11,7 +11,6 @@ import io.ktor.server.response.*
 import io.ktor.server.routing.*
 import it.unibo.lss.parking_system.entity.Center
 import it.unibo.lss.parking_system.entity.StopEnd
-import it.unibo.lss.parking_system.framework.utils.getMongoClient
 import it.unibo.lss.parking_system.framework.utils.getUserCollection
 import it.unibo.lss.parking_system.interface_adapter.*
 import it.unibo.lss.parking_system.interface_adapter.model.request.ChangePasswordRequestBody
@@ -27,11 +26,7 @@ fun Route.protectedUserRoutes() {
         val principal = call.principal<JWTPrincipal>()
         val userMail = principal!!.payload.getClaim("email").asString()
 
-        val mongoClient = getMongoClient()
-        val mongoCollection = getUserCollection(mongoClient)
-        mongoClient.close()
-
-        val interfaceAdapter = UserInterfaceAdapter(mongoCollection)
+        val interfaceAdapter = UserInterfaceAdapter(getUserCollection())
         val responseBody = interfaceAdapter.getUserInfo(userMail)
 
         if (Objects.isNull(responseBody.email))
@@ -45,11 +40,7 @@ fun Route.protectedUserRoutes() {
         val principal = call.principal<JWTPrincipal>()
         val userMail = principal!!.payload.getClaim("email").asString()
 
-        val mongoClient = getMongoClient()
-        val mongoCollection = getUserCollection(mongoClient)
-        mongoClient.close()
-
-        val interfaceAdapter = UserInterfaceAdapter(mongoCollection)
+        val interfaceAdapter = UserInterfaceAdapter(getUserCollection())
         val responseBody = interfaceAdapter.deleteUser(userMail)
 
         if (responseBody.errorCode != null)
@@ -64,11 +55,7 @@ fun Route.protectedUserRoutes() {
         val userMail = principal!!.payload.getClaim("email").asString()
         val requestBody = call.receive<ChangePasswordRequestBody>()
 
-        val mongoClient = getMongoClient()
-        val mongoCollection = getUserCollection(mongoClient)
-        mongoClient.close()
-
-        val interfaceAdapter = UserInterfaceAdapter(mongoCollection)
+        val interfaceAdapter = UserInterfaceAdapter(getUserCollection())
         val responseBody = interfaceAdapter.changePassword(userMail, requestBody.newPassword, requestBody.currentPassword)
 
         if (responseBody.errorCode != null)

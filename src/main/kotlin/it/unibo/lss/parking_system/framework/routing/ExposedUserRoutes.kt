@@ -8,7 +8,6 @@ import io.ktor.server.application.*
 import io.ktor.server.request.*
 import io.ktor.server.response.*
 import io.ktor.server.routing.*
-import it.unibo.lss.parking_system.framework.utils.getMongoClient
 import it.unibo.lss.parking_system.framework.utils.getUserCollection
 import it.unibo.lss.parking_system.interface_adapter.UserInterfaceAdapter
 import java.util.*
@@ -20,11 +19,7 @@ fun Route.exposedUserRoutes(tokenSecret: String) {
         //get parameter from request and create new user to register
         val signUpRequestBody = call.receive<SignUpRequestBody>()
         //register new user to db
-        val mongoClient = getMongoClient()
-        val mongoCollection = getUserCollection(mongoClient)
-        mongoClient.close()
-
-        val interfaceAdapter = UserInterfaceAdapter(mongoCollection)
+        val interfaceAdapter = UserInterfaceAdapter(getUserCollection())
         val responseBody = interfaceAdapter.createUser(signUpRequestBody, tokenSecret)
         //sending response to client
         if (Objects.isNull(responseBody.token))
@@ -39,11 +34,7 @@ fun Route.exposedUserRoutes(tokenSecret: String) {
         //get parameter from request and create user to login
         val credentials = call.receive<UserCredentials>()
         //get jwt token and user info
-        val mongoClient = getMongoClient()
-        val mongoCollection = getUserCollection(mongoClient)
-        mongoClient.close()
-
-        val interfaceAdapter = UserInterfaceAdapter(mongoCollection)
+        val interfaceAdapter = UserInterfaceAdapter(getUserCollection())
         val responseBody = interfaceAdapter.login(credentials, tokenSecret)
         //sending response to client
         if (Objects.isNull(responseBody.token))
@@ -57,11 +48,7 @@ fun Route.exposedUserRoutes(tokenSecret: String) {
 
         val userMail = call.receive<RecoverMailRequestBody>().email
 
-        val mongoClient = getMongoClient()
-        val mongoCollection = getUserCollection(mongoClient)
-        mongoClient.close()
-
-        val interfaceAdapter = UserInterfaceAdapter(mongoCollection)
+        val interfaceAdapter = UserInterfaceAdapter(getUserCollection())
         val responseBody = interfaceAdapter.recoverPassword(userMail, tokenSecret)
         //sending response to client
         if (responseBody.errorCode != null)

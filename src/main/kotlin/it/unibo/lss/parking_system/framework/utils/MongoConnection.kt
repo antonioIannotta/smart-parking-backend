@@ -18,7 +18,7 @@ fun getMongoClient(mongoAddress: String = defaultMongoAddress): MongoClient {
 }
 
 fun getUserCollection(
-    mongoClient: MongoClient,
+    mongoClient: MongoClient = getMongoClient(),
     databaseName: String = defaultDBName,
     collectionName: String = defaultCollectionName
 ): MongoCollection<Document> = mongoClient.getDatabase(databaseName).getCollection(collectionName)
