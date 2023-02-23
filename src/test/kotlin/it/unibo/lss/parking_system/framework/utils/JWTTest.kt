@@ -1,4 +1,4 @@
-package it.unibo.lss.parking_system.utils
+package it.unibo.lss.parking_system.framework.utils
 
 import com.auth0.jwt.exceptions.JWTDecodeException
 import com.auth0.jwt.exceptions.TokenExpiredException

@@ -1,4 +1,4 @@
-package it.unibo.lss.parking_system.use_cases
+package it.unibo.lss.parking_system.framework.utils
 
 import com.mongodb.MongoClient
 import com.mongodb.MongoClientURI
