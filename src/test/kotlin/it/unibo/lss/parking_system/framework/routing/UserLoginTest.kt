@@ -9,11 +9,11 @@ import io.ktor.server.testing.*
 import io.ktor.test.dispatcher.*
 import it.unibo.lss.parking_system.entity.UserCredentials
 import it.unibo.lss.parking_system.framework.module
-import it.unibo.lss.parking_system.interface_adapter.deleteExistingUser
+import it.unibo.lss.parking_system.framework.utils.getUserCollection
+import it.unibo.lss.parking_system.interface_adapter.UserInterfaceAdapter
 import it.unibo.lss.parking_system.interface_adapter.model.ResponseCode
 import it.unibo.lss.parking_system.interface_adapter.model.request.SignUpRequestBody
 import it.unibo.lss.parking_system.interface_adapter.model.response.SigningResponseBody
-import it.unibo.lss.parking_system.interface_adapter.signUp
 import org.junit.jupiter.api.AfterAll
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.BeforeAll
@@ -23,6 +23,7 @@ class UserLoginTest {
 
     companion object {
         private lateinit var testApp: TestApplication
+        private var interfaceAdapter = UserInterfaceAdapter(getUserCollection())
         private const val userLoginEndpoint = "/user/login"
         private const val testMail = "test@test.it"
         private const val testPassword = "Test123!"
@@ -38,14 +39,14 @@ class UserLoginTest {
                 }
                 //register test user
                 val signUpRequestBody = SignUpRequestBody(testMail, testPassword, testName)
-                signUp(signUpRequestBody, testSecret)
+                interfaceAdapter.createUser(signUpRequestBody, testSecret)
             }
         }
 
         @JvmStatic
         @AfterAll
         fun deleteTestUser() = testApplication {
-            deleteExistingUser(testMail)
+            interfaceAdapter.deleteUser(testMail)
         }
 
     }
