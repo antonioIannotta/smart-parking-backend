@@ -1,4 +1,4 @@
-FROM alpine/3.9
+FROM alpine:3.9
 
 
 EXPOSE 8888/tcp
