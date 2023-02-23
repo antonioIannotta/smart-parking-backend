@@ -30,4 +30,5 @@ jobs:
         with:
           push: true
           context: ../../Docker/
+          file: ../../Docker/Dockerfile
           tags: antonioiannotta26/personal26:v1
