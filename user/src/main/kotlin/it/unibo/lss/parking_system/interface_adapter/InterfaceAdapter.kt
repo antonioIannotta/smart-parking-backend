@@ -72,7 +72,7 @@ data class UserInterfaceAdapter(val collection: MongoCollection<Document>) : Use
             if (currentPassword != null) {
                 //old password validation
                 val credentials = UserCredentials(mail, currentPassword)
-                if (this.validateCredentials(credentials))
+                if (!this.validateCredentials(credentials))
                     return ServerResponseBody(ResponseCode.PASSWORD_ERROR.code, "Wrong password")
             }
             val filter = Filters.eq("email", mail)
