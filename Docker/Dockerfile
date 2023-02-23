@@ -2,7 +2,6 @@ FROM alpine:3.4
 
 
 EXPOSE 8888/tcp
-EXPOSE 8888/udp
 
 # Necessario creare il Jar, portarlo sulla macchina virtuale ubuntu e lanciarlo
 RUN apk update
