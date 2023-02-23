@@ -12,7 +12,7 @@ RUN apt install -y kotlin
 RUN git clone https://github.com/antonioIannotta/parking-system-backend.git
 WORKDIR parking-system-backend
 RUN git checkout master
-RUN ./gradlew
+RUN ./gradlew build
 RUN kotlinc src/main/kotlin/it/unibo/lss/parking_system/framework/Application.kt -include-runtime -d Application.jar
 RUN java -jar Application.jar
 
