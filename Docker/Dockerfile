@@ -16,4 +16,4 @@ RUN ./gradlew build
 #RUN kotlinc Application.kt -include-runtime -d Application.jar
 #RUN kotlinc src/main/kotlin/it/unibo/lss/parking_system/framework/Application.kt -include-runtime -d Application.jar
 #RUN java -jar Application.jar
-RUN ./gradlew run
+CMD ./gradlew run
