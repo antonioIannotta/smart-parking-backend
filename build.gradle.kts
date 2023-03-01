@@ -10,7 +10,6 @@ plugins {
     id("io.ktor.plugin") version "2.2.2"
     id("org.jetbrains.kotlin.plugin.serialization") version "1.8.0"
     jacoco
-    id("org.jlleitschuh.gradle.ktlint") version "9.4.1"
 }
 
 group = projectGroup
