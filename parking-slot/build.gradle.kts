@@ -11,6 +11,7 @@ plugins {
     jacoco
 }
 
+
 group = projectGroup
 version = projectVersion
 
