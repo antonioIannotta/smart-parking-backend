@@ -9,7 +9,6 @@ plugins {
     kotlin("jvm") version "1.8.0"
     id("io.ktor.plugin") version "2.2.2"
     id("org.jetbrains.kotlin.plugin.serialization") version "1.8.0"
-    jacoco
 }
 
 group = projectGroup
@@ -54,20 +53,6 @@ tasks.withType<org.jetbrains.kotlin.gradle.tasks.KotlinCompile> {
     }
 }
 
-jacoco {
-    toolVersion = "0.8.8"
-    reportsDirectory.set(layout.buildDirectory.dir("customJacocoReportDir"))
-}
-
 tasks.test {
-    //useJUnitPlatform()
-    finalizedBy(tasks.jacocoTestReport)
-}
-
-tasks.jacocoTestReport {
-    reports {
-        xml.required.set(false)
-        csv.required.set(false)
-        html.outputLocation.set(layout.buildDirectory.dir("jacocoHtml"))
-    }
+    useJUnitPlatform()
 }

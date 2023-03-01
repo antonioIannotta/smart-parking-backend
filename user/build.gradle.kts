@@ -8,7 +8,6 @@ val logbackVersion: String by project
 plugins {
     kotlin("jvm") version "1.8.0"
     id("org.jetbrains.kotlin.plugin.serialization") version "1.8.0"
-    jacoco
 }
 
 group = projectGroup
@@ -29,20 +28,6 @@ dependencies {
     testImplementation("org.junit.jupiter:junit-jupiter:5.8.1")
 }
 
-jacoco {
-    toolVersion = "0.8.8"
-    reportsDirectory.set(layout.buildDirectory.dir("customJacocoReportDir"))
-}
-
 tasks.test {
-    //useJUnitPlatform()
-    finalizedBy(tasks.jacocoTestReport)
-}
-
-tasks.jacocoTestReport {
-    reports {
-        xml.required.set(false)
-        csv.required.set(false)
-        html.outputLocation.set(layout.buildDirectory.dir("jacocoHtml"))
-    }
+    useJUnitPlatform()
 }
