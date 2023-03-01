@@ -1,15 +1,13 @@
-package it.unibo.lss.smart_parking.interface_adapter.InterfaceAdapterSuccessTest
+package it.unibo.lss.smart_parking.interface_adapter
 
 import com.mongodb.MongoClient
 import com.mongodb.MongoClientURI
 import io.ktor.http.*
-import it.unibo.lss.smart_parking.interface_adapter.InterfaceAdapter
 import kotlinx.serialization.json.Json
 import kotlinx.serialization.json.JsonElement
 import kotlinx.serialization.json.JsonObject
-import java.time.Instant
 import org.junit.jupiter.api.Test
-import java.time.temporal.TemporalAmount
+import java.time.Instant
 import kotlin.test.assertEquals
 
 class InterfaceAdapterSuccessTest {

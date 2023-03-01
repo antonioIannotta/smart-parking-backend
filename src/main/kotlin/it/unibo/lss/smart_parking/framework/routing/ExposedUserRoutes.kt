@@ -1,15 +1,15 @@
 package it.unibo.lss.smart_parking.framework.routing
 
-import it.unibo.lss.smart_parking.entity.UserCredentials
-import it.unibo.lss.smart_parking.interface_adapter.model.request.RecoverMailRequestBody
-import it.unibo.lss.smart_parking.interface_adapter.model.request.SignUpRequestBody
 import io.ktor.http.*
 import io.ktor.server.application.*
 import io.ktor.server.request.*
 import io.ktor.server.response.*
 import io.ktor.server.routing.*
+import it.unibo.lss.smart_parking.entity.UserCredentials
 import it.unibo.lss.smart_parking.framework.utils.getUserCollection
 import it.unibo.lss.smart_parking.interface_adapter.UserInterfaceAdapter
+import it.unibo.lss.smart_parking.interface_adapter.model.request.RecoverMailRequestBody
+import it.unibo.lss.smart_parking.interface_adapter.model.request.SignUpRequestBody
 import java.util.*
 
 fun Route.exposedUserRoutes(tokenSecret: String) {

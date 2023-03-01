@@ -1,11 +1,9 @@
 package it.unibo.lss.smart_parking.use_cases
 
-import com.mongodb.client.MongoCollection
 import io.ktor.http.*
 import it.unibo.lss.smart_parking.entity.Center
 import it.unibo.lss.smart_parking.entity.ParkingSlot
 import kotlinx.serialization.json.JsonObject
-import org.bson.Document
 import java.time.Instant
 
 interface UseCases {

@@ -15,7 +15,7 @@ group = projectGroup
 version = projectVersion
 
 application {
-    mainClass.set("it.unibo.lss.parking_system.framework.ApplicationKt")
+    mainClass.set("it.unibo.lss.smart_parking.framework.ApplicationKt")
 
     val isDevelopment: Boolean = project.ext.has("development")
     applicationDefaultJvmArgs = listOf("-Dio.ktor.development=$isDevelopment")

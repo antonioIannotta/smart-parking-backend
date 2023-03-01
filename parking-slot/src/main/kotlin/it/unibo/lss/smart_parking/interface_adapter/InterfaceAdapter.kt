@@ -4,7 +4,6 @@ import com.mongodb.client.MongoCollection
 import com.mongodb.client.model.Filters
 import com.mongodb.client.model.UpdateOptions
 import com.mongodb.client.model.Updates
-import com.mongodb.client.model.geojson.Point
 import io.ktor.http.*
 import it.unibo.lss.smart_parking.entity.Center
 import it.unibo.lss.smart_parking.entity.ParkingSlot
@@ -144,9 +143,9 @@ data class InterfaceAdapter(val collection: MongoCollection<Document>): UseCases
     }
 
     private fun returnCoordinates(coordinates: String): List<String> {
-        var coordinates_dropped = coordinates.drop(1)
-        coordinates_dropped = coordinates_dropped.dropLast(1)
-        return coordinates_dropped.split(",")
+        var coordinatesDropped = coordinates.drop(1)
+        coordinatesDropped = coordinatesDropped.dropLast(1)
+        return coordinatesDropped.split(",")
     }
 
 }

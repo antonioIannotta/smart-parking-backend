@@ -1,12 +1,12 @@
 package it.unibo.lss.smart_parking.framework
 
-import it.unibo.lss.smart_parking.framework.plugins.configureAuthentication
-import it.unibo.lss.smart_parking.framework.plugins.configureHTTP
-import it.unibo.lss.smart_parking.framework.plugins.configureSerialization
-import it.unibo.lss.smart_parking.framework.plugins.configureRouting
 import io.ktor.server.application.*
 import io.ktor.server.engine.*
 import io.ktor.server.netty.*
+import it.unibo.lss.smart_parking.framework.plugins.configureAuthentication
+import it.unibo.lss.smart_parking.framework.plugins.configureHTTP
+import it.unibo.lss.smart_parking.framework.plugins.configureRouting
+import it.unibo.lss.smart_parking.framework.plugins.configureSerialization
 
 fun main() {
     embeddedServer(Netty, port = 8080, host = "0.0.0.0", module = Application::module)

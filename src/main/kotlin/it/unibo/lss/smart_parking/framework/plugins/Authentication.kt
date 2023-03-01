@@ -1,13 +1,13 @@
 package it.unibo.lss.smart_parking.framework.plugins
 
-import it.unibo.lss.smart_parking.interface_adapter.model.ResponseCode
-import it.unibo.lss.smart_parking.interface_adapter.model.response.ServerResponseBody
-import it.unibo.lss.smart_parking.interface_adapter.utils.getJWTVerifier
 import io.ktor.http.*
 import io.ktor.server.application.*
 import io.ktor.server.auth.*
 import io.ktor.server.auth.jwt.*
 import io.ktor.server.response.*
+import it.unibo.lss.smart_parking.interface_adapter.model.ResponseCode
+import it.unibo.lss.smart_parking.interface_adapter.model.response.ServerResponseBody
+import it.unibo.lss.smart_parking.interface_adapter.utils.getJWTVerifier
 
 fun Application.configureAuthentication(tokenSecret: String) {
 

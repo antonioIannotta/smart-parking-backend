@@ -1,7 +1,6 @@
 package it.unibo.lss.smart_parking.entity
 
 import kotlinx.serialization.Serializable
-import java.time.Instant
 
 /**
  * This data class represents a model for the Parking slot to be used when either a parking slot or the full list of
