@@ -29,7 +29,7 @@ fun sendMail(
     subject: String,
     content: String,
     userMail: String = "team.parkingslot@gmail.com",
-    userPassword: String = "ionrkvjoukjhtezf",
+    userPassword: String = "tbfsdvotkmrhzard",
     host: String = "smtp.googlemail.com",
     port: Int = 465,
 ) {
