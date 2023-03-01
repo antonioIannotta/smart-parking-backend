@@ -47,12 +47,6 @@ dependencies {
     testImplementation("org.junit.jupiter:junit-jupiter:5.8.1")
 }
 
-tasks.withType<org.jetbrains.kotlin.gradle.tasks.KotlinCompile> {
-    kotlinOptions {
-        allWarningsAsErrors = true
-    }
-}
-
 tasks.test {
     useJUnitPlatform()
 }
