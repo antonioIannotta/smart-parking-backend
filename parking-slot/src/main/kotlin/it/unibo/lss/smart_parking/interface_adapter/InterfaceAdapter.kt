@@ -95,7 +95,7 @@ data class InterfaceAdapter(val collection: MongoCollection<Document>): UseCases
             val filter = Filters.eq("id", slotId)
             val updates = emptyList<Bson>().toMutableList()
             updates.add(Updates.set("occupied", false))
-            updates.add(Updates.set("endStop", ""))
+            updates.add(Updates.set("stopEnd", ""))
             updates.add(Updates.set("userId", ""))
 
             val options = UpdateOptions().upsert(true)

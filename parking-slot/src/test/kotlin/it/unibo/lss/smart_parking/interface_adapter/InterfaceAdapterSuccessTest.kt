@@ -3,6 +3,7 @@ package it.unibo.lss.smart_parking.interface_adapter
 import com.mongodb.MongoClient
 import com.mongodb.MongoClientURI
 import io.ktor.http.*
+import it.unibo.lss.smart_parking.FillParkingSlotCollection
 import kotlinx.serialization.json.Json
 import kotlinx.serialization.json.JsonElement
 import kotlinx.serialization.json.JsonObject
@@ -14,6 +15,10 @@ class InterfaceAdapterSuccessTest {
 
     @Test
     fun interfaceAdapterSuccessTest() {
+
+        FillParkingSlotCollection.eraseAndFillCollection("parking-slot-test")
+
+
         val mongoAddress = "mongodb+srv://antonioIannotta:AntonioIannotta-26@cluster0.a3rz8ro.mongodb.net/?retryWrites=true"
         val databaseName = "ParkingSystem"
         val collectionName = "parking-slot-test"
