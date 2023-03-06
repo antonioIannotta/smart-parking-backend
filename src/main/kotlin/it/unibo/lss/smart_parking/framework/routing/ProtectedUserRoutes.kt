@@ -10,6 +10,7 @@ import io.ktor.server.request.*
 import io.ktor.server.response.*
 import io.ktor.server.routing.*
 import it.unibo.lss.smart_parking.entity.Center
+import it.unibo.lss.smart_parking.entity.Position
 import it.unibo.lss.smart_parking.entity.StopEnd
 import it.unibo.lss.smart_parking.framework.utils.getUserCollection
 import it.unibo.lss.smart_parking.interface_adapter.InterfaceAdapter
@@ -137,13 +138,16 @@ fun Route.protectedUserRoutes() {
         call.respond(response.first, response.second)
 
     }
-    get("/parking-slots/") {
+    get("/parking-slots/{latitude}/{longitude}/{radius}") {
 
         val mongoClient = MongoClient(MongoClientURI(mongoAddress))
         val collection = mongoClient.getDatabase(databaseName).getCollection(collectionName)
 
         val interfaceAdapter = InterfaceAdapter(collection)
-        val center = call.receive<Center>()
+        val latitude = call.parameters["latitude"]!!.toString().toDouble()
+        val longitude = call.parameters["longitude"]!!.toString().toDouble()
+        val radius = call.parameters["radius"]!!.toDouble()
+        val center = Center(Position(latitude, longitude), radius)
         val response = interfaceAdapter.getAllParkingSlotsByRadius(center)
 
         mongoClient.close()

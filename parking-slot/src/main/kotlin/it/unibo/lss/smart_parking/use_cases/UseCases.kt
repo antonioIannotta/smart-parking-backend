@@ -33,7 +33,7 @@ interface UseCases {
     fun freeSlot(slotId: String, parkingSlotList: MutableList<ParkingSlot>): Pair<HttpStatusCode, JsonObject>
     fun getAllParkingSlotsByRadius(center: Center): MutableList<ParkingSlot>
     fun getParkingSlotList(): MutableList<ParkingSlot>
-    fun getParkingSlot(id: String): Any
+    fun getParkingSlot(id: String): ParkingSlot
 
     fun isSlotOccupied(slotId: String, parkingSlotList: MutableList<ParkingSlot>): Boolean =
         parkingSlotList.first { ps -> ps.id == slotId
