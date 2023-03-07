@@ -7,10 +7,14 @@ class MongoConnectionTest {
 
     @Test
     fun `test connection to mongo atlas database and user collection existence`() = testApplication {
-
-        val mongoClient = getMongoClient()
+        val mongoClient = getUserMongoClient()
         getUserCollection(mongoClient)
+    }
 
+    @Test
+    fun `test connection to mongo atlas database and parking slot collection existence`() = testApplication {
+        val mongoClient = getParkingSlotMongoClient()
+        getParkingSlotCollection(mongoClient)
     }
 
 }

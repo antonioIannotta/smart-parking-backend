@@ -9,6 +9,7 @@ import io.ktor.server.testing.*
 import io.ktor.test.dispatcher.*
 import it.unibo.lss.smart_parking.framework.module
 import it.unibo.lss.smart_parking.framework.utils.getUserCollection
+import it.unibo.lss.smart_parking.framework.utils.getUserMongoClient
 import it.unibo.lss.smart_parking.interface_adapter.UserInterfaceAdapter
 import it.unibo.lss.smart_parking.interface_adapter.model.ResponseCode
 import it.unibo.lss.smart_parking.interface_adapter.model.request.SignUpRequestBody
@@ -22,7 +23,7 @@ class UserDeleteTest {
 
     companion object {
         private lateinit var testApp: TestApplication
-        private var interfaceAdapter = UserInterfaceAdapter(getUserCollection())
+        private var interfaceAdapter = UserInterfaceAdapter(getUserCollection(getUserMongoClient()))
         private const val userInfoEndpoint = "/user/current"
         private const val testMail = "test@test.it"
         private const val testPassword = "Test123!"
