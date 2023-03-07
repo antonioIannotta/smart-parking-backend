@@ -1,7 +1,5 @@
 package it.unibo.lss.smart_parking.framework.routing
 
-import com.mongodb.MongoClient
-import com.mongodb.MongoClientURI
 import io.ktor.http.*
 import io.ktor.server.application.*
 import io.ktor.server.auth.*
@@ -12,7 +10,10 @@ import io.ktor.server.routing.*
 import it.unibo.lss.smart_parking.entity.Center
 import it.unibo.lss.smart_parking.entity.Position
 import it.unibo.lss.smart_parking.entity.StopEnd
+import it.unibo.lss.smart_parking.framework.utils.getParkingSlotCollection
+import it.unibo.lss.smart_parking.framework.utils.getParkingSlotMongoClient
 import it.unibo.lss.smart_parking.framework.utils.getUserCollection
+import it.unibo.lss.smart_parking.framework.utils.getUserMongoClient
 import it.unibo.lss.smart_parking.interface_adapter.InterfaceAdapter
 import it.unibo.lss.smart_parking.interface_adapter.UserInterfaceAdapter
 import it.unibo.lss.smart_parking.interface_adapter.model.request.ChangePasswordRequestBody
@@ -39,9 +40,6 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 */
-const val mongoAddress = "mongodb+srv://antonioIannotta:AntonioIannotta-26@cluster0.a3rz8ro.mongodb.net/?retryWrites=true"
-const val databaseName = "ParkingSystem"
-const val collectionName = "parking-slot"
 fun Route.protectedUserRoutes() {
 
     //BEGIN: user endpoints
@@ -49,8 +47,10 @@ fun Route.protectedUserRoutes() {
         val principal = call.principal<JWTPrincipal>()
         val userMail = principal!!.payload.getClaim("email").asString()
 
-        val interfaceAdapter = UserInterfaceAdapter(getUserCollection())
+        val mongoClient = getUserMongoClient()
+        val interfaceAdapter = UserInterfaceAdapter(getUserCollection(mongoClient))
         val responseBody = interfaceAdapter.getUserInfo(userMail)
+        mongoClient.close()
 
         if (Objects.isNull(responseBody.email))
             call.response.status(HttpStatusCode.BadRequest)
@@ -63,8 +63,10 @@ fun Route.protectedUserRoutes() {
         val principal = call.principal<JWTPrincipal>()
         val userMail = principal!!.payload.getClaim("email").asString()
 
-        val interfaceAdapter = UserInterfaceAdapter(getUserCollection())
+        val mongoClient = getUserMongoClient()
+        val interfaceAdapter = UserInterfaceAdapter(getUserCollection(mongoClient))
         val responseBody = interfaceAdapter.deleteUser(userMail)
+        mongoClient.close()
 
         if (responseBody.errorCode != null)
             call.response.status(HttpStatusCode.BadRequest)
@@ -78,8 +80,10 @@ fun Route.protectedUserRoutes() {
         val userMail = principal!!.payload.getClaim("email").asString()
         val requestBody = call.receive<ChangePasswordRequestBody>()
 
-        val interfaceAdapter = UserInterfaceAdapter(getUserCollection())
+        val mongoClient = getUserMongoClient()
+        val interfaceAdapter = UserInterfaceAdapter(getUserCollection(mongoClient))
         val responseBody = interfaceAdapter.changePassword(userMail, requestBody.newPassword, requestBody.currentPassword)
+        mongoClient.close()
 
         if (responseBody.errorCode != null)
             call.response.status(HttpStatusCode.BadRequest)
@@ -92,10 +96,8 @@ fun Route.protectedUserRoutes() {
     //BEGIN: parking-slot endpoints
     put("/parking-slot/{id}/occupy") {
 
-        val mongoClient = MongoClient(MongoClientURI(mongoAddress))
-        val collection = mongoClient.getDatabase(databaseName).getCollection(collectionName)
-
-        val interfaceAdapter = InterfaceAdapter(collection)
+        val mongoClient = getParkingSlotMongoClient()
+        val interfaceAdapter = InterfaceAdapter(getParkingSlotCollection(mongoClient))
 
         val slotId = call.parameters["id"]!!
         val stopEnd = call.receive<StopEnd>().stopEnd
@@ -109,10 +111,8 @@ fun Route.protectedUserRoutes() {
     }
     put("/parking-slot/{id}/increment-occupation") {
 
-        val mongoClient = MongoClient(MongoClientURI(mongoAddress))
-        val collection = mongoClient.getDatabase(databaseName).getCollection(collectionName)
-
-        val interfaceAdapter = InterfaceAdapter(collection)
+        val mongoClient = getParkingSlotMongoClient()
+        val interfaceAdapter = InterfaceAdapter(getParkingSlotCollection(mongoClient))
 
         val slotId = call.parameters["id"]!!
         val newEndTime = call.receive<StopEnd>().stopEnd
@@ -125,10 +125,8 @@ fun Route.protectedUserRoutes() {
     }
     put("/parking-slot/{id}/free") {
 
-        val mongoClient = MongoClient(MongoClientURI(mongoAddress))
-        val collection = mongoClient.getDatabase(databaseName).getCollection(collectionName)
-
-        val interfaceAdapter = InterfaceAdapter(collection)
+        val mongoClient = getParkingSlotMongoClient()
+        val interfaceAdapter = InterfaceAdapter(getParkingSlotCollection(mongoClient))
 
         val slotId = call.parameters["id"]!!
         val parkingSlotList = interfaceAdapter.getParkingSlotList()
@@ -140,10 +138,8 @@ fun Route.protectedUserRoutes() {
     }
     get("/parking-slots/{latitude}/{longitude}/{radius}") {
 
-        val mongoClient = MongoClient(MongoClientURI(mongoAddress))
-        val collection = mongoClient.getDatabase(databaseName).getCollection(collectionName)
-
-        val interfaceAdapter = InterfaceAdapter(collection)
+        val mongoClient = getParkingSlotMongoClient()
+        val interfaceAdapter = InterfaceAdapter(getParkingSlotCollection(mongoClient))
         val latitude = call.parameters["latitude"]!!.toString().toDouble()
         val longitude = call.parameters["longitude"]!!.toString().toDouble()
         val radius = call.parameters["radius"]!!.toDouble()
@@ -155,10 +151,8 @@ fun Route.protectedUserRoutes() {
     }
     get("/parking-slot/{id}") {
 
-        val mongoClient = MongoClient(MongoClientURI(mongoAddress))
-        val collection = mongoClient.getDatabase(databaseName).getCollection(collectionName)
-
-        val interfaceAdapter = InterfaceAdapter(collection)
+        val mongoClient = getParkingSlotMongoClient()
+        val interfaceAdapter = InterfaceAdapter(getParkingSlotCollection(mongoClient))
         val slotId = call.parameters["id"]!!
         val response = interfaceAdapter.getParkingSlot(slotId)
 

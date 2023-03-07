@@ -26,20 +26,33 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 */
-const val defaultMongoAddress =
+const val userMongoAddress =
     "mongodb+srv://testUser:testUser@cluster0.r3hsl.mongodb.net/?retryWrites=true&w=majority"
-const val defaultDBName = "test-db"
-const val defaultCollectionName = "user-collection"
+const val userDBName = "test-db"
+const val userCollectionName = "user-collection"
 
-fun getMongoClient(mongoAddress: String = defaultMongoAddress): MongoClient {
+const val parkingSlotMongoAddress = "mongodb+srv://antonioIannotta:AntonioIannotta-26@cluster0.a3rz8ro.mongodb.net/?retryWrites=true"
+const val parkingSlotDBName = "ParkingSystem"
+const val parkingSlotCollectionName = "parking-slot"
 
+fun getUserMongoClient(mongoAddress: String = userMongoAddress): MongoClient {
     val mongoClientURI = MongoClientURI(mongoAddress)
     return MongoClient(mongoClientURI)
+}
 
+fun getParkingSlotMongoClient(mongoAddress: String = parkingSlotMongoAddress): MongoClient {
+    val mongoClientURI = MongoClientURI(mongoAddress)
+    return MongoClient(mongoClientURI)
 }
 
 fun getUserCollection(
-    mongoClient: MongoClient = getMongoClient(),
-    databaseName: String = defaultDBName,
-    collectionName: String = defaultCollectionName
+    mongoClient: MongoClient,
+    databaseName: String = userDBName,
+    collectionName: String = userCollectionName
+): MongoCollection<Document> = mongoClient.getDatabase(databaseName).getCollection(collectionName)
+
+fun getParkingSlotCollection(
+    mongoClient: MongoClient,
+    databaseName: String = parkingSlotDBName,
+    collectionName: String = parkingSlotCollectionName
 ): MongoCollection<Document> = mongoClient.getDatabase(databaseName).getCollection(collectionName)
