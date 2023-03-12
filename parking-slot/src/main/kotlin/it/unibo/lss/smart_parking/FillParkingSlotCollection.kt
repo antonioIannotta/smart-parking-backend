@@ -5,6 +5,7 @@ import com.mongodb.client.MongoCollection
 import com.mongodb.client.model.geojson.Point
 import com.mongodb.client.model.geojson.Position
 import org.bson.Document
+import org.bson.types.ObjectId
 
 /*
 Copyright (c) 2022-2023 Antonio Iannotta & Luca Bracchi
@@ -33,15 +34,12 @@ object FillParkingSlotCollection {
     private const val parkingSlotTestCollection = "parking-slot-test"
     private const val databaseName = "ParkingSystem"
 
-    private val literals = listOf("A", "B")
-    private val numbers = listOf("1", "2", "3", "4", "5")
 
-
-    fun eraseAndFillCollection(collectionName: String) {
+    fun eraseAndFillCollection(collectionName: String, itemsCount: Int) {
         eraseCollection(collectionName)
         val mongoClient = MongoClients.create(mongoAddress)
         val collection = mongoClient.getDatabase(databaseName).getCollection(collectionName)
-        fillCollection(collection)
+        fillCollection(collection, itemsCount)
     }
 
     private fun eraseCollection(collectionName: String) {
@@ -50,19 +48,15 @@ object FillParkingSlotCollection {
         collection.drop()
     }
 
-    private fun fillCollection(mongoCollection: MongoCollection<Document>) {
-        literals.forEach {
-                literal -> numbers.forEach {
-                number -> mongoCollection.insertOne(createDocument(literal, number))
-        }
+    private fun fillCollection(mongoCollection: MongoCollection<Document>, itemsCount: Int) {
+        repeat(itemsCount) {
+            mongoCollection.insertOne(createDocument())
         }
     }
 
-    private fun createDocument(literal: String, number: String): Document =
+    private fun createDocument(): Document =
         Document()
-            .append("id", literal + number)
+            .append("_id", ObjectId())
             .append("occupied", false)
-            .append("stopEnd", "")
             .append("location", Point(Position(0.0, 0.0)))
-            .append("userId", "")
 }

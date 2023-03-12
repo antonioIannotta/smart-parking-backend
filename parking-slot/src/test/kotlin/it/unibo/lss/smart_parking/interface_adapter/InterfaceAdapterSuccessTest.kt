@@ -15,7 +15,7 @@ class InterfaceAdapterSuccessTest {
     @Test
     fun interfaceAdapterSuccessTest() {
 
-        FillParkingSlotCollection.eraseAndFillCollection("parking-slot-test")
+        FillParkingSlotCollection.eraseAndFillCollection("parking-slot-test", 10)
 
 
         val mongoAddress = "mongodb+srv://antonioIannotta:AntonioIannotta-26@cluster0.a3rz8ro.mongodb.net/?retryWrites=true"
