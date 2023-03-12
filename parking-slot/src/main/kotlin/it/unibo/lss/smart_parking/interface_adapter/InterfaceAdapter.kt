@@ -134,19 +134,27 @@ data class InterfaceAdapter(val collection: MongoCollection<Document>): UseCases
         return parkingSlotList
     }
 
-    override fun getParkingSlot(id: String): ParkingSlot {
-        val parkingSlotList = mutableListOf<ParkingSlot>()
+    override fun getParkingSlot(id: String): ParkingSlot? {
+        val filter = Filters.eq("_id", ObjectId(id))
+        val dbParkingSlot = collection.find(filter).first()
 
-        collection.find().forEach {
-                document -> parkingSlotList.add(createParkingSlotFromDocument(document))
-        }
-
-        var parkingSlot: ParkingSlot = if (isParkingSlotValid(id, parkingSlotList)) {
-            parkingSlotList.first {
-                    parkingSlot -> parkingSlot.id == id
-            }
+        val parkingSlot: ParkingSlot? = if (dbParkingSlot != null) {
+            createParkingSlotFromDocument(dbParkingSlot)
         } else {
-            ParkingSlot("", false, "", 0.0, 0.0, "")
+            null
+        }
+        return parkingSlot
+    }
+
+    override fun getParkingSlotOccupiedByUser(userId: String): ParkingSlot? {
+        val filter = Filters.eq("occupierId", ObjectId(userId))
+
+        val parkingSlotDocument = collection.find(filter).first()
+
+        val parkingSlot: ParkingSlot? = if (parkingSlotDocument != null) {
+            createParkingSlotFromDocument(parkingSlotDocument)
+        } else {
+            null
         }
         return parkingSlot
     }
