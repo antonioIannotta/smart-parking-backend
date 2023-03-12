@@ -1,7 +1,7 @@
 package it.unibo.lss.smart_parking.framework.utils
 
-import com.mongodb.MongoClient
-import com.mongodb.MongoClientURI
+import com.mongodb.client.MongoClient
+import com.mongodb.client.MongoClients
 import com.mongodb.client.MongoCollection
 import org.bson.Document
 
@@ -36,13 +36,11 @@ const val parkingSlotDBName = "ParkingSystem"
 const val parkingSlotCollectionName = "parking-slot"
 
 fun getUserMongoClient(mongoAddress: String = userMongoAddress): MongoClient {
-    val mongoClientURI = MongoClientURI(mongoAddress)
-    return MongoClient(mongoClientURI)
+    return MongoClients.create(mongoAddress)
 }
 
 fun getParkingSlotMongoClient(mongoAddress: String = parkingSlotMongoAddress): MongoClient {
-    val mongoClientURI = MongoClientURI(mongoAddress)
-    return MongoClient(mongoClientURI)
+    return MongoClients.create(mongoAddress)
 }
 
 fun getUserCollection(
