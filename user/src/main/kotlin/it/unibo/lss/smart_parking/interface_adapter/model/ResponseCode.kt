@@ -22,9 +22,7 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 */
 enum class ResponseCode(val code: String) {
-    SUCCESS("success"),
-    UNAUTHORIZED("unauthorizedUser"),
-    USER_NOT_FOUND("userNotFoundError"),
-    PASSWORD_ERROR("passwordError"),
-    ALREADY_REGISTERED("alreadyRegistered")
+    UNAUTHORIZED("Unauthorized"),
+    WRONG_CREDENTIALS("WrongCredentials"),
+    ALREADY_REGISTERED("AlreadyRegistered");
 }
