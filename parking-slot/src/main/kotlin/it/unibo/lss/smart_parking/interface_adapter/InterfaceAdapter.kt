@@ -89,22 +89,25 @@ data class InterfaceAdapter(val collection: MongoCollection<Document>): UseCases
         return incrementResult
     }
 
-    override fun freeSlot(slotId: String, parkingSlotList: MutableList<ParkingSlot>): Pair<HttpStatusCode, JsonObject> {
-        lateinit var freeResult: Pair<HttpStatusCode, JsonObject>
+    override fun freeSlot(slotId: String): Pair<HttpStatusCode, JsonObject> {
+        val parkingSlot = getParkingSlot(slotId)
 
-        if (!this.isSlotOccupied(slotId, parkingSlotList)) {
-            freeResult = createResponse(HttpStatusCode.BadRequest, "errorCode", "ParkingSlotFree")
-        } else if(!this.isParkingSlotValid(slotId, parkingSlotList)) {
-            freeResult = createResponse(HttpStatusCode.NotFound, "errorCode", "ParkingSlotNotValid")
+        val freeResult: Pair<HttpStatusCode, JsonObject>
+
+        if (parkingSlot == null) {
+            freeResult = createResponse(HttpStatusCode.NotFound, "errorCode", "ParkingSlotNotFound")
+        } else if (!parkingSlot.occupied) {
+            // Nothing to do, parking slot is already free
+            freeResult = createResponse(HttpStatusCode.OK, "successCode", "Success")
         } else {
-            val filter = Filters.eq("id", slotId)
-            val updates = emptyList<Bson>().toMutableList()
-            updates.add(Updates.set("occupied", false))
-            updates.add(Updates.set("stopEnd", ""))
-            updates.add(Updates.set("userId", ""))
+            val filter = Filters.eq("_id", ObjectId(slotId))
+            val updates = Updates.combine(
+                Updates.set("occupied", false),
+                Updates.unset("stopEnd"),
+                Updates.unset("occupierId")
+            )
 
-            val options = UpdateOptions().upsert(true)
-            collection.updateOne(filter, updates, options)
+            collection.updateOne(filter, updates)
 
             freeResult = createResponse(HttpStatusCode.OK, "successCode", "Success")
         }
