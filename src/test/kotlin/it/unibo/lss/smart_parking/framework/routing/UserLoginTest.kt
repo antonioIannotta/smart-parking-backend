@@ -19,6 +19,8 @@ import org.junit.jupiter.api.AfterAll
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.BeforeAll
 import org.junit.jupiter.api.Test
+import kotlin.test.assertNotNull
+import kotlin.test.assertNull
 
 class UserLoginTest {
 
@@ -31,6 +33,8 @@ class UserLoginTest {
         private const val testName = "testName"
         private const val testSecret = "1234567890"
 
+        private lateinit var userId: String
+
         @JvmStatic
         @BeforeAll
         fun config() {
@@ -40,14 +44,19 @@ class UserLoginTest {
                 }
                 //register test user
                 val signUpRequestBody = SignUpRequestBody(testMail, testPassword, testName)
-                interfaceAdapter.createUser(signUpRequestBody, testSecret)
+                val result = interfaceAdapter.createUser(signUpRequestBody, testSecret)
+                assertNull(result.errorCode)
+
+                val userId = result.userId
+                assertNotNull(userId)
+                this@Companion.userId = userId
             }
         }
 
         @JvmStatic
         @AfterAll
         fun deleteTestUser() = testApplication {
-            interfaceAdapter.deleteUser(testMail)
+            interfaceAdapter.deleteUser(userId)
         }
 
     }
