@@ -46,7 +46,7 @@ class UserDeleteTest {
     fun `test that delete user api delete the selected user`() = testSuspend {
         //register the user and get a valid jwt for him
         val signUpRequestBody = SignUpRequestBody(testMail, testPassword, testName)
-        val signUpResponse = interfaceAdapter.createUser(signUpRequestBody, testSecret)
+        val signUpResponse = interfaceAdapter.signUp(signUpRequestBody, testSecret)
         assertNull(signUpResponse.errorCode)
 
         val userId = signUpResponse.userId

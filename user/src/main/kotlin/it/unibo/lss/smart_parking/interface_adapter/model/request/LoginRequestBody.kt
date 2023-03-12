@@ -24,7 +24,7 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 */
 @Serializable
-data class SignInRequestBody(
+data class LoginRequestBody(
     val email: String,
     val password: String
 )

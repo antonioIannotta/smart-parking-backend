@@ -43,7 +43,7 @@ class UserInfoTest {
                 }
                 //register test user
                 val signUpRequestBody = SignUpRequestBody(testMail, testPassword, testName)
-                val result = interfaceAdapter.createUser(signUpRequestBody, testSecret)
+                val result = interfaceAdapter.signUp(signUpRequestBody, testSecret)
                 assertNull(result.errorCode)
 
                 val userId = result.userId

@@ -44,7 +44,7 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 */
 data class InterfaceAdapter(val collection: MongoCollection<Document>): UseCases {
-    override fun occupySlot(userId: String, slotId: String, stopEnd: Instant): Pair<HttpStatusCode, JsonObject> {
+    override fun occupyParkingSlot(userId: String, slotId: String, stopEnd: Instant): Pair<HttpStatusCode, JsonObject> {
         val parkingSlot = getParkingSlot(slotId)
 
         val occupyResult: Pair<HttpStatusCode, JsonObject>
@@ -70,7 +70,7 @@ data class InterfaceAdapter(val collection: MongoCollection<Document>): UseCases
         return occupyResult
     }
 
-    override fun incrementOccupation(userId: String, slotId: String, stopEnd: Instant): Pair<HttpStatusCode, JsonObject> {
+    override fun incrementParkingSlotOccupation(userId: String, slotId: String, stopEnd: Instant): Pair<HttpStatusCode, JsonObject> {
         val parkingSlot = getParkingSlot(slotId)
 
         val incrementResult: Pair<HttpStatusCode, JsonObject>
@@ -95,7 +95,7 @@ data class InterfaceAdapter(val collection: MongoCollection<Document>): UseCases
         return incrementResult
     }
 
-    override fun freeSlot(slotId: String): Pair<HttpStatusCode, JsonObject> {
+    override fun freeParkingSlot(slotId: String): Pair<HttpStatusCode, JsonObject> {
         val parkingSlot = getParkingSlot(slotId)
 
         val freeResult: Pair<HttpStatusCode, JsonObject>

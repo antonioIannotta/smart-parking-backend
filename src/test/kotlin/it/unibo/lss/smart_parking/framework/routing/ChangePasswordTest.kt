@@ -15,7 +15,6 @@ import it.unibo.lss.smart_parking.interface_adapter.model.request.ChangePassword
 import it.unibo.lss.smart_parking.interface_adapter.model.request.SignUpRequestBody
 import org.junit.jupiter.api.AfterAll
 import org.junit.jupiter.api.Assertions.assertEquals
-import org.junit.jupiter.api.Assertions.assertTrue
 import org.junit.jupiter.api.BeforeAll
 import org.junit.jupiter.api.Test
 import kotlin.test.assertNotNull
@@ -43,7 +42,7 @@ class ChangePasswordTest {
                 }
                 //register test user
                 val signUpRequestBody = SignUpRequestBody(testMail, testPassword, testName)
-                val result = interfaceAdapter.createUser(signUpRequestBody, testSecret)
+                val result = interfaceAdapter.signUp(signUpRequestBody, testSecret)
                 assertNull(result.errorCode)
 
                 val userId = result.userId

@@ -28,9 +28,9 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 */
 interface UseCases {
-    fun occupySlot(userId: String, slotId: String, stopEnd: Instant): Pair<HttpStatusCode, JsonObject>
-    fun incrementOccupation(userId: String, slotId: String, stopEnd: Instant): Pair<HttpStatusCode, JsonObject>
-    fun freeSlot(slotId: String): Pair<HttpStatusCode, JsonObject>
+    fun occupyParkingSlot(userId: String, slotId: String, stopEnd: Instant): Pair<HttpStatusCode, JsonObject>
+    fun incrementParkingSlotOccupation(userId: String, slotId: String, stopEnd: Instant): Pair<HttpStatusCode, JsonObject>
+    fun freeParkingSlot(slotId: String): Pair<HttpStatusCode, JsonObject>
     fun getAllParkingSlotsByRadius(center: Center): List<ParkingSlot>
     fun getParkingSlotList(): List<ParkingSlot>
     fun getParkingSlot(id: String): ParkingSlot?

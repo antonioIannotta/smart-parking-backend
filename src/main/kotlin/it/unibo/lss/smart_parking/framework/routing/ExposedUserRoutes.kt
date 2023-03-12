@@ -9,6 +9,7 @@ import it.unibo.lss.smart_parking.entity.UserCredentials
 import it.unibo.lss.smart_parking.framework.utils.getUserCollection
 import it.unibo.lss.smart_parking.framework.utils.getUserMongoClient
 import it.unibo.lss.smart_parking.interface_adapter.UserInterfaceAdapter
+import it.unibo.lss.smart_parking.interface_adapter.model.request.LoginRequestBody
 import it.unibo.lss.smart_parking.interface_adapter.model.request.RecoverMailRequestBody
 import it.unibo.lss.smart_parking.interface_adapter.model.request.SignUpRequestBody
 import java.util.*
@@ -39,11 +40,11 @@ fun Route.exposedUserRoutes(tokenSecret: String) {
     post("/user/sign-up") {
 
         //get parameter from request and create new user to register
-        val signUpRequestBody = call.receive<SignUpRequestBody>()
+        val requestBody = call.receive<SignUpRequestBody>()
         //register new user to db
         val responseBody = getUserMongoClient().use { mongoClient ->
             val interfaceAdapter = UserInterfaceAdapter(getUserCollection(mongoClient))
-            interfaceAdapter.createUser(signUpRequestBody, tokenSecret)
+            interfaceAdapter.signUp(requestBody, tokenSecret)
         }
         //sending response to client
         if (Objects.isNull(responseBody.token))
@@ -56,11 +57,11 @@ fun Route.exposedUserRoutes(tokenSecret: String) {
     post("/user/login") {
 
         //get parameter from request and create user to login
-        val credentials = call.receive<UserCredentials>()
+        val requestBody = call.receive<LoginRequestBody>()
         //get jwt token and user info
         val responseBody = getUserMongoClient().use { mongoClient ->
             val interfaceAdapter = UserInterfaceAdapter(getUserCollection(mongoClient))
-            interfaceAdapter.login(credentials, tokenSecret)
+            interfaceAdapter.login(requestBody, tokenSecret)
         }
         //sending response to client
         if (Objects.isNull(responseBody.token))

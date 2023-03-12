@@ -4,9 +4,9 @@ import com.mongodb.client.MongoCollection
 import com.mongodb.client.model.Filters
 import com.mongodb.client.model.Projections
 import com.mongodb.client.model.Updates
-import it.unibo.lss.smart_parking.entity.User
 import it.unibo.lss.smart_parking.entity.UserCredentials
 import it.unibo.lss.smart_parking.interface_adapter.model.ResponseCode
+import it.unibo.lss.smart_parking.interface_adapter.model.request.LoginRequestBody
 import it.unibo.lss.smart_parking.interface_adapter.model.request.SignUpRequestBody
 import it.unibo.lss.smart_parking.interface_adapter.model.response.ServerResponseBody
 import it.unibo.lss.smart_parking.interface_adapter.model.response.SigningResponseBody
@@ -41,9 +41,9 @@ SOFTWARE.
 */
 data class UserInterfaceAdapter(val collection: MongoCollection<Document>) : UserUseCases {
 
-    override fun login(credentials: UserCredentials, tokenSecret: String): SigningResponseBody {
-        val userId = findUserIdByEmail(credentials.email)
-        return if (userId != null && this.validateCredentials(credentials)) {
+    override fun login(requestBody: LoginRequestBody, tokenSecret: String): SigningResponseBody {
+        val userId = findUserIdByEmail(requestBody.email)
+        return if (userId != null && this.validateCredentials(UserCredentials(requestBody.email, requestBody.password))) {
             val jwt = generateJWT(userId, tokenSecret)
             SigningResponseBody(
                 errorCode = null,
@@ -56,12 +56,12 @@ data class UserInterfaceAdapter(val collection: MongoCollection<Document>) : Use
             )
     }
 
-    override fun createUser(signUpRequestBody: SignUpRequestBody, tokenSecret: String): SigningResponseBody {
-        return if (!this.userExists(signUpRequestBody.email)) {
+    override fun signUp(requestBody: SignUpRequestBody, tokenSecret: String): SigningResponseBody {
+        return if (!this.userExists(requestBody.email)) {
             val userDocument = Document()
-                .append("email", signUpRequestBody.email)
-                .append("password", signUpRequestBody.password)
-                .append("name", signUpRequestBody.name)
+                .append("email", requestBody.email)
+                .append("password", requestBody.password)
+                .append("name", requestBody.name)
             collection.insertOne(userDocument)
             val userId = userDocument.getObjectId("_id").toString()
             val jwt = generateJWT(userId, tokenSecret)

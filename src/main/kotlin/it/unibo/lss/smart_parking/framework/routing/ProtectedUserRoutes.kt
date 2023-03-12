@@ -102,7 +102,7 @@ fun Route.protectedUserRoutes() {
 
         val response = getUserMongoClient().use { mongoClient ->
             val interfaceAdapter = InterfaceAdapter(getParkingSlotCollection(mongoClient))
-            interfaceAdapter.occupySlot(userId, slotId, stopEnd)
+            interfaceAdapter.occupyParkingSlot(userId, slotId, stopEnd)
         }
 
         call.respond(response.first, response.second)
@@ -115,7 +115,7 @@ fun Route.protectedUserRoutes() {
         val userId = call.principal<JWTPrincipal>()!!.payload.getClaim("userId").asString()
         val response = getParkingSlotMongoClient().use { mongoClient ->
             val interfaceAdapter = InterfaceAdapter(getParkingSlotCollection(mongoClient))
-            interfaceAdapter.incrementOccupation(userId, slotId, newEndTime)
+            interfaceAdapter.incrementParkingSlotOccupation(userId, slotId, newEndTime)
         }
 
         call.respond(response.first, response.second)
@@ -125,7 +125,7 @@ fun Route.protectedUserRoutes() {
         val slotId = call.parameters["id"]!!
         val response = getParkingSlotMongoClient().use { mongoClient ->
             val interfaceAdapter = InterfaceAdapter(getParkingSlotCollection(mongoClient))
-            interfaceAdapter.freeSlot(slotId)
+            interfaceAdapter.freeParkingSlot(slotId)
         }
 
         call.respond(response.first, response.second)
