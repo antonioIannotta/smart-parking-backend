@@ -1,7 +1,6 @@
 package it.unibo.lss.smart_parking
 
-import com.mongodb.MongoClient
-import com.mongodb.MongoClientURI
+import com.mongodb.client.MongoClients
 import com.mongodb.client.MongoCollection
 import com.mongodb.client.model.geojson.Point
 import com.mongodb.client.model.geojson.Position
@@ -40,13 +39,13 @@ object FillParkingSlotCollection {
 
     fun eraseAndFillCollection(collectionName: String) {
         eraseCollection(collectionName)
-        val mongoClient = MongoClient(MongoClientURI(mongoAddress))
+        val mongoClient = MongoClients.create(mongoAddress)
         val collection = mongoClient.getDatabase(databaseName).getCollection(collectionName)
         fillCollection(collection)
     }
 
     private fun eraseCollection(collectionName: String) {
-        val mongoClient = MongoClient(MongoClientURI(mongoAddress))
+        val mongoClient = MongoClients.create(mongoAddress)
         val collection = mongoClient.getDatabase(databaseName).getCollection(collectionName)
         collection.drop()
     }
