@@ -17,6 +17,7 @@ import it.unibo.lss.smart_parking.interface_adapter.model.response.ServerRespons
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.BeforeAll
 import org.junit.jupiter.api.Test
+import kotlin.test.assertNotNull
 import kotlin.test.assertNull
 
 class UserDeleteTest {
@@ -46,8 +47,13 @@ class UserDeleteTest {
         //register the user and get a valid jwt for him
         val signUpRequestBody = SignUpRequestBody(testMail, testPassword, testName)
         val signUpResponse = interfaceAdapter.createUser(signUpRequestBody, testSecret)
+        assertNull(signUpResponse.errorCode)
+
+        val userId = signUpResponse.userId
+        assertNotNull(userId)
+
         //test that user is signed up
-        assertNull(interfaceAdapter.getUserInfo(testMail).errorCode)
+        assertNull(interfaceAdapter.getUserInfo(userId).errorCode)
         //delete user
         testApp.createClient {
             install(ContentNegotiation) {
@@ -60,7 +66,7 @@ class UserDeleteTest {
             //response verification
             assertEquals(HttpStatusCode.OK, call.response.status)
             //check user doesn't exist anymore
-            assertEquals(ResponseCode.WRONG_CREDENTIALS.code, interfaceAdapter.getUserInfo(testMail).errorCode)
+            assertEquals(ResponseCode.WRONG_CREDENTIALS.code, interfaceAdapter.getUserInfo(userId).errorCode)
         }
     }
 
