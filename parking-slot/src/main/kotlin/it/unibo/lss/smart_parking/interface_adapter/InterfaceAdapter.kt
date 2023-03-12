@@ -7,7 +7,9 @@ import com.mongodb.client.model.Updates
 import io.ktor.http.*
 import it.unibo.lss.smart_parking.entity.Center
 import it.unibo.lss.smart_parking.entity.ParkingSlot
+import it.unibo.lss.smart_parking.entity.Position
 import it.unibo.lss.smart_parking.use_cases.UseCases
+import kotlinx.datetime.Clock
 import kotlinx.serialization.json.Json
 import kotlinx.serialization.json.JsonElement
 import kotlinx.serialization.json.JsonObject
@@ -42,21 +44,25 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 */
 data class InterfaceAdapter(val collection: MongoCollection<Document>): UseCases {
-        lateinit var occupyResult: Pair<HttpStatusCode, JsonObject>
+    override fun occupySlot(userId: String, slotId: String, stopEnd: Instant): Pair<HttpStatusCode, JsonObject> {
+        val parkingSlot = getParkingSlot(slotId)
 
-        if (this.isSlotOccupied(slotId, parkingSlotList)) {
+        val occupyResult: Pair<HttpStatusCode, JsonObject>
+        if (parkingSlot == null) {
+            occupyResult = createResponse(HttpStatusCode.NotFound, "errorCode", "ParkingSlotNotFound")
+        } else if (parkingSlot.occupied) {
             occupyResult = createResponse(HttpStatusCode.BadRequest, "errorCode", "ParkingSlotOccupied")
-        } else if (!this.isParkingSlotValid(slotId, parkingSlotList)) {
-            occupyResult = createResponse(HttpStatusCode.NotFound, "errorCode", "ParkingSlotNotValid")
+        } else if (!this.isTimeValid(stopEnd, Clock.System.now())) {
+            occupyResult = createResponse(HttpStatusCode.BadRequest, "errorCode", "InvalidParkingSlotStopEnd")
         } else {
-            val filter = Filters.eq("id", slotId)
-            val updates = emptyList<Bson>().toMutableList()
-            updates.add(Updates.set("occupied", true))
-            updates.add(Updates.set("stopEnd", stopEnd))
-            updates.add(Updates.set("userId", userId))
+            val filter = Filters.eq("_id", ObjectId(slotId))
+            val updates = Updates.combine(
+                Updates.set("occupied", true),
+                Updates.set("stopEnd", stopEnd.toJavaInstant()),
+                Updates.set("occupierId", ObjectId(userId))
+            )
 
-            val options = UpdateOptions().upsert(true)
-            collection.updateOne(filter, updates, options)
+            collection.updateOne(filter, updates)
 
             occupyResult = createResponse(HttpStatusCode.OK, "successCode", "Success")
         }
@@ -168,21 +174,22 @@ data class InterfaceAdapter(val collection: MongoCollection<Document>): UseCases
     }
 
     private fun createParkingSlotFromDocument(document: Document): ParkingSlot {
-        print(((document["location"] as Document)["coordinates"]))
+        val coordinates = document
+            .get("location", Document::class.java)
+            .getList("coordinates", Number::class.java)
+        val position = Position(
+            longitude = coordinates[0].toDouble(),
+            latitude = coordinates[1].toDouble()
+        )
         return ParkingSlot(
-            document["id"].toString(),
-            document["occupied"].toString().toBoolean(),
-            document["stopEnd"].toString(),
-            returnCoordinates((document["location"] as Document)["coordinates"].toString())[1].toDouble(),
-            returnCoordinates((document["location"] as Document)["coordinates"].toString())[0].toDouble(),
-            document["userId"].toString()
+            document.getObjectId("_id").toString(),
+            document.getBoolean("occupied"),
+            document.getDate("stopEnd")?.toKotlinInstant(),
+            position,
+            document.getObjectId("occupierId")?.toString()
         )
     }
 
-    private fun returnCoordinates(coordinates: String): List<String> {
-        var coordinatesDropped = coordinates.drop(1)
-        coordinatesDropped = coordinatesDropped.dropLast(1)
-        return coordinatesDropped.split(",")
-    }
-
+    private fun Date.toKotlinInstant(): Instant =
+        Instant.parse(DateTimeFormatter.ISO_DATE_TIME.format(toInstant().atOffset(ZoneOffset.UTC).toZonedDateTime()))
 }
