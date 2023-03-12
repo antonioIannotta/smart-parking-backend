@@ -24,4 +24,4 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 */
 @Serializable
-class Position(val latitude: Double, val longitude: Double)
+data class Position(val latitude: Double, val longitude: Double)

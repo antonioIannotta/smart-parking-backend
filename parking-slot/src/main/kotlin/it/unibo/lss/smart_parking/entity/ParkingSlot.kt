@@ -29,5 +29,5 @@ SOFTWARE.
  * parking slot is required by the client
  */
 @Serializable
-class ParkingSlot(val id: String, val occupied: Boolean, val stopEnd: Instant?,
+data class ParkingSlot(val id: String, val occupied: Boolean, val stopEnd: Instant?,
     val position: Position, val occupierId: String?)

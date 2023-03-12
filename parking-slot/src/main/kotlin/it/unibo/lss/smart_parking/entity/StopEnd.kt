@@ -25,4 +25,4 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 */
 @Serializable
-class StopEnd(val stopEnd: Instant)
+data class StopEnd(val stopEnd: Instant)

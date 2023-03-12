@@ -24,4 +24,4 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 */
 @Serializable
-class Center(val position: Position, val radius: Double)
+data class Center(val position: Position, val radius: Double)
