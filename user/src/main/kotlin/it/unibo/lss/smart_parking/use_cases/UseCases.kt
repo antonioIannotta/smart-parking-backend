@@ -11,7 +11,7 @@ interface UserUseCases {
     fun login(credentials: UserCredentials, tokenSecret: String): SigningResponseBody
     fun createUser(signUpRequestBody: SignUpRequestBody, tokenSecret: String): SigningResponseBody
     fun recoverPassword(mail: String, tokenSecret: String): ServerResponseBody
-    fun getUserInfo(id: String): UserInfoResponseBody
+    fun getUserInfo(userId: String): UserInfoResponseBody
     fun changePassword(userId: String, newPassword: String, currentPassword: String?): ServerResponseBody
     fun deleteUser(userId: String): ServerResponseBody
 

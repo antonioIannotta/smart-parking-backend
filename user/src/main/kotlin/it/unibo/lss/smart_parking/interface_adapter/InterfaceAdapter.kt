@@ -120,11 +120,13 @@ data class UserInterfaceAdapter(val collection: MongoCollection<Document>) : Use
     }
 
     override fun validateCredentials(credentials: UserCredentials): Boolean {
-        val filter = Filters.eq("email", credentials.email)
+        val filter = Filters.and(
+            Filters.eq("email", credentials.email),
+            Filters.eq("password", credentials.password)
+        )
         val userInfoDocument = collection.find(filter).first()
 
-        return if (!this.userExists(credentials.email)) false
-        else userInfoDocument["password"] == credentials.password
+        return userInfoDocument != null
     }
     override fun userExists(mail: String): Boolean {
         val filter = Filters.eq("email", mail)
