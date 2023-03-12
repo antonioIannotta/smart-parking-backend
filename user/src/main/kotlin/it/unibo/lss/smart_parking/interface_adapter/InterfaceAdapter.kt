@@ -4,6 +4,7 @@ import com.mongodb.client.MongoCollection
 import com.mongodb.client.model.Filters
 import com.mongodb.client.model.Projections
 import com.mongodb.client.model.Updates
+import it.unibo.lss.smart_parking.entity.User
 import it.unibo.lss.smart_parking.entity.UserCredentials
 import it.unibo.lss.smart_parking.interface_adapter.model.ResponseCode
 import it.unibo.lss.smart_parking.interface_adapter.model.request.SignUpRequestBody
@@ -15,6 +16,7 @@ import it.unibo.lss.smart_parking.interface_adapter.utils.getRecoverPasswordMail
 import it.unibo.lss.smart_parking.interface_adapter.utils.sendMail
 import it.unibo.lss.smart_parking.use_cases.UserUseCases
 import org.bson.Document
+import org.bson.types.ObjectId
 
 /*
 Copyright (c) 2022-2023 Antonio Iannotta & Luca Bracchi
@@ -40,13 +42,18 @@ SOFTWARE.
 data class UserInterfaceAdapter(val collection: MongoCollection<Document>) : UserUseCases {
 
     override fun login(credentials: UserCredentials, tokenSecret: String): SigningResponseBody {
-        return if (!this.userExists(credentials.email))
-            SigningResponseBody(ResponseCode.USER_NOT_FOUND.code, "User not found")
-        else if (this.validateCredentials(credentials)) {
-            val jwt = generateJWT(credentials.email, tokenSecret)
-            SigningResponseBody(null, "success", jwt)
+        val userId = findUserIdByEmail(credentials.email)
+        return if (userId != null && this.validateCredentials(credentials)) {
+            val jwt = generateJWT(userId, tokenSecret)
+            SigningResponseBody(
+                errorCode = null,
+                token = jwt,
+                userId = userId,
+            )
         } else
-            return SigningResponseBody(ResponseCode.PASSWORD_ERROR.code, "Wrong password")
+            SigningResponseBody(
+                errorCode = ResponseCode.WRONG_CREDENTIALS.code,
+            )
     }
 
     override fun createUser(signUpRequestBody: SignUpRequestBody, tokenSecret: String): SigningResponseBody {
@@ -56,25 +63,24 @@ data class UserInterfaceAdapter(val collection: MongoCollection<Document>) : Use
                 .append("password", signUpRequestBody.password)
                 .append("name", signUpRequestBody.name)
             collection.insertOne(userDocument)
-            val jwt = generateJWT(signUpRequestBody.email, tokenSecret)
-            SigningResponseBody(null, "success", jwt)
-        } else SigningResponseBody(
-            ResponseCode.ALREADY_REGISTERED.code,
-            "An user with that email is already registered"
-        )
+            val userId = userDocument.getObjectId("_id").toString()
+            val jwt = generateJWT(userId, tokenSecret)
+            SigningResponseBody(token = jwt, userId = userId)
+        } else SigningResponseBody(errorCode = ResponseCode.ALREADY_REGISTERED.code)
     }
 
     override fun recoverPassword(mail: String, tokenSecret: String): ServerResponseBody {
-        return if (userExists(mail)) {
-            val jwt = generateJWT(mail, tokenSecret)
+        val userId = findUserIdByEmail(mail)
+        return if (userId != null && userExists(mail)) {
+            val jwt = generateJWT(userId, tokenSecret)
             sendMail(mail, "Password recovery mail", getRecoverPasswordMailContent(jwt))
             ServerResponseBody(null, "success")
-        } else ServerResponseBody(ResponseCode.USER_NOT_FOUND.code, "User not found")
+        } else ServerResponseBody(ResponseCode.WRONG_CREDENTIALS.code, "User not found")
     }
 
-    override fun getUserInfo(mail: String): UserInfoResponseBody {
+    override fun getUserInfo(userId: String): UserInfoResponseBody {
         //find info on the user
-        val filter = Filters.eq("email", mail)
+        val filter = Filters.eq("_id", ObjectId(userId))
         val project = Projections.exclude("password")
         val userInfoDocument = collection.find(filter).projection(project).first()
 
@@ -85,35 +91,32 @@ data class UserInterfaceAdapter(val collection: MongoCollection<Document>) : Use
                 userInfoDocument["email"].toString(),
                 userInfoDocument["name"].toString()
             )
-        else UserInfoResponseBody(ResponseCode.USER_NOT_FOUND.code, "User not found")
+        else UserInfoResponseBody(ResponseCode.WRONG_CREDENTIALS.code, "User not found")
     }
 
-    override fun changePassword(mail: String, newPassword: String, currentPassword: String?): ServerResponseBody {
-        if(this.userExists(mail)){
+    override fun changePassword(userId: String, newPassword: String, currentPassword: String?): ServerResponseBody {
+        val userEmail = findUserEmailById(userId);
+        if(userEmail != null){
             if (currentPassword != null) {
                 //old password validation
-                val credentials = UserCredentials(mail, currentPassword)
+                val credentials = UserCredentials(userEmail, currentPassword)
                 if (!this.validateCredentials(credentials))
-                    return ServerResponseBody(ResponseCode.PASSWORD_ERROR.code, "Wrong password")
+                    return ServerResponseBody(ResponseCode.WRONG_CREDENTIALS.code, "Wrong password")
             }
-            val filter = Filters.eq("email", mail)
+            val filter = Filters.eq("email", userEmail)
             val update = Updates.set("password", newPassword)
-            collection.findOneAndUpdate(filter, update)
+            collection.updateOne(filter, update)
             return ServerResponseBody(null, "success")
 
         } else
-            return ServerResponseBody(ResponseCode.USER_NOT_FOUND.code, "User not found")
+            return ServerResponseBody(ResponseCode.WRONG_CREDENTIALS.code, "User not found")
 
     }
 
-    override fun deleteUser(mail: String): ServerResponseBody {
-        return if (!this.userExists(mail))
-            ServerResponseBody(ResponseCode.USER_NOT_FOUND.code, "User not found")
-        else {
-            val filter = Filters.eq("email", mail)
-            collection.findOneAndDelete(filter)
-            ServerResponseBody(null, "success")
-        }
+    override fun deleteUser(userId: String): ServerResponseBody {
+        val filter = Filters.eq("_id", ObjectId(userId))
+        collection.deleteOne(filter)
+        return ServerResponseBody(null, "success")
     }
 
     override fun validateCredentials(credentials: UserCredentials): Boolean {
@@ -123,12 +126,25 @@ data class UserInterfaceAdapter(val collection: MongoCollection<Document>) : Use
         return if (!this.userExists(credentials.email)) false
         else userInfoDocument["password"] == credentials.password
     }
-
     override fun userExists(mail: String): Boolean {
         val filter = Filters.eq("email", mail)
         val project = Projections.exclude("password")
         val userInfoDocument = collection.find(filter).projection(project).first()
         return userInfoDocument != null
+    }
+
+    private fun findUserIdByEmail(email: String): String? {
+        val filter = Filters.eq("email", email)
+        val project = Projections.include("_id")
+        val userInfoDocument = collection.find(filter).projection(project).first()
+        return userInfoDocument?.getObjectId("_id")?.toString()
+    }
+
+    private fun findUserEmailById(id: String): String? {
+        val filter = Filters.eq("_id", ObjectId(id))
+        val project = Projections.include("email")
+        val userInfoDocument = collection.find(filter).projection(project).first()
+        return userInfoDocument?.getString("email")
     }
 
 }

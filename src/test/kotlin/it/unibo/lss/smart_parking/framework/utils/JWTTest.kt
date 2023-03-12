@@ -4,6 +4,7 @@ import com.auth0.jwt.exceptions.JWTDecodeException
 import com.auth0.jwt.exceptions.TokenExpiredException
 import it.unibo.lss.smart_parking.interface_adapter.utils.generateJWT
 import it.unibo.lss.smart_parking.interface_adapter.utils.getJWTVerifier
+import org.bson.types.ObjectId
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.assertThrows
 
@@ -12,20 +13,20 @@ import org.junit.jupiter.api.assertThrows
  */
 class JWTTest {
 
-    private val testMail = "test@test.it"
+    private val testId = ObjectId().toString()
     private val testSecret = "1234567890"
 
     @Test
     fun `test that token creation generate a jwt without throwing exceptions`() {
 
-        generateJWT(testMail, testSecret)
+        generateJWT(testId, testSecret)
 
     }
 
     @Test
     fun `test token validation`() {
 
-        val jwt = generateJWT(testMail, testSecret)
+        val jwt = generateJWT(testId, testSecret)
         getJWTVerifier(testSecret).verify(jwt)
 
     }
@@ -33,7 +34,7 @@ class JWTTest {
     @Test
     fun `test that token validation on expired token throws an exception`() {
 
-        val jwt = generateJWT(testMail, testSecret, -3_600_000)
+        val jwt = generateJWT(testId, testSecret, -3_600_000)
         assertThrows<TokenExpiredException> {
             getJWTVerifier(testSecret).verify(jwt)
         }

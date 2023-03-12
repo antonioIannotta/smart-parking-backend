@@ -60,7 +60,7 @@ class UserDeleteTest {
             //response verification
             assertEquals(HttpStatusCode.OK, call.response.status)
             //check user doesn't exist anymore
-            assertEquals(ResponseCode.USER_NOT_FOUND.code, interfaceAdapter.getUserInfo(testMail).errorCode)
+            assertEquals(ResponseCode.WRONG_CREDENTIALS.code, interfaceAdapter.getUserInfo(testMail).errorCode)
         }
     }
 

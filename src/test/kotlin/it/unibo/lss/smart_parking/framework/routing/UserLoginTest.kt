@@ -88,13 +88,13 @@ class UserLoginTest {
             val responseBody = call.response.body<SigningResponseBody>()
             //response verification
             assertEquals(HttpStatusCode.BadRequest, call.response.status)
-            assertEquals(ResponseCode.PASSWORD_ERROR.code, responseBody.errorCode)
+            assertEquals(ResponseCode.WRONG_CREDENTIALS.code, responseBody.errorCode)
             assertEquals(null, responseBody.token)
         }
     }
 
     @Test
-    fun `test that user login endpoint return user-not-found error if user doesn't exist`() = testSuspend {
+    fun `test that user login endpoint return wrong-credential error if user doesn't exist`() = testSuspend {
         //create credentials object
         val credentials = UserCredentials("wrong-user", testPassword)
         //make request to test response
@@ -109,7 +109,7 @@ class UserLoginTest {
             val responseBody = call.response.body<SigningResponseBody>()
             //response verification
             assertEquals(HttpStatusCode.BadRequest, call.response.status)
-            assertEquals(ResponseCode.USER_NOT_FOUND.code, responseBody.errorCode)
+            assertEquals(ResponseCode.WRONG_CREDENTIALS.code, responseBody.errorCode)
             assertEquals(null, responseBody.token)
         }
     }

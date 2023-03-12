@@ -32,11 +32,11 @@ SOFTWARE.
  * tokenSecret: encryption key of the jwt
  * duration: time required to jwt expiration, default is 7_200_000 (2 hours)
  */
-fun generateJWT(email: String, tokenSecret: String, duration: Int = 7_200_000): String {
+fun generateJWT(userId: String, tokenSecret: String, duration: Int = 7_200_000): String {
     val expirationDate = Date(System.currentTimeMillis() + duration)
     return JWT.create()
         .withAudience("Parking Client")
-        .withClaim("email", email)
+        .withClaim("userId", userId)
         .withExpiresAt(expirationDate)
         .sign(Algorithm.HMAC256(tokenSecret))
 }

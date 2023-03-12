@@ -29,7 +29,7 @@ SOFTWARE.
  */
 @Serializable
 data class SigningResponseBody(
-    val errorCode: String?,
-    val message: String,
-    val token: String? = null
+    val errorCode: String? = null,
+    val token: String? = null,
+    val userId: String? = null,
 )
