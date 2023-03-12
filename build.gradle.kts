@@ -4,6 +4,7 @@ val ktorVersion: String by project
 val kotlinVersion: String by project
 val mongoDriverVersion: String by project
 val logbackVersion: String by project
+val kotlinDateTimeVersion: String by project
 
 plugins {
     kotlin("jvm") version "1.8.0"
@@ -28,7 +29,7 @@ repositories {
 dependencies {
     implementation(project(":user"))
     implementation(project(":parking-slot"))
-    implementation("org.jetbrains.kotlinx:kotlinx-datetime:0.4.0")
+    implementation("org.jetbrains.kotlinx:kotlinx-datetime:$kotlinDateTimeVersion")
 
     implementation("io.ktor:ktor-server-core-jvm:$ktorVersion")
     implementation("io.ktor:ktor-server-auth-jvm:$ktorVersion")
