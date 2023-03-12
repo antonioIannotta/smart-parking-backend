@@ -64,22 +64,23 @@ data class InterfaceAdapter(val collection: MongoCollection<Document>): UseCases
         return occupyResult
     }
 
-    override fun incrementOccupation(userId: String, slotId: String, stopEnd: String, parkingSlotList: MutableList<ParkingSlot>): Pair<HttpStatusCode, JsonObject> {
-        lateinit var incrementResult: Pair<HttpStatusCode, JsonObject>
+    override fun incrementOccupation(userId: String, slotId: String, stopEnd: Instant): Pair<HttpStatusCode, JsonObject> {
         val parkingSlot = getParkingSlot(slotId)
 
-        if (!this.isParkingSlotValid(slotId, parkingSlotList)) {
-            incrementResult = createResponse(HttpStatusCode.NotFound, "errorCode", "ParkingSlotNotValid")
-        } else if (!this.isSlotOccupied(slotId, parkingSlotList)) {
+        val incrementResult: Pair<HttpStatusCode, JsonObject>
+
+        if (parkingSlot == null) {
+            incrementResult = createResponse(HttpStatusCode.NotFound, "errorCode", "ParkingSlotNotFound")
+        } else if (!parkingSlot.occupied || parkingSlot.stopEnd == null) {
             incrementResult = createResponse(HttpStatusCode.BadRequest, "errorCode", "ParkingSlotFree")
         } else if (!this.isTimeValid(stopEnd, parkingSlot.stopEnd)) {
-            incrementResult = createResponse(HttpStatusCode.BadRequest, "errorCode", "TimeIncrementNotValid")
+            incrementResult = createResponse(HttpStatusCode.BadRequest, "errorCode", "InvalidParkingSlotStopEnd")
         } else {
             val filters = mutableListOf<Bson>()
-            filters.add(Filters.eq("slotId", slotId))
-            filters.add(Filters.eq("userId", userId))
+            filters.add(Filters.eq("_id", ObjectId(slotId)))
+            filters.add(Filters.eq("occupierId", ObjectId(userId)))
             val filter = Filters.and(filters)
-            val update = Updates.set("endStop", Instant.parse(stopEnd).toString())
+            val update = Updates.set("stopEnd", stopEnd.toJavaInstant())
 
             collection.updateOne(filter, update)
 
