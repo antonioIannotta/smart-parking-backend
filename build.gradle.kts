@@ -28,6 +28,8 @@ repositories {
 dependencies {
     implementation(project(":user"))
     implementation(project(":parking-slot"))
+    implementation("org.jetbrains.kotlinx:kotlinx-datetime:0.4.0")
+
     implementation("io.ktor:ktor-server-core-jvm:$ktorVersion")
     implementation("io.ktor:ktor-server-auth-jvm:$ktorVersion")
     implementation("io.ktor:ktor-server-auth-jwt-jvm:$ktorVersion")

@@ -18,6 +18,7 @@ repositories {
 }
 
 dependencies {
+    implementation("org.jetbrains.kotlinx:kotlinx-datetime:0.4.0")
     implementation("io.ktor:ktor-serialization-kotlinx-json-jvm:$ktorVersion")
     implementation("org.mongodb:mongodb-driver-sync:4.9.0")
     implementation("ch.qos.logback:logback-classic:$logbackVersion")

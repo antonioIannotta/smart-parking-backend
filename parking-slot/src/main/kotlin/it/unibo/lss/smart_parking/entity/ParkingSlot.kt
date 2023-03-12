@@ -1,5 +1,6 @@
 package it.unibo.lss.smart_parking.entity
 
+import kotlinx.datetime.Instant
 import kotlinx.serialization.Serializable
 
 /*
@@ -28,5 +29,5 @@ SOFTWARE.
  * parking slot is required by the client
  */
 @Serializable
-class ParkingSlot(val id: String, val occupied: Boolean, val stopEnd: String,
-    val latitude: Double, val longitude: Double, val userId: String)
+class ParkingSlot(val id: String, val occupied: Boolean, val stopEnd: Instant?,
+    val position: Position, val occupierId: String?)

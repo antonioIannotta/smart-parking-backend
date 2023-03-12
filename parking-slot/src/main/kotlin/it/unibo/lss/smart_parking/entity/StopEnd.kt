@@ -1,5 +1,6 @@
 package it.unibo.lss.smart_parking.entity
 
+import kotlinx.datetime.Instant
 import kotlinx.serialization.Serializable
 
 /*
@@ -24,4 +25,4 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 */
 @Serializable
-class StopEnd(val stopEnd: String)
+class StopEnd(val stopEnd: Instant)

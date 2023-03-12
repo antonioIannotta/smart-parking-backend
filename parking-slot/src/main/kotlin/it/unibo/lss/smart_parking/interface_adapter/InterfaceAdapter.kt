@@ -13,7 +13,12 @@ import kotlinx.serialization.json.JsonElement
 import kotlinx.serialization.json.JsonObject
 import org.bson.Document
 import org.bson.conversions.Bson
-import java.time.Instant
+import kotlinx.datetime.Instant
+import kotlinx.datetime.toJavaInstant
+import org.bson.types.ObjectId
+import java.time.ZoneOffset
+import java.time.format.DateTimeFormatter
+import java.util.*
 
 /*
 Copyright (c) 2022-2023 Antonio Iannotta & Luca Bracchi
