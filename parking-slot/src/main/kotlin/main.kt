@@ -22,5 +22,5 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 */
 fun main() {
-    FillParkingSlotCollection.eraseAndFillCollection("parking-slot-test")
+    FillParkingSlotCollection.eraseAndFillCollection("parking-slot-test", 10)
 }
