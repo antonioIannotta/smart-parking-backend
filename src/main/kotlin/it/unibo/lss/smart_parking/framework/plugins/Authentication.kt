@@ -38,14 +38,14 @@ fun Application.configureAuthentication(tokenSecret: String) {
             realm = "Parking System Backend"
             verifier(getJWTVerifier(tokenSecret))
             validate { credential ->
-                if (credential.payload.getClaim("email").asString() != "")
+                if (credential.payload.getClaim("userId").asString() != "")
                     JWTPrincipal(credential.payload)
                 else
                     null
             }
             challenge { _, _ ->
                 call.response.status(HttpStatusCode.Unauthorized)
-                call.respond(ServerResponseBody(ResponseCode.UNAUTHORIZED.code, "Token is not valid or has expired"))
+                call.respond(ServerResponseBody(ResponseCode.UNAUTHORIZED.code, "Token is not valid or is expired"))
             }
         }
 
