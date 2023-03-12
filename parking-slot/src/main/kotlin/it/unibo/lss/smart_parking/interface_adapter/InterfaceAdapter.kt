@@ -42,7 +42,6 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 */
 data class InterfaceAdapter(val collection: MongoCollection<Document>): UseCases {
-    override fun occupySlot(userId: String, slotId: String, stopEnd: String, parkingSlotList: MutableList<ParkingSlot>): Pair<HttpStatusCode, JsonObject> {
         lateinit var occupyResult: Pair<HttpStatusCode, JsonObject>
 
         if (this.isSlotOccupied(slotId, parkingSlotList)) {
@@ -111,7 +110,7 @@ data class InterfaceAdapter(val collection: MongoCollection<Document>): UseCases
         return freeResult
     }
 
-    override fun getAllParkingSlotsByRadius(center: Center): MutableList<ParkingSlot> {
+    override fun getAllParkingSlotsByRadius(center: Center): List<ParkingSlot> {
         val parkingSlotList = emptyList<ParkingSlot>().toMutableList()
 
         collection
@@ -122,7 +121,7 @@ data class InterfaceAdapter(val collection: MongoCollection<Document>): UseCases
         return parkingSlotList
     }
 
-    override fun getParkingSlotList(): MutableList<ParkingSlot> {
+    override fun getParkingSlotList(): List<ParkingSlot> {
         val parkingSlotList = emptyList<ParkingSlot>().toMutableList()
 
         collection.find().forEach {
