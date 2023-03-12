@@ -6,7 +6,7 @@ val mongoDriverVersion: String by project
 val logbackVersion: String by project
 
 plugins {
-    kotlin("jvm") version "1.8.0"
+    kotlin("jvm") version "1.8.10"
     id("org.jetbrains.kotlin.plugin.serialization") version "1.8.0"
 }
 
