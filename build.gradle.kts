@@ -39,7 +39,7 @@ dependencies {
     implementation("io.ktor:ktor-client-content-negotiation:$ktorVersion")
     implementation("io.ktor:ktor-serialization-kotlinx-json-jvm:$ktorVersion")
     implementation("io.ktor:ktor-serialization-gson-jvm:$ktorVersion")
-    implementation("org.mongodb:mongo-java-driver:3.12.11")
+    implementation("org.mongodb:mongodb-driver-sync:4.9.0")
     implementation("ch.qos.logback:logback-classic:$logbackVersion")
     implementation(project(mapOf("path" to ":user")))
     testImplementation("io.ktor:ktor-server-tests-jvm:$ktorVersion")

@@ -19,7 +19,7 @@ repositories {
 
 dependencies {
     implementation("io.ktor:ktor-serialization-kotlinx-json-jvm:$ktorVersion")
-    implementation("org.mongodb:mongo-java-driver:3.12.11")
+    implementation("org.mongodb:mongodb-driver-sync:4.9.0")
     implementation("ch.qos.logback:logback-classic:$logbackVersion")
     testImplementation("org.jetbrains.kotlin:kotlin-test-junit:$kotlinVersion")
     testImplementation("org.junit.jupiter:junit-jupiter:5.8.1")
