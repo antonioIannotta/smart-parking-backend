@@ -20,7 +20,7 @@ repositories {
 dependencies {
     implementation("io.ktor:ktor-server-auth-jwt-jvm:$ktorVersion")
     implementation("io.ktor:ktor-serialization-kotlinx-json-jvm:$ktorVersion")
-    implementation("org.mongodb:mongodb-driver-sync:4.9.0")
+    implementation("org.mongodb:mongodb-driver-sync:$mongoDriverVersion")
     implementation("ch.qos.logback:logback-classic:$logbackVersion")
     implementation("org.apache.commons:commons-email:1.5")
     testImplementation("io.ktor:ktor-server-test-host:$ktorVersion")

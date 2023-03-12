@@ -37,7 +37,7 @@ dependencies {
     implementation("io.ktor:ktor-server-cors-jvm:$ktorVersion")
     implementation("io.ktor:ktor-server-netty-jvm:$ktorVersion")
     implementation("io.ktor:ktor-serialization-kotlinx-json-jvm:$ktorVersion")
-    implementation("org.mongodb:mongodb-driver-sync:4.9.0")
+    implementation("org.mongodb:mongodb-driver-sync:$mongoDriverVersion")
     implementation("ch.qos.logback:logback-classic:$logbackVersion")
     implementation(project(mapOf("path" to ":user")))
 
