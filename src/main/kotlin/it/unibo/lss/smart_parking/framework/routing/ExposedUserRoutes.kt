@@ -41,10 +41,10 @@ fun Route.exposedUserRoutes(tokenSecret: String) {
         //get parameter from request and create new user to register
         val signUpRequestBody = call.receive<SignUpRequestBody>()
         //register new user to db
-        val mongoClient = getUserMongoClient()
-        val interfaceAdapter = UserInterfaceAdapter(getUserCollection(mongoClient))
-        val responseBody = interfaceAdapter.createUser(signUpRequestBody, tokenSecret)
-        mongoClient.close()
+        val responseBody = getUserMongoClient().use { mongoClient ->
+            val interfaceAdapter = UserInterfaceAdapter(getUserCollection(mongoClient))
+            interfaceAdapter.createUser(signUpRequestBody, tokenSecret)
+        }
         //sending response to client
         if (Objects.isNull(responseBody.token))
             call.response.status(HttpStatusCode.BadRequest)
@@ -58,10 +58,10 @@ fun Route.exposedUserRoutes(tokenSecret: String) {
         //get parameter from request and create user to login
         val credentials = call.receive<UserCredentials>()
         //get jwt token and user info
-        val mongoClient = getUserMongoClient()
-        val interfaceAdapter = UserInterfaceAdapter(getUserCollection(mongoClient))
-        val responseBody = interfaceAdapter.login(credentials, tokenSecret)
-        mongoClient.close()
+        val responseBody = getUserMongoClient().use { mongoClient ->
+            val interfaceAdapter = UserInterfaceAdapter(getUserCollection(mongoClient))
+            interfaceAdapter.login(credentials, tokenSecret)
+        }
         //sending response to client
         if (Objects.isNull(responseBody.token))
             call.response.status(HttpStatusCode.BadRequest)
@@ -74,10 +74,11 @@ fun Route.exposedUserRoutes(tokenSecret: String) {
 
         val userMail = call.receive<RecoverMailRequestBody>().email
 
-        val mongoClient = getUserMongoClient()
-        val interfaceAdapter = UserInterfaceAdapter(getUserCollection(mongoClient))
-        val responseBody = interfaceAdapter.recoverPassword(userMail, tokenSecret)
-        mongoClient.close()
+        val responseBody = getUserMongoClient().use { mongoClient ->
+            val interfaceAdapter = UserInterfaceAdapter(getUserCollection(mongoClient))
+            interfaceAdapter.recoverPassword(userMail, tokenSecret)
+        }
+
         //sending response to client
         if (responseBody.errorCode != null)
             call.response.status(HttpStatusCode.BadRequest)
