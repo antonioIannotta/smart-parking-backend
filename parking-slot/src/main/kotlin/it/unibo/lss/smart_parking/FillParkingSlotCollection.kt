@@ -35,11 +35,11 @@ object FillParkingSlotCollection {
     private const val databaseName = "ParkingSystem"
 
 
-    fun eraseAndFillCollection(collectionName: String, itemsCount: Int) {
+    fun eraseAndFillCollection(collectionName: String, itemsCount: Int): List<String> {
         eraseCollection(collectionName)
         val mongoClient = MongoClients.create(mongoAddress)
         val collection = mongoClient.getDatabase(databaseName).getCollection(collectionName)
-        fillCollection(collection, itemsCount)
+        return fillCollection(collection, itemsCount)
     }
 
     private fun eraseCollection(collectionName: String) {
@@ -48,15 +48,15 @@ object FillParkingSlotCollection {
         collection.drop()
     }
 
-    private fun fillCollection(mongoCollection: MongoCollection<Document>, itemsCount: Int) {
-        repeat(itemsCount) {
-            mongoCollection.insertOne(createDocument())
-        }
-    }
+    private fun fillCollection(mongoCollection: MongoCollection<Document>, itemsCount: Int): List<String> =
+        (0 until itemsCount).map {
+            val newParkingSlotId = ObjectId()
+            val newParkingSlot = Document()
+                .append("_id", newParkingSlotId)
+                .append("occupied", false)
+                .append("location", Point(Position(0.0, 0.0)))
 
-    private fun createDocument(): Document =
-        Document()
-            .append("_id", ObjectId())
-            .append("occupied", false)
-            .append("location", Point(Position(0.0, 0.0)))
+            mongoCollection.insertOne(newParkingSlot)
+            newParkingSlotId.toString()
+        }
 }
