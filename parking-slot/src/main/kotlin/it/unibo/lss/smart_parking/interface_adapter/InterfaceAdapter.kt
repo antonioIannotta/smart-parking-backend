@@ -82,10 +82,10 @@ data class InterfaceAdapter(val collection: MongoCollection<Document>): UseCases
         } else if (!this.isTimeValid(stopEnd, parkingSlot.stopEnd)) {
             incrementResult = createResponse(HttpStatusCode.BadRequest, "errorCode", "InvalidParkingSlotStopEnd")
         } else {
-            val filters = mutableListOf<Bson>()
-            filters.add(Filters.eq("_id", ObjectId(slotId)))
-            filters.add(Filters.eq("occupierId", ObjectId(userId)))
-            val filter = Filters.and(filters)
+            val filter = Filters.and(
+                Filters.eq("_id", ObjectId(slotId)),
+                Filters.eq("occupierId", ObjectId(userId))
+            )
             val update = Updates.set("stopEnd", stopEnd.toJavaInstant())
 
             collection.updateOne(filter, update)
@@ -121,24 +121,18 @@ data class InterfaceAdapter(val collection: MongoCollection<Document>): UseCases
     }
 
     override fun getAllParkingSlotsByRadius(center: Center): List<ParkingSlot> {
-        val parkingSlotList = emptyList<ParkingSlot>().toMutableList()
 
-        collection
+        return collection
             .find(Filters.geoWithinCenterSphere("location", center.position.longitude, center.position.latitude, center.radius / 6371))
-            .forEach {
-                    document ->  parkingSlotList.add(createParkingSlotFromDocument(document))
-            }
-        return parkingSlotList
+            .map {
+                    document -> createParkingSlotFromDocument(document)
+            }.toList()
     }
 
-    override fun getParkingSlotList(): List<ParkingSlot> {
-        val parkingSlotList = emptyList<ParkingSlot>().toMutableList()
-
-        collection.find().forEach {
-                document -> parkingSlotList.add(createParkingSlotFromDocument(document))
-        }
-        return parkingSlotList
-    }
+    override fun getParkingSlotList(): List<ParkingSlot> =
+        collection.find().map {
+                document -> createParkingSlotFromDocument(document)
+        }.toList()
 
     override fun getParkingSlot(id: String): ParkingSlot? {
         val filter = Filters.eq("_id", ObjectId(id))
@@ -166,9 +160,11 @@ data class InterfaceAdapter(val collection: MongoCollection<Document>): UseCases
     }
 
     fun createResponse(httpStatusCode: HttpStatusCode, code: String, message: String): Pair<HttpStatusCode, JsonObject> {
-        val jsonElement = mutableMapOf<String, JsonElement>()
-        jsonElement[code] = Json.parseToJsonElement(message)
-        val jsonObject = JsonObject(jsonElement)
+        val jsonObject = JsonObject(
+            mapOf(
+                code to Json.parseToJsonElement(message)
+            )
+        )
 
         return Pair(httpStatusCode, jsonObject)
     }
