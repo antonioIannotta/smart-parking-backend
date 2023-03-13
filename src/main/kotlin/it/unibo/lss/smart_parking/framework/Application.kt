@@ -30,13 +30,31 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 */
 fun main() {
-    embeddedServer(Netty, port = 8080, host = "0.0.0.0", module = Application::module)
+    // Please change the following secrets in production.
+    val tokenSecret = "dSgUkXp2s5v8y/B?E(H+MbQeThWmYq3t"
+    val passwordHashingSecret = "Lb%vy\$7tt3VI8z3HDPfgj5%3!yccfn"
+
+
+    embeddedServer(Netty, port = 8080, host = "0.0.0.0", module = {
+        module(
+            tokenSecret = tokenSecret,
+            passwordHashingSecret = passwordHashingSecret
+        )
+    })
         .start(wait = true)
 }
 
-fun Application.module(tokenSecret: String = "dSgUkXp2s5v8y/B?E(H+MbQeThWmYq3t") {
-    configureAuthentication(tokenSecret)
+fun Application.module(
+    tokenSecret: String,
+    passwordHashingSecret: String
+) {
+    configureAuthentication(
+        tokenSecret = tokenSecret
+    )
     configureSerialization()
     configureHTTP()
-    configureRouting(tokenSecret)
+    configureRouting(
+        tokenSecret = tokenSecret,
+        passwordHashingSecret = passwordHashingSecret
+    )
 }

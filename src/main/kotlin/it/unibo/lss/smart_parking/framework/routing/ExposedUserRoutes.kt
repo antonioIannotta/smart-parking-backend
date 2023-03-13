@@ -35,7 +35,10 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 */
-fun Route.exposedUserRoutes(tokenSecret: String) {
+fun Route.exposedUserRoutes(
+    tokenSecret: String,
+    passwordHashingSecret: String
+) {
 
     post("/user/sign-up") {
 
@@ -43,7 +46,7 @@ fun Route.exposedUserRoutes(tokenSecret: String) {
         val requestBody = call.receive<SignUpRequestBody>()
         //register new user to db
         val responseBody = getUserMongoClient().use { mongoClient ->
-            val interfaceAdapter = UserInterfaceAdapter(getUserCollection(mongoClient))
+            val interfaceAdapter = UserInterfaceAdapter(getUserCollection(mongoClient), passwordHashingSecret)
             interfaceAdapter.signUp(requestBody, tokenSecret)
         }
         //sending response to client
@@ -60,7 +63,7 @@ fun Route.exposedUserRoutes(tokenSecret: String) {
         val requestBody = call.receive<LoginRequestBody>()
         //get jwt token and user info
         val responseBody = getUserMongoClient().use { mongoClient ->
-            val interfaceAdapter = UserInterfaceAdapter(getUserCollection(mongoClient))
+            val interfaceAdapter = UserInterfaceAdapter(getUserCollection(mongoClient), passwordHashingSecret)
             interfaceAdapter.login(requestBody, tokenSecret)
         }
         //sending response to client
@@ -76,7 +79,7 @@ fun Route.exposedUserRoutes(tokenSecret: String) {
         val userMail = call.receive<RecoverMailRequestBody>().email
 
         val responseBody = getUserMongoClient().use { mongoClient ->
-            val interfaceAdapter = UserInterfaceAdapter(getUserCollection(mongoClient))
+            val interfaceAdapter = UserInterfaceAdapter(getUserCollection(mongoClient), passwordHashingSecret)
             interfaceAdapter.recoverPassword(userMail, tokenSecret)
         }
 

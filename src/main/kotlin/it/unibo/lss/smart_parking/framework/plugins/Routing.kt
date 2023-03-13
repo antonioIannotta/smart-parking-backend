@@ -28,7 +28,10 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 */
-fun Application.configureRouting(tokenSecret: String) {
+fun Application.configureRouting(
+    tokenSecret: String,
+    passwordHashingSecret: String
+) {
 
     routing {
 
@@ -37,9 +40,14 @@ fun Application.configureRouting(tokenSecret: String) {
         }
 
         authenticate("auth-jwt") {
-            protectedUserRoutes()
+            protectedUserRoutes(
+                passwordHashingSecret = passwordHashingSecret
+            )
         }
-        exposedUserRoutes(tokenSecret)
+        exposedUserRoutes(
+            tokenSecret = tokenSecret,
+            passwordHashingSecret = passwordHashingSecret
+        )
 
     }
 }

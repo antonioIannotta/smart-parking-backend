@@ -25,6 +25,6 @@ SOFTWARE.
 */
 @Serializable
 data class ChangePasswordRequestBody(
-    val currentPassword: String? = null,
+    val currentPassword: String,
     val newPassword: String
 )

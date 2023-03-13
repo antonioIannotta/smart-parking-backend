@@ -40,7 +40,9 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 */
-fun Route.protectedUserRoutes() {
+fun Route.protectedUserRoutes(
+    passwordHashingSecret: String
+) {
 
     //BEGIN: user endpoints
     get("/user/current") {
@@ -48,7 +50,7 @@ fun Route.protectedUserRoutes() {
         val userId = principal!!.payload.getClaim("userId").asString()
 
         val responseBody = getUserMongoClient().use { mongoClient ->
-            val interfaceAdapter = UserInterfaceAdapter(getUserCollection(mongoClient))
+            val interfaceAdapter = UserInterfaceAdapter(getUserCollection(mongoClient), passwordHashingSecret)
             interfaceAdapter.getUserInfo(userId)
         }
 
@@ -64,7 +66,7 @@ fun Route.protectedUserRoutes() {
         val userId = principal!!.payload.getClaim("userId").asString()
 
         val responseBody = getUserMongoClient().use { mongoClient ->
-            val interfaceAdapter = UserInterfaceAdapter(getUserCollection(mongoClient))
+            val interfaceAdapter = UserInterfaceAdapter(getUserCollection(mongoClient), passwordHashingSecret)
             interfaceAdapter.deleteUser(userId)
         }
 
@@ -81,7 +83,7 @@ fun Route.protectedUserRoutes() {
         val requestBody = call.receive<ChangePasswordRequestBody>()
 
         val responseBody = getUserMongoClient().use { mongoClient ->
-            val interfaceAdapter = UserInterfaceAdapter(getUserCollection(mongoClient))
+            val interfaceAdapter = UserInterfaceAdapter(getUserCollection(mongoClient), passwordHashingSecret)
             interfaceAdapter.changePassword(userId, requestBody.newPassword, requestBody.currentPassword)
         }
 
