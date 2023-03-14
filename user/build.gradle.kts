@@ -4,6 +4,7 @@ val ktorVersion: String by project
 val kotlinVersion: String by project
 val mongoDriverVersion: String by project
 val logbackVersion: String by project
+val jUnitVersion: String by project
 
 plugins {
     kotlin("jvm") version "1.8.0"
@@ -25,7 +26,7 @@ dependencies {
     implementation("org.apache.commons:commons-email:1.5")
     testImplementation("io.ktor:ktor-server-test-host:$ktorVersion")
     testImplementation("org.jetbrains.kotlin:kotlin-test-junit:$kotlinVersion")
-    testImplementation("org.junit.jupiter:junit-jupiter:5.8.1")
+    testImplementation("org.junit.jupiter:junit-jupiter:$jUnitVersion")
 }
 
 tasks.test {
