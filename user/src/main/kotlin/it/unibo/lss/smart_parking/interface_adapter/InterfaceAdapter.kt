@@ -84,14 +84,14 @@ data class UserInterfaceAdapter(
             )
     }
 
-    override fun recoverPassword(mail: String, tokenSecret: String): ServerResponseBody {
+    /*override fun recoverPassword(mail: String, tokenSecret: String): ServerResponseBody {
         val userId = findUserIdByEmail(mail)
         return if (userId != null && userExists(mail)) {
             val jwt = generateJWT(userId, tokenSecret)
             sendMail(mail, "Password recovery mail", getRecoverPasswordMailContent(jwt))
             ServerResponseBody(null, "success")
         } else ServerResponseBody(ResponseCode.WRONG_CREDENTIALS.code, "User not found")
-    }
+    }*/
 
     override fun getUserInfo(userId: String): UserInfoResponseBody {
         //find info on the user
