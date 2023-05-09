@@ -1,16 +1,5 @@
-val projectGroup: String by project
-val projectVersion: String by project
-
 plugins {
-    alias(libs.plugins.kotlin.jvm)
     alias(libs.plugins.kotlin.plugin.serialization)
-}
-
-group = projectGroup
-version = projectVersion
-
-repositories {
-    mavenCentral()
 }
 
 dependencies {
