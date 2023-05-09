@@ -1,19 +1,9 @@
-FROM ubuntu:22.04
+FROM azul/zulu-openjdk:17
 
 
 EXPOSE 8080/tcp
 
-# Necessario creare il Jar, portarlo sulla macchina virtuale ubuntu e lanciarlo
-RUN apt update
-RUN apt install -y git
-RUN apt install -y snapd
-RUN apt install -y default-jre
-RUN apt install -y kotlin
 ADD . parking-system-backend
 WORKDIR parking-system-backend
-RUN git checkout master
-RUN ./gradlew build
-#RUN kotlinc Application.kt -include-runtime -d Application.jar
-#RUN kotlinc src/main/kotlin/it/unibo/lss/parking_system/framework/Application.kt -include-runtime -d Application.jar
-#RUN java -jar Application.jar
+RUN ./gradlew assemble
 CMD ./gradlew run
