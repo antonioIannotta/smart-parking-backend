@@ -11,8 +11,6 @@ import it.unibo.lss.smart_parking.interface_adapter.model.response.ServerRespons
 import it.unibo.lss.smart_parking.interface_adapter.model.response.SigningResponseBody
 import it.unibo.lss.smart_parking.interface_adapter.model.response.UserInfoResponseBody
 import it.unibo.lss.smart_parking.interface_adapter.utils.generateJWT
-import it.unibo.lss.smart_parking.interface_adapter.utils.getRecoverPasswordMailContent
-import it.unibo.lss.smart_parking.interface_adapter.utils.sendMail
 import it.unibo.lss.smart_parking.use_cases.UserUseCases
 import org.bson.Document
 import org.bson.types.ObjectId
