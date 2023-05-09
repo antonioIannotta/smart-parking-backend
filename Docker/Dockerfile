@@ -9,7 +9,7 @@ RUN apt install -y git
 RUN apt install -y snapd
 RUN apt install -y default-jre
 RUN apt install -y kotlin
-RUN git clone https://github.com/antonioIannotta/parking-system-backend.git
+ADD . parking-system-backend
 WORKDIR parking-system-backend
 RUN git checkout master
 RUN ./gradlew build
