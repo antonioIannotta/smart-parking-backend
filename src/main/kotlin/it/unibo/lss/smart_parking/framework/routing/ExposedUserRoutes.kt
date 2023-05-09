@@ -74,21 +74,4 @@ fun Route.exposedUserRoutes(
         call.respond(responseBody)
     }
 
-    post("/user/recover-password") {
-
-        val userMail = call.receive<RecoverMailRequestBody>().email
-
-        val responseBody = getUserMongoClient().use { mongoClient ->
-            val interfaceAdapter = UserInterfaceAdapter(getUserCollection(mongoClient), passwordHashingSecret)
-            interfaceAdapter.recoverPassword(userMail, tokenSecret)
-        }
-
-        //sending response to client
-        if (responseBody.errorCode != null)
-            call.response.status(HttpStatusCode.BadRequest)
-        else
-            call.response.status(HttpStatusCode.OK)
-        call.respond(responseBody)
-    }
-
 }
