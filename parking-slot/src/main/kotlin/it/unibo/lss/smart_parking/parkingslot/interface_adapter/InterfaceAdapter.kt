@@ -44,52 +44,56 @@ data class InterfaceAdapter(val collection: MongoCollection<Document>): UseCases
     override fun occupyParkingSlot(userId: String, slotId: String, stopEnd: Instant): Pair<HttpStatusCode, JsonObject> {
         val parkingSlot = getParkingSlot(slotId)
 
-        val occupyResult: Pair<HttpStatusCode, JsonObject>
-        if (parkingSlot == null) {
-            occupyResult = createResponse(HttpStatusCode.NotFound, "errorCode", "ParkingSlotNotFound")
-        } else if (parkingSlot.occupied) {
-            occupyResult = createResponse(HttpStatusCode.BadRequest, "errorCode", "ParkingSlotOccupied")
-        } else if (!this.isTimeValid(stopEnd, Clock.System.now())) {
-            occupyResult = createResponse(HttpStatusCode.BadRequest, "errorCode", "InvalidParkingSlotStopEnd")
-        } else {
-            val filter = Filters.eq("_id", ObjectId(slotId))
-            val updates = Updates.combine(
-                Updates.set("occupied", true),
-                Updates.set("stopEnd", stopEnd.toJavaInstant()),
-                Updates.set("occupierId", ObjectId(userId))
-            )
+        return when {
+            parkingSlot == null -> {
+                createResponse(HttpStatusCode.NotFound, "errorCode", "ParkingSlotNotFound")
+            }
+            parkingSlot.occupied -> {
+                createResponse(HttpStatusCode.BadRequest, "errorCode", "ParkingSlotOccupied")
+            }
+            !this.isTimeValid(stopEnd, Clock.System.now()) -> {
+                createResponse(HttpStatusCode.BadRequest, "errorCode", "InvalidParkingSlotStopEnd")
+            }
+            else -> {
+                val filter = Filters.eq("_id", ObjectId(slotId))
+                val updates = Updates.combine(
+                    Updates.set("occupied", true),
+                    Updates.set("stopEnd", stopEnd.toJavaInstant()),
+                    Updates.set("occupierId", ObjectId(userId))
+                )
 
-            collection.updateOne(filter, updates)
+                collection.updateOne(filter, updates)
 
-            occupyResult = createResponse(HttpStatusCode.OK, "successCode", "Success")
+                createResponse(HttpStatusCode.OK, "successCode", "Success")
+            }
         }
-
-        return occupyResult
     }
 
     override fun incrementParkingSlotOccupation(userId: String, slotId: String, stopEnd: Instant): Pair<HttpStatusCode, JsonObject> {
         val parkingSlot = getParkingSlot(slotId)
 
-        val incrementResult: Pair<HttpStatusCode, JsonObject>
+        return when {
+            parkingSlot == null -> {
+                createResponse(HttpStatusCode.NotFound, "errorCode", "ParkingSlotNotFound")
+            }
+            !parkingSlot.occupied || parkingSlot.stopEnd == null -> {
+                createResponse(HttpStatusCode.BadRequest, "errorCode", "ParkingSlotFree")
+            }
+            !this.isTimeValid(stopEnd, parkingSlot.stopEnd) -> {
+                createResponse(HttpStatusCode.BadRequest, "errorCode", "InvalidParkingSlotStopEnd")
+            }
+            else -> {
+                val filter = Filters.and(
+                    Filters.eq("_id", ObjectId(slotId)),
+                    Filters.eq("occupierId", ObjectId(userId))
+                )
+                val update = Updates.set("stopEnd", stopEnd.toJavaInstant())
 
-        if (parkingSlot == null) {
-            incrementResult = createResponse(HttpStatusCode.NotFound, "errorCode", "ParkingSlotNotFound")
-        } else if (!parkingSlot.occupied || parkingSlot.stopEnd == null) {
-            incrementResult = createResponse(HttpStatusCode.BadRequest, "errorCode", "ParkingSlotFree")
-        } else if (!this.isTimeValid(stopEnd, parkingSlot.stopEnd)) {
-            incrementResult = createResponse(HttpStatusCode.BadRequest, "errorCode", "InvalidParkingSlotStopEnd")
-        } else {
-            val filter = Filters.and(
-                Filters.eq("_id", ObjectId(slotId)),
-                Filters.eq("occupierId", ObjectId(userId))
-            )
-            val update = Updates.set("stopEnd", stopEnd.toJavaInstant())
+                collection.updateOne(filter, update)
 
-            collection.updateOne(filter, update)
-
-            incrementResult = createResponse(HttpStatusCode.OK, "successCode", "Success")
+                createResponse(HttpStatusCode.OK, "successCode", "Success")
+            }
         }
-        return incrementResult
     }
 
     override fun freeParkingSlot(slotId: String): Pair<HttpStatusCode, JsonObject> {

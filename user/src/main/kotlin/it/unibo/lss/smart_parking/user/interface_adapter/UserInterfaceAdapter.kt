@@ -100,7 +100,7 @@ data class UserInterfaceAdapter(
 
     override fun changePassword(userId: String, newPassword: String, currentPassword: String): ServerResponseBody {
         val userEmail = findUserEmailById(userId)
-        if(userEmail != null){
+        return if(userEmail != null){
             //old password validation
             if (!this.validateCredentials(userId = userId, password = currentPassword))
                 return ServerResponseBody(ResponseCode.WRONG_CREDENTIALS.code, "Wrong password")
@@ -117,10 +117,9 @@ data class UserInterfaceAdapter(
                 Updates.set("password_salt", newPasswordSalt),
             )
             collection.updateOne(filter, update)
-            return ServerResponseBody(null, "success")
-
+            ServerResponseBody(null, "success")
         } else
-            return ServerResponseBody(ResponseCode.WRONG_CREDENTIALS.code, "User not found")
+            ServerResponseBody(ResponseCode.WRONG_CREDENTIALS.code, "User not found")
 
     }
 
