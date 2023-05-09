@@ -29,8 +29,7 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 */
 fun Application.configureRouting(
-    tokenSecret: String,
-    passwordHashingSecret: String
+    hashingSecret: String,
 ) {
 
     routing {
@@ -41,12 +40,12 @@ fun Application.configureRouting(
 
         authenticate("auth-jwt") {
             protectedUserRoutes(
-                passwordHashingSecret = passwordHashingSecret
+                passwordHashingSecret = hashingSecret
             )
         }
         exposedUserRoutes(
-            tokenSecret = tokenSecret,
-            passwordHashingSecret = passwordHashingSecret
+            tokenSecret = hashingSecret,
+            passwordHashingSecret = hashingSecret
         )
 
     }

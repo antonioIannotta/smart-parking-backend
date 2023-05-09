@@ -31,30 +31,26 @@ SOFTWARE.
 */
 fun main() {
     // Please change the following secrets in production.
-    val tokenSecret = "dSgUkXp2s5v8y/B?E(H+MbQeThWmYq3t"
-    val passwordHashingSecret = "Lb%vy\$7tt3VI8z3HDPfgj5%3!yccfn"
+    val hashingSecret = "dSgUkXp2s5v8y/B?E(H+MbQeThWmYq3t"
 
 
     embeddedServer(Netty, port = 8080, host = "0.0.0.0", module = {
         module(
-            tokenSecret = tokenSecret,
-            passwordHashingSecret = passwordHashingSecret
+            hashingSecret = hashingSecret,
         )
     })
         .start(wait = true)
 }
 
 fun Application.module(
-    tokenSecret: String,
-    passwordHashingSecret: String
+    hashingSecret: String,
 ) {
     configureAuthentication(
-        tokenSecret = tokenSecret
+        tokenSecret = hashingSecret
     )
     configureSerialization()
     configureHTTP()
     configureRouting(
-        tokenSecret = tokenSecret,
-        passwordHashingSecret = passwordHashingSecret
+        hashingSecret = hashingSecret,
     )
 }
