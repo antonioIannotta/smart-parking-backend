@@ -1,16 +1,10 @@
 val projectGroup: String by project
 val projectVersion: String by project
-val ktorVersion: String by project
-val kotlinVersion: String by project
-val mongoDriverVersion: String by project
-val logbackVersion: String by project
-val kotlinDateTimeVersion: String by project
-val jUnitVersion: String by project
 
 plugins {
-    kotlin("jvm") version "1.8.10"
-    id("io.ktor.plugin") version "2.2.4"
-    id("org.jetbrains.kotlin.plugin.serialization") version "1.8.10"
+    alias(libs.plugins.kotlin.jvm)
+    alias(libs.plugins.ktor.plugin)
+    alias(libs.plugins.kotlin.plugin.serialization)
 }
 
 group = projectGroup
@@ -30,26 +24,25 @@ repositories {
 dependencies {
     implementation(project(":user"))
     implementation(project(":parking-slot"))
-    implementation("org.jetbrains.kotlinx:kotlinx-datetime:$kotlinDateTimeVersion")
+    implementation(libs.kotlinx.datetime)
 
-    implementation("io.ktor:ktor-server-core-jvm:$ktorVersion")
-    implementation("io.ktor:ktor-server-auth-jvm:$ktorVersion")
-    implementation("io.ktor:ktor-server-auth-jwt-jvm:$ktorVersion")
-    implementation("io.ktor:ktor-server-content-negotiation-jvm:$ktorVersion")
-    implementation("io.ktor:ktor-server-cors-jvm:$ktorVersion")
-    implementation("io.ktor:ktor-server-netty-jvm:$ktorVersion")
-    implementation("io.ktor:ktor-serialization-kotlinx-json-jvm:$ktorVersion")
-    implementation("org.mongodb:mongodb-driver-sync:$mongoDriverVersion")
-    implementation("ch.qos.logback:logback-classic:$logbackVersion")
-    implementation(project(mapOf("path" to ":user")))
+    implementation(libs.ktor.server.core)
+    implementation(libs.ktor.server.auth)
+    implementation(libs.ktor.server.auth.jwt)
+    implementation(libs.ktor.server.content.negotiation)
+    implementation(libs.ktor.server.cors)
+    implementation(libs.ktor.server.netty)
+    implementation(libs.ktor.serialization.kotlinx.json)
+    implementation(libs.mongodb.driver.sync)
+    implementation(libs.logback.classic)
 
 
-    testImplementation("io.ktor:ktor-client-core-jvm:$ktorVersion")
-    testImplementation("io.ktor:ktor-client-apache-jvm:$ktorVersion")
-    testImplementation("io.ktor:ktor-client-content-negotiation:$ktorVersion")
-    testImplementation("io.ktor:ktor-server-tests-jvm:$ktorVersion")
-    testImplementation("org.jetbrains.kotlin:kotlin-test-junit:$kotlinVersion")
-    testImplementation("org.junit.jupiter:junit-jupiter:$jUnitVersion")
+    testImplementation(libs.ktor.client.core)
+    testImplementation(libs.ktor.client.apache)
+    testImplementation(libs.ktor.client.content.negotiation)
+    testImplementation(libs.ktor.server.tests)
+    testImplementation(libs.kotlin.test.junit)
+    testImplementation(libs.junit)
 }
 
 tasks.test {
