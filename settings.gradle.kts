@@ -1,3 +1,6 @@
 rootProject.name = "ParkingSystem"
-include("parking-slot")
-include("user")
+include(
+    "app",
+    "parking-slot",
+    "user",
+)
