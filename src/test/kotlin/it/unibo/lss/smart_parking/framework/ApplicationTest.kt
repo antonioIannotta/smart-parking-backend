@@ -8,11 +8,14 @@ import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Test
 
 class ApplicationTest {
-    @Test
+    companion object {
+        private const val testSecret = "1234567890"
+    }
+        @Test
     fun `test application startup and base endpoint connection`() = testApplication {
 
         application {
-            module()
+            module(testSecret, testSecret)
         }
 
         client.get("/").apply {

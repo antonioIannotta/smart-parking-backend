@@ -26,12 +26,12 @@ class UserLoginTest {
 
     companion object {
         private lateinit var testApp: TestApplication
-        private var interfaceAdapter = UserInterfaceAdapter(getUserCollection(getUserMongoClient()))
+        private const val testSecret = "1234567890"
+        private var interfaceAdapter = UserInterfaceAdapter(getUserCollection(getUserMongoClient()), testSecret)
         private const val userLoginEndpoint = "/user/login"
         private const val testMail = "test@test.it"
         private const val testPassword = "Test123!"
         private const val testName = "testName"
-        private const val testSecret = "1234567890"
 
         private lateinit var userId: String
 
@@ -40,7 +40,7 @@ class UserLoginTest {
         fun config() {
             testApp = TestApplication {
                 application {
-                    module(testSecret)
+                    module(testSecret, testSecret)
                 }
                 //register test user
                 val signUpRequestBody = SignUpRequestBody(testMail, testPassword, testName)

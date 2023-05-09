@@ -24,19 +24,19 @@ class UserDeleteTest {
 
     companion object {
         private lateinit var testApp: TestApplication
-        private var interfaceAdapter = UserInterfaceAdapter(getUserCollection(getUserMongoClient()))
+        private const val testSecret = "1234567890"
+        private var interfaceAdapter = UserInterfaceAdapter(getUserCollection(getUserMongoClient()), testSecret)
         private const val userInfoEndpoint = "/user/current"
         private const val testMail = "test@test.it"
         private const val testPassword = "Test123!"
         private const val testName = "testName"
-        private const val testSecret = "1234567890"
 
         @JvmStatic
         @BeforeAll
         fun config() {
             testApp = TestApplication {
                 application {
-                    module(testSecret)
+                    module(testSecret, testSecret)
                 }
             }
         }
@@ -62,7 +62,6 @@ class UserDeleteTest {
         }.delete(userInfoEndpoint) {
             header(HttpHeaders.Authorization, "Bearer ${signUpResponse.token}")
         }.apply {
-            val responseBody = call.response.body<ServerResponseBody>()
             //response verification
             assertEquals(HttpStatusCode.OK, call.response.status)
             //check user doesn't exist anymore

@@ -16,6 +16,7 @@ import org.junit.jupiter.api.Test
 class AuthenticationTest {
 
     companion object {
+        private const val testSecret = "1234567890"
         private lateinit var testApp: TestApplication
 
         @JvmStatic
@@ -23,7 +24,7 @@ class AuthenticationTest {
         fun config() {
             testApp = TestApplication {
                 application {
-                    module()
+                    module(testSecret, testSecret)
                 }
             }
         }

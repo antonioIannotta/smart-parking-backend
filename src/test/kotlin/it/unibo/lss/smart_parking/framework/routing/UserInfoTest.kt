@@ -12,6 +12,7 @@ import it.unibo.lss.smart_parking.framework.module
 import it.unibo.lss.smart_parking.framework.utils.getUserCollection
 import it.unibo.lss.smart_parking.framework.utils.getUserMongoClient
 import it.unibo.lss.smart_parking.interface_adapter.UserInterfaceAdapter
+import it.unibo.lss.smart_parking.interface_adapter.model.request.LoginRequestBody
 import it.unibo.lss.smart_parking.interface_adapter.model.request.SignUpRequestBody
 import it.unibo.lss.smart_parking.interface_adapter.model.response.UserInfoResponseBody
 import org.junit.jupiter.api.AfterAll
@@ -25,12 +26,12 @@ class UserInfoTest {
 
     companion object {
         private lateinit var testApp: TestApplication
-        private var interfaceAdapter = UserInterfaceAdapter(getUserCollection(getUserMongoClient()))
+        private const val testSecret = "1234567890"
+        private var interfaceAdapter = UserInterfaceAdapter(getUserCollection(getUserMongoClient()), testSecret)
         private const val userInfoEndpoint = "/user/current"
         private const val testMail = "test@test.it"
         private const val testPassword = "Test123!"
         private const val testName = "testName"
-        private const val testSecret = "1234567890"
 
         private lateinit var userId: String
 
@@ -39,7 +40,7 @@ class UserInfoTest {
         fun config() {
             testApp = TestApplication {
                 application {
-                    module(testSecret)
+                    module(testSecret, testSecret)
                 }
                 //register test user
                 val signUpRequestBody = SignUpRequestBody(testMail, testPassword, testName)
@@ -63,8 +64,7 @@ class UserInfoTest {
     @Test
     fun `test that user info return info about the user`() = testSuspend {
         //log user and get jwt
-        val credentials = UserCredentials(testMail, testPassword)
-        val jwt = interfaceAdapter.login(credentials, testSecret).token
+        val jwt = interfaceAdapter.login(LoginRequestBody(testMail, testPassword), testSecret).token
         //get user info
         testApp.createClient {
             install(ContentNegotiation) {
