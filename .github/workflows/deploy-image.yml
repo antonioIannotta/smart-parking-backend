@@ -23,13 +23,11 @@ jobs:
         id: meta
         uses: docker/metadata-action@v4
         with:
-          context: .
           images: ./Docker/Dockerfile
 
       - name: Build and push Docker image
         uses: docker/build-push-action@ad44023a93711e3deb337508980b4b5e9bcdc5dc
         with:
           push: true
-          context: .
           file: ./Docker/Dockerfile
           tags: giuliozaccaroni/smart-parking-backend:latest
