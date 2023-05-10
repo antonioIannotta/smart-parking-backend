@@ -11,5 +11,5 @@
     }
   ],
   "platformAutomerge": true,
-  "forkProcessing": true
+  "forkProcessing": "enabled"
 }
