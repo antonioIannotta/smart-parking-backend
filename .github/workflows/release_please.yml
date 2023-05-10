@@ -21,6 +21,7 @@ jobs:
         with:
           release-type: simple
           package-name: smartparking
+          token: ${{ secrets.PERSONAL_GITHUB_TOKEN }}
   push_image_to_registry:
     name: Push Docker image to Docker Hub
     runs-on: ubuntu-latest
