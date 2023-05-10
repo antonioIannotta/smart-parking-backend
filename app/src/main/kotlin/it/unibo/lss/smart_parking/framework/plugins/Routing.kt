@@ -29,6 +29,8 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 */
 fun Application.configureRouting(
+    userDbConnectionString: String,
+    parkingSlotDbConnectionString: String,
     hashingSecret: String,
 ) {
 
@@ -40,12 +42,15 @@ fun Application.configureRouting(
 
         authenticate("auth-jwt") {
             protectedUserRoutes(
-                passwordHashingSecret = hashingSecret
+                passwordHashingSecret = hashingSecret,
+                userDbConnectionString = userDbConnectionString,
+                parkingSlotDbConnectionString = parkingSlotDbConnectionString
             )
         }
         exposedUserRoutes(
+            userDbConnectionString = userDbConnectionString,
             tokenSecret = hashingSecret,
-            passwordHashingSecret = hashingSecret
+            passwordHashingSecret = hashingSecret,
         )
 
     }

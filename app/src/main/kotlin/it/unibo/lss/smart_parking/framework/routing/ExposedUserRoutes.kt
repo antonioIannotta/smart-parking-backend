@@ -11,6 +11,7 @@ import it.unibo.lss.smart_parking.user.interface_adapter.UserInterfaceAdapter
 import it.unibo.lss.smart_parking.user.interface_adapter.model.request.LoginRequestBody
 import it.unibo.lss.smart_parking.user.interface_adapter.model.request.SignUpRequestBody
 import java.util.*
+import kotlin.io.use
 
 /*
 Copyright (c) 2022-2023 Antonio Iannotta & Luca Bracchi
@@ -34,6 +35,7 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 */
 fun Route.exposedUserRoutes(
+    userDbConnectionString: String,
     tokenSecret: String,
     passwordHashingSecret: String
 ) {
@@ -43,7 +45,7 @@ fun Route.exposedUserRoutes(
         //get parameter from request and create new user to register
         val requestBody = call.receive<SignUpRequestBody>()
         //register new user to db
-        val responseBody = getUserMongoClient().use { mongoClient ->
+        val responseBody = getUserMongoClient(userDbConnectionString).use { mongoClient ->
             val interfaceAdapter = UserInterfaceAdapter(getUserCollection(mongoClient), passwordHashingSecret)
             interfaceAdapter.signUp(requestBody, tokenSecret)
         }
@@ -60,7 +62,7 @@ fun Route.exposedUserRoutes(
         //get parameter from request and create user to login
         val requestBody = call.receive<LoginRequestBody>()
         //get jwt token and user info
-        val responseBody = getUserMongoClient().use { mongoClient ->
+        val responseBody = getUserMongoClient(userDbConnectionString).use { mongoClient ->
             val interfaceAdapter = UserInterfaceAdapter(getUserCollection(mongoClient), passwordHashingSecret)
             interfaceAdapter.login(requestBody, tokenSecret)
         }

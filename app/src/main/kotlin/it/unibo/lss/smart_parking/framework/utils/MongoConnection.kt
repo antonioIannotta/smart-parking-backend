@@ -26,21 +26,18 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 */
-const val userMongoAddress =
-    "mongodb+srv://testUser:testUser@cluster0.r3hsl.mongodb.net/?retryWrites=true&w=majority"
-const val userDBName = "test-db"
-const val userCollectionName = "user-collection"
+const val userDBName = "user"
+const val userCollectionName = "user"
 
-const val parkingSlotMongoAddress = "mongodb+srv://antonioIannotta:AntonioIannotta-26@cluster0.a3rz8ro.mongodb.net/?retryWrites=true"
-const val parkingSlotDBName = "ParkingSystem"
+const val parkingSlotDBName = "parking-slot"
 const val parkingSlotCollectionName = "parking-slot"
 
-fun getUserMongoClient(mongoAddress: String = userMongoAddress): MongoClient {
-    return MongoClients.create(mongoAddress)
+fun getUserMongoClient(connectionString: String): MongoClient {
+    return MongoClients.create(connectionString)
 }
 
-fun getParkingSlotMongoClient(mongoAddress: String = parkingSlotMongoAddress): MongoClient {
-    return MongoClients.create(mongoAddress)
+fun getParkingSlotMongoClient(connectionString: String): MongoClient {
+    return MongoClients.create(connectionString)
 }
 
 fun getUserCollection(

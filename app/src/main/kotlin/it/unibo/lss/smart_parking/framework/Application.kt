@@ -3,6 +3,7 @@ package it.unibo.lss.smart_parking.framework
 import io.ktor.server.application.*
 import io.ktor.server.engine.*
 import io.ktor.server.netty.*
+import it.unibo.lss.smart_parking.app.BuildConfig
 import it.unibo.lss.smart_parking.framework.plugins.configureAuthentication
 import it.unibo.lss.smart_parking.framework.plugins.configureHTTP
 import it.unibo.lss.smart_parking.framework.plugins.configureRouting
@@ -31,11 +32,14 @@ SOFTWARE.
 */
 fun main() {
     // Please change the following secrets in production.
-    val hashingSecret = "dSgUkXp2s5v8y/B?E(H+MbQeThWmYq3t"
-
+    val hashingSecret = BuildConfig.HASHING_SECRET
+    val userDbConnectionString = BuildConfig.USER_DB_CONNECTION_STRING
+    val parkingSlotDbConnectionString = BuildConfig.PARKING_SLOT_DB_CONNECTION_STRING
 
     embeddedServer(Netty, port = 8080, host = "0.0.0.0", module = {
         module(
+            userDbConnectionString = userDbConnectionString,
+            parkingSlotDbConnectionString = parkingSlotDbConnectionString,
             hashingSecret = hashingSecret,
         )
     })
@@ -43,6 +47,8 @@ fun main() {
 }
 
 fun Application.module(
+    userDbConnectionString: String,
+    parkingSlotDbConnectionString: String,
     hashingSecret: String,
 ) {
     configureAuthentication(
@@ -52,5 +58,7 @@ fun Application.module(
     configureHTTP()
     configureRouting(
         hashingSecret = hashingSecret,
+        userDbConnectionString = userDbConnectionString,
+        parkingSlotDbConnectionString = parkingSlotDbConnectionString
     )
 }

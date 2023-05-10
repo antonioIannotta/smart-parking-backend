@@ -41,6 +41,8 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 */
 fun Route.protectedUserRoutes(
+    userDbConnectionString: String,
+    parkingSlotDbConnectionString: String,
     passwordHashingSecret: String
 ) {
 
@@ -49,7 +51,7 @@ fun Route.protectedUserRoutes(
         val principal = call.principal<JWTPrincipal>()
         val userId = principal!!.payload.getClaim("userId").asString()
 
-        val responseBody = getUserMongoClient().use { mongoClient ->
+        val responseBody = getUserMongoClient(userDbConnectionString).use { mongoClient ->
             val interfaceAdapter = UserInterfaceAdapter(getUserCollection(mongoClient), passwordHashingSecret)
             interfaceAdapter.getUserInfo(userId)
         }
@@ -65,7 +67,7 @@ fun Route.protectedUserRoutes(
         val principal = call.principal<JWTPrincipal>()
         val userId = principal!!.payload.getClaim("userId").asString()
 
-        val responseBody = getUserMongoClient().use { mongoClient ->
+        val responseBody = getUserMongoClient(userDbConnectionString).use { mongoClient ->
             val interfaceAdapter = UserInterfaceAdapter(getUserCollection(mongoClient), passwordHashingSecret)
             interfaceAdapter.deleteUser(userId)
         }
@@ -82,7 +84,7 @@ fun Route.protectedUserRoutes(
         val userId = principal!!.payload.getClaim("userId").asString()
         val requestBody = call.receive<ChangePasswordRequestBody>()
 
-        val responseBody = getUserMongoClient().use { mongoClient ->
+        val responseBody = getUserMongoClient(userDbConnectionString).use { mongoClient ->
             val interfaceAdapter = UserInterfaceAdapter(getUserCollection(mongoClient), passwordHashingSecret)
             interfaceAdapter.changePassword(userId, requestBody.newPassword, requestBody.currentPassword)
         }
@@ -102,7 +104,7 @@ fun Route.protectedUserRoutes(
         val stopEnd = call.receive<StopEnd>().stopEnd
         val userId = call.principal<JWTPrincipal>()!!.payload.getClaim("userId").asString()
 
-        val response = getUserMongoClient().use { mongoClient ->
+        val response = getUserMongoClient(userDbConnectionString).use { mongoClient ->
             val interfaceAdapter = InterfaceAdapter(getParkingSlotCollection(mongoClient))
             interfaceAdapter.occupyParkingSlot(userId, slotId, stopEnd)
         }
@@ -115,7 +117,7 @@ fun Route.protectedUserRoutes(
         val slotId = call.parameters["id"]!!
         val newEndTime = call.receive<StopEnd>().stopEnd
         val userId = call.principal<JWTPrincipal>()!!.payload.getClaim("userId").asString()
-        val response = getParkingSlotMongoClient().use { mongoClient ->
+        val response = getParkingSlotMongoClient(parkingSlotDbConnectionString).use { mongoClient ->
             val interfaceAdapter = InterfaceAdapter(getParkingSlotCollection(mongoClient))
             interfaceAdapter.incrementParkingSlotOccupation(userId, slotId, newEndTime)
         }
@@ -125,7 +127,7 @@ fun Route.protectedUserRoutes(
     put("/parking-slot/{id}/free") {
 
         val slotId = call.parameters["id"]!!
-        val response = getParkingSlotMongoClient().use { mongoClient ->
+        val response = getParkingSlotMongoClient(parkingSlotDbConnectionString).use { mongoClient ->
             val interfaceAdapter = InterfaceAdapter(getParkingSlotCollection(mongoClient))
             interfaceAdapter.freeParkingSlot(slotId)
         }
@@ -143,7 +145,7 @@ fun Route.protectedUserRoutes(
         }
 
         val center = Center(Position(latitude, longitude), radius)
-        val response = getParkingSlotMongoClient().use { mongoClient ->
+        val response = getParkingSlotMongoClient(parkingSlotDbConnectionString).use { mongoClient ->
             val collection = getParkingSlotCollection(mongoClient)
             val interfaceAdapter = InterfaceAdapter(collection)
             interfaceAdapter.getAllParkingSlotsByRadius(center)
@@ -155,7 +157,7 @@ fun Route.protectedUserRoutes(
         val principal = call.principal<JWTPrincipal>()
         val userId = principal!!.payload.getClaim("userId").asString()
 
-        val responseBody = getParkingSlotMongoClient().use { mongoClient ->
+        val responseBody = getParkingSlotMongoClient(parkingSlotDbConnectionString).use { mongoClient ->
             val interfaceAdapter = InterfaceAdapter(getParkingSlotCollection(mongoClient))
             interfaceAdapter.getParkingSlotOccupiedByUser(userId)
         }
@@ -173,7 +175,7 @@ fun Route.protectedUserRoutes(
     get("/parking-slot/{id}") {
 
         val slotId = call.parameters["id"]!!
-        val response = getParkingSlotMongoClient().use { mongoClient ->
+        val response = getParkingSlotMongoClient(parkingSlotDbConnectionString).use { mongoClient ->
             val interfaceAdapter = InterfaceAdapter(getParkingSlotCollection(mongoClient))
             interfaceAdapter.getParkingSlot(slotId)
         }

@@ -12,7 +12,3 @@ dependencies {
     testImplementation(libs.junit)
     testImplementation(libs.ktor.server.test.host)
 }
-
-tasks.test {
-    useJUnitPlatform()
-}
