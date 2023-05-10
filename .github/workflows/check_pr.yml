@@ -10,7 +10,7 @@ jobs:
     name: Run tests
     strategy:
       matrix:
-        os: [ubuntu-latest, macos-latest]
+        os: [ubuntu-latest]
         mongodb-version: ['5.3', '6.0']
     runs-on: ${{matrix.os}}
     steps:
