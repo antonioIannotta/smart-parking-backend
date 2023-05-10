@@ -4,7 +4,7 @@ ktor = "2.2.4"
 kotlinxDateTime = "0.4.0"
 mongoDbDriver = "4.9.0"
 logbackClassic = "1.4.7"
-junit = "5.9.2"
+junit = "5.9.3"
 buildconfig = "4.0.4"
 [libraries]
 mongodb-driver-sync = { group = "org.mongodb", name = "mongodb-driver-sync", version.ref = "mongoDbDriver" }
