@@ -3,7 +3,7 @@ name: Publish Docker image on DockerHUb
 on:
   push:
     branches:
-      - master
+      - main
 
 jobs:
   push_to_registry:
@@ -14,20 +14,22 @@ jobs:
         uses: actions/checkout@v3
 
       - name: Log in to Docker Hub
-        uses: docker/login-action@f054a8b539a109f9f41c372932f1ae047eff08c9
+        uses: docker/login-action@v2
         with:
-          username: ${{ secrets.DOCKER_HUB_USERNAME }}
-          password: ${{ secrets.DOCKER_HUB_PASSWORD }}
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_TOKEN }}
 
       - name: Extract metadata (tags, labels) for Docker
         id: meta
-        uses: docker/metadata-action@98669ae865ea3cffbcbaa878cf57c20bbf1c6c38
+        uses: docker/metadata-action@v4
         with:
-          images: ../../Docker/Dockerfile
+          context: .
+          images: ./Docker/Dockerfile
 
       - name: Build and push Docker image
         uses: docker/build-push-action@ad44023a93711e3deb337508980b4b5e9bcdc5dc
         with:
           push: true
-          file: ../../Docker/Dockerfile
-          tags: antonioiannotta26/personal26:v1
+          context: .
+          file: ./Docker/Dockerfile
+          tags: giuliozaccaroni/smart-parking-backend:latest
