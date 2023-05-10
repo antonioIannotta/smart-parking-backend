@@ -4,6 +4,7 @@ import io.ktor.client.request.*
 import io.ktor.http.*
 import io.ktor.server.testing.*
 import io.ktor.test.dispatcher.*
+import it.unibo.lss.smart_parking.app.BuildConfig
 import it.unibo.lss.smart_parking.framework.module
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertNotEquals
@@ -16,7 +17,6 @@ import org.junit.jupiter.api.Test
 class AuthenticationTest {
 
     companion object {
-        private const val testSecret = "1234567890"
         private lateinit var testApp: TestApplication
 
         @JvmStatic
@@ -24,7 +24,11 @@ class AuthenticationTest {
         fun config() {
             testApp = TestApplication {
                 application {
-                    module(testSecret, testSecret)
+                    module(
+                        userDbConnectionString = BuildConfig.USER_DB_CONNECTION_STRING,
+                        parkingSlotDbConnectionString = BuildConfig.PARKING_SLOT_DB_CONNECTION_STRING,
+                        hashingSecret = BuildConfig.HASHING_SECRET
+                    )
                 }
             }
         }

@@ -6,6 +6,7 @@ import io.ktor.http.*
 import io.ktor.serialization.kotlinx.json.*
 import io.ktor.server.testing.*
 import io.ktor.test.dispatcher.*
+import it.unibo.lss.smart_parking.app.BuildConfig
 import it.unibo.lss.smart_parking.framework.module
 import it.unibo.lss.smart_parking.framework.utils.getUserCollection
 import it.unibo.lss.smart_parking.framework.utils.getUserMongoClient
@@ -17,17 +18,19 @@ import org.junit.jupiter.api.AfterAll
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.BeforeAll
 import org.junit.jupiter.api.Test
+import java.util.UUID
 import kotlin.test.assertNotNull
 import kotlin.test.assertNull
 
 class ChangePasswordTest {
 
     companion object {
-        private const val testSecret = "1234567890"
+        private const val testSecret = BuildConfig.HASHING_SECRET
         private lateinit var testApp: TestApplication
-        private var interfaceAdapter = UserInterfaceAdapter(getUserCollection(getUserMongoClient()), testSecret)
+        private var interfaceAdapter =
+            UserInterfaceAdapter(getUserCollection(getUserMongoClient(BuildConfig.USER_DB_CONNECTION_STRING)), testSecret)
         private const val changePasswordEndpoint = "/user/change-password"
-        private const val testMail = "test@test.it"
+        private val testMail = "${UUID.randomUUID()}@test.it"
         private const val testPassword = "Test123!"
         private const val testName = "testName"
 
@@ -38,7 +41,11 @@ class ChangePasswordTest {
         fun config() {
             testApp = TestApplication {
                 application {
-                    module(testSecret, testSecret)
+                    module(
+                        userDbConnectionString = BuildConfig.USER_DB_CONNECTION_STRING,
+                        parkingSlotDbConnectionString = BuildConfig.PARKING_SLOT_DB_CONNECTION_STRING,
+                        hashingSecret = testSecret
+                    )
                 }
                 //register test user
                 val signUpRequestBody = SignUpRequestBody(testMail, testPassword, testName)

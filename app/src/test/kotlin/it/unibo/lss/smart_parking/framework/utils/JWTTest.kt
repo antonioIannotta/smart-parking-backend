@@ -2,6 +2,7 @@ package it.unibo.lss.smart_parking.framework.utils
 
 import com.auth0.jwt.exceptions.JWTDecodeException
 import com.auth0.jwt.exceptions.TokenExpiredException
+import it.unibo.lss.smart_parking.app.BuildConfig
 import it.unibo.lss.smart_parking.user.interface_adapter.utils.generateJWT
 import it.unibo.lss.smart_parking.user.interface_adapter.utils.getJWTVerifier
 import org.bson.types.ObjectId
@@ -14,7 +15,7 @@ import org.junit.jupiter.api.assertThrows
 class JWTTest {
 
     private val testId = ObjectId().toString()
-    private val testSecret = "1234567890"
+    private val testSecret = BuildConfig.HASHING_SECRET
 
     @Test
     fun `test that token creation generate a jwt without throwing exceptions`() {
