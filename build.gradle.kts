@@ -43,6 +43,6 @@ subprojects {
 
     // PUBLISHING
     group = projectGroup
-    version = projectVersion
+    version = rootProject.file("version.txt").readText().trim()
 
 }
