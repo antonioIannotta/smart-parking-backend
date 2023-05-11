@@ -9,6 +9,7 @@ plugins {
     alias(libs.plugins.buildconfig) apply false
     alias(libs.plugins.ktor.plugin) apply false
     alias(libs.plugins.kotlin.plugin.serialization) apply false
+    alias(libs.plugins.dokka)
 }
 
 subprojects {
@@ -17,6 +18,7 @@ subprojects {
     }
     apply(plugin = rootProject.libs.plugins.kotlin.jvm.get().pluginId)
     apply(plugin = rootProject.libs.plugins.buildconfig.get().pluginId)
+        apply(plugin = dokka.get().pluginId)
     extensions.getByType<JavaPluginExtension>().apply {
         toolchain {
             languageVersion.set(JavaLanguageVersion.of(17))
