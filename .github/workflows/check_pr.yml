@@ -16,7 +16,7 @@ jobs:
       - name: Check out the repo
         uses: actions/checkout@v3
       - name: Run MongoDB
-        uses: supercharge/mongodb-github-action@1.8.0
+        uses: supercharge/mongodb-github-action@v1.9.0
         with:
           mongodb-version: ${{ matrix.mongodb-version }}
       - uses: actions/setup-java@v3
