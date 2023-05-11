@@ -1,5 +1,12 @@
 # Changelog
 
+## [2.0.1](https://github.com/GZaccaroni/smart-parking-backend/compare/v2.0.0...v2.0.1) (2023-05-11)
+
+
+### Bug Fixes
+
+* fixed maven release pipeline ([31df728](https://github.com/GZaccaroni/smart-parking-backend/commit/31df7282e6f48303d312f21ad2feed09c7e98204))
+
 ## [2.0.0](https://github.com/GZaccaroni/smart-parking-backend/compare/v1.0.0...v2.0.0) (2023-05-11)
 
 
