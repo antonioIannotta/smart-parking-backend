@@ -6,7 +6,9 @@ mongoDbDriver = "4.9.1"
 logbackClassic = "1.4.7"
 junit = "5.9.3"
 buildconfig = "4.0.4"
+publishOnCentral = "5.0.5"
 dokka = "1.8.10"
+
 [libraries]
 mongodb-driver-sync = { group = "org.mongodb", name = "mongodb-driver-sync", version.ref = "mongoDbDriver" }
 logback-classic = { group = "ch.qos.logback", name = "logback-classic", version.ref = "logbackClassic" }
@@ -30,5 +32,6 @@ junit = { group = "org.junit.jupiter", name = "junit-jupiter", version.ref = "ju
 kotlin-jvm = { id = "org.jetbrains.kotlin.jvm", version.ref = "kotlin" }
 ktor-plugin = { id = "io.ktor.plugin", version.ref = "ktor" }
 kotlin-plugin-serialization = { id = "org.jetbrains.kotlin.plugin.serialization", version.ref = "kotlin" }
-buildconfig = { id = "com.github.gmazzo.buildconfig", version.ref = "buildconfig"}dokka = { id = "org.jetbrains.dokka", version.ref = "dokka" }
+buildconfig = { id = "com.github.gmazzo.buildconfig", version.ref = "buildconfig"}
+publishOnCentral = { id = "org.danilopianini.publish-on-central", version.ref = "publishOnCentral" }
 dokka = { id = "org.jetbrains.dokka", version.ref = "dokka" }
