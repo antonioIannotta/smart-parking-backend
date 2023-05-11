@@ -30,13 +30,13 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 */
-fun main() {
-    launchApplication(
-        parkingSlotDbConnectionString = BuildConfig.PARKING_SLOT_DB_CONNECTION_STRING,
-        userDbConnectionString = BuildConfig.USER_DB_CONNECTION_STRING,
-        hashingSecret = BuildConfig.HASHING_SECRET,
-    )
-}
+
+/**
+ * Launches the application with provided configuration
+ * @param parkingSlotDbConnectionString the connection string of the parking slot database
+ * @param userDbConnectionString the connection string of the user database
+ * @param hashingSecret hashing secret used to encode JWT
+ */
 fun launchApplication(
     parkingSlotDbConnectionString: String,
     userDbConnectionString: String,
