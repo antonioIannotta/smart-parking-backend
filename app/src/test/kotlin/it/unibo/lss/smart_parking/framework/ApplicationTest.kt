@@ -1,10 +1,10 @@
 package it.unibo.lss.smart_parking.framework
 
+import io.github.gzaccaroni.smartparking.app.BuildConfig
 import io.ktor.client.request.*
 import io.ktor.client.statement.*
 import io.ktor.http.*
 import io.ktor.server.testing.*
-import it.unibo.lss.smart_parking.app.BuildConfig
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Test
 

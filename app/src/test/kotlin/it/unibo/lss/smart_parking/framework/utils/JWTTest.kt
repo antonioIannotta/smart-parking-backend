@@ -2,7 +2,7 @@ package it.unibo.lss.smart_parking.framework.utils
 
 import com.auth0.jwt.exceptions.JWTDecodeException
 import com.auth0.jwt.exceptions.TokenExpiredException
-import it.unibo.lss.smart_parking.app.BuildConfig
+import io.github.gzaccaroni.smartparking.app.BuildConfig
 import it.unibo.lss.smart_parking.user.interface_adapter.utils.generateJWT
 import it.unibo.lss.smart_parking.user.interface_adapter.utils.getJWTVerifier
 import org.bson.types.ObjectId

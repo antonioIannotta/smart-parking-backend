@@ -1,8 +1,8 @@
 package it.unibo.lss.smart_parking.parkingslot.interface_adapter
 
 import com.mongodb.client.MongoClients
+import io.github.gzaccaroni.smartparking.parking_slot.BuildConfig
 import io.ktor.http.*
-import it.unibo.lss.smart_parking.parking_slot.BuildConfig
 import it.unibo.lss.smart_parking.parkingslot.FillParkingSlotCollection
 import kotlinx.datetime.Clock
 import kotlinx.serialization.json.Json
