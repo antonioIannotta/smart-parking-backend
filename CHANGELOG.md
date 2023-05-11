@@ -1,5 +1,32 @@
 # Changelog
 
+## [2.0.0](https://github.com/GZaccaroni/smart-parking-backend/compare/v1.0.0...v2.0.0) (2023-05-11)
+
+
+### ⚠ BREAKING CHANGES
+
+* updated projectGroup to match maven central
+
+### Features
+
+* added Dokka to create documentation ([da28cdb](https://github.com/GZaccaroni/smart-parking-backend/commit/da28cdbe3283bba882587a32a5ccaa137caa50ee))
+* added launchApplication method to allow launching app from package ([a793476](https://github.com/GZaccaroni/smart-parking-backend/commit/a79347665c516b8466f36f07ea1b2e8b97fef549))
+* publish on maven central support ([9be6cd9](https://github.com/GZaccaroni/smart-parking-backend/commit/9be6cd9431411dccf17efca64e1bbfd179c61e78))
+* set artifact id for each package ([c555351](https://github.com/GZaccaroni/smart-parking-backend/commit/c55535104312d8390ee8a2eb655e4a1e37ee67bf))
+
+
+### Bug Fixes
+
+* assign version and repositories to all projects ([cd3fc17](https://github.com/GZaccaroni/smart-parking-backend/commit/cd3fc17729a60fc2f8f8d619103b8118837cfe27))
+* **deps:** update dependency ch.qos.logback:logback-classic to v1.4.7 ([21c8162](https://github.com/GZaccaroni/smart-parking-backend/commit/21c81622440041eaafc30ba15385db09dba5ab2f))
+* **deps:** update dependency org.junit.jupiter:junit-jupiter to v5.9.3 ([bd204f6](https://github.com/GZaccaroni/smart-parking-backend/commit/bd204f6c8d5af1ee3cc954d9f23f98ea09498973))
+* **deps:** update dependency org.mongodb:mongodb-driver-sync to v4.9.1 ([8a2574e](https://github.com/GZaccaroni/smart-parking-backend/commit/8a2574e7ff43ec4b7cf48532ad48f40539393831))
+
+
+### Code Refactoring
+
+* updated projectGroup to match maven central ([e0b2cf4](https://github.com/GZaccaroni/smart-parking-backend/commit/e0b2cf42f93bcaa9516b34c3f6bf69bd4a67b8ab))
+
 ## 1.0.0 (2023-05-10)
 
 
