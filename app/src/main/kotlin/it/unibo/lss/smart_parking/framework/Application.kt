@@ -1,9 +1,9 @@
 package it.unibo.lss.smart_parking.framework
 
+import io.github.gzaccaroni.smartparking.app.BuildConfig
 import io.ktor.server.application.*
 import io.ktor.server.engine.*
 import io.ktor.server.netty.*
-import it.unibo.lss.smart_parking.app.BuildConfig
 import it.unibo.lss.smart_parking.framework.plugins.configureAuthentication
 import it.unibo.lss.smart_parking.framework.plugins.configureHTTP
 import it.unibo.lss.smart_parking.framework.plugins.configureRouting
@@ -31,11 +31,17 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 */
 fun main() {
-    // Please change the following secrets in production.
-    val hashingSecret = BuildConfig.HASHING_SECRET
-    val userDbConnectionString = BuildConfig.USER_DB_CONNECTION_STRING
-    val parkingSlotDbConnectionString = BuildConfig.PARKING_SLOT_DB_CONNECTION_STRING
-
+    launchApplication(
+        parkingSlotDbConnectionString = BuildConfig.PARKING_SLOT_DB_CONNECTION_STRING,
+        userDbConnectionString = BuildConfig.USER_DB_CONNECTION_STRING,
+        hashingSecret = BuildConfig.HASHING_SECRET,
+    )
+}
+fun launchApplication(
+    parkingSlotDbConnectionString: String,
+    userDbConnectionString: String,
+    hashingSecret: String,
+) {
     embeddedServer(Netty, port = 8080, host = "0.0.0.0", module = {
         module(
             userDbConnectionString = userDbConnectionString,
@@ -45,7 +51,6 @@ fun main() {
     })
         .start(wait = true)
 }
-
 fun Application.module(
     userDbConnectionString: String,
     parkingSlotDbConnectionString: String,
