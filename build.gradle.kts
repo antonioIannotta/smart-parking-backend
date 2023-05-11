@@ -12,12 +12,16 @@ plugins {
     alias(libs.plugins.dokka)
     alias(libs.plugins.publishOnCentral)
 }
-group = projectGroup
 
-subprojects {
+allprojects {
+    group = projectGroup
     repositories {
         mavenCentral()
     }
+    val version = rootProject.file("version.txt").readText().trim()
+    this.version = version
+}
+subprojects {
     with(rootProject.libs.plugins) {
         apply(plugin = kotlin.jvm.get().pluginId)
         apply(plugin = buildconfig.get().pluginId)
@@ -37,9 +41,6 @@ subprojects {
     }
 
     // PUBLISHING
-    group = projectGroup
-    val version = rootProject.file("version.txt").readText().trim()
-    this.version = version
 
     publishOnCentral {
         projectLongName.set("Smart Parking Backend")
