@@ -61,6 +61,9 @@ jobs:
         uses: gradle/gradle-build-action@v2
         with:
           arguments: uploadKotlinOSSRHToMavenCentralNexus
+        env:
+          SIGNING_KEY: ${{ secrets.SIGNING_KEY }}
+          SIGNING_PASSWORD: ${{ secrets.SIGNING_PASSWORD }}
       - name: Release on Maven Centrals
         uses: gradle/gradle-build-action@v2
         with:
